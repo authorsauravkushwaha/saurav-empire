@@ -1,0 +1,128 @@
+﻿name: Daily Civilization
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 06:00 IST = 00:30 UTC
+    - cron: '30 0 * * *'  # 06:30 IST
+    - cron: '0 1 * * *'   # 07:00 IST = 01:30 UTC
+    - cron: '30 1 * * *'  # 07:30 IST
+    - cron: '0 2 * * *'   # 08:00 IST = 02:30 UTC
+    - cron: '30 3 * * *'  # 09:00 IST = 03:30 UTC
+    - cron: '0 16 * * *'  # 22:00 IST = 16:30 UTC
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: 'Which agent to run'
+        required: false
+        default: 'all'
+        type: choice
+        options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review]
+jobs:
+  market_scan:
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run Market Scan
+        env:
+          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
+          HF_TOKEN: *** secrets.HF_TOKEN }}
+        run: python agents/market_scan.py
+      - name: Commit trends data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/trends.json
+          git diff --staged --quiet || git commit -m "📊 Market scan: 2026-09-01" && git push
+  content_gen:
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'content_gen'
+    needs: market_scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run Content Generation
+        env:
+          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
+          HF_TOKEN: *** secrets.HF_TOKEN }}
+        run: python agents/content_gen.py
+      - name: Commit content
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/daily/
+          git diff --staged --quiet || git commit -m "🎬 Content gen: 2026-09-01" && git push
+  lead_enrich:
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'lead_enrich'
+    needs: content_gen
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run Lead Enrichment
+        env:
+          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
+          HF_TOKEN: *** secrets.HF_TOKEN }}
+        run: python agents/lead_enrich.py
+      - name: Commit leads
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/leads.json
+          git diff --staged --quiet || git commit -m "🎯 Lead enrich: 2026-09-01" && git push
+  finance_reconcile:
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'finance_reconcile'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run Finance Reconcile
+        run: python agents/finance_reconcile.py
+      - name: Commit finance
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/daily-finance.json
+          git diff --staged --quiet || git commit -m "💰 Finance reconcile: 2026-09-01" && git push
+  experiment_review:
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'experiment_review'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run Experiment Review
+        env:
+          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
+          HF_TOKEN: *** secrets.HF_TOKEN }}
+        run: python agents/experiment_review.py
+      - name: Commit experiments
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/experiments.json
+          git diff --staged --quiet || git commit -m "🧪 Experiment review: 2026-09-01" && git push

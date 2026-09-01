@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saurav Kushwaha — Author, Builder, Teacher</title>
+  <meta name="description" content="50+ books on finance, psychology, writing, business. Course: Write & Publish in 30 Days. Writer Nation publishing services.">
+  <style>
+    :root {
+      --bg: #0a0a0f; --fg: #f5f5f0; --muted: #8b8b8b; --accent: #e8b84d;
+      --card: #12121a; --border: #2a2a3a; --accent-hover: #f0c860;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    header { padding: 48px 0 32px; text-align: center; }
+    h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .tagline { color: var(--muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto; }
+    .badge { display: inline-block; background: var(--accent); color: var(--bg); padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; margin-top: 16px; }
+    section { padding: 48px 0; border-top: 1px solid var(--border); }
+    h2 { font-size: 1.75rem; margin-bottom: 24px; text-align: center; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; transition: transform .2s, border-color .2s; }
+    .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 0.95rem; margin-bottom: 16px; }
+    .btn { display: inline-block; background: var(--accent); color: var(--bg); padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: background .2s; }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+    .btn-outline:hover { background: var(--accent); color: var(--bg); }
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .book { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .book img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; margin-bottom: 12px; background: var(--border); }
+    .book-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+    .book-price { color: var(--accent); font-size: 0.85rem; font-weight: 500; }
+    .social-links { display: flex; gap: 12px; justify-content: center; margin-top: 32px; }
+    .social-links a { color: var(--muted); font-size: 1.5rem; transition: color .2s; }
+    .social-links a:hover { color: var(--accent); }
+    footer { padding: 32px 0; text-align: center; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+    @media (max-width: 600px) { header { padding: 32px 0 24px; } section { padding: 32px 0; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Saurav Kushwaha</h1>
+      <p class="tagline">50+ books published. Teaching 10,000+ authors how to write, publish, and scale.</p>
+      <span class="badge">Writer Nation Founder</span>
+    </header>
+    <section>
+      <h2>📚 The Catalog — 50 Books</h2>
+      <div class="book-grid" id="books">
+        <!-- Populated from config/books.json -->
+      </div>
+      <p style="text-align:center; margin-top:16px; color:var(--muted);">All books on Amazon KDP · 70% royalties · Global distribution</p>
+    </section>
+    <section>
+      <h2>🎓 Flagship Course</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Write & Publish in 30 Days</h3>
+          <p>From blank page to published author. 5-week system: validate, write, edit, publish, launch. Includes Notion template, Discord community, and launch email sequences.</p>
+          <div style="display:flex; gap:12px; align-items:center; margin:16px 0;">
+            <span style="font-size:1.5rem; font-weight:700; color:var(--accent);">₹2,999</span>
+            <span style="color:var(--muted); text-decoration:line-through;">₹4,999</span>
+          </div>
+          <a href="https://gumroad.com/l/write-publish-30-days" class="btn" target="_blank">Enroll Now</a>
+        </div>
+        <div class="card">
+          <h3>Writer Nation Author Services</h3>
+          <p>Done-for-you publishing: editing, cover design, KDP setup, keyword research, launch strategy, marketing funnels. ₹15k–25k per project.</p>
+          <a href="https://calendly.com/sauravkushwaha/strategy-call" class="btn btn-outline" target="_blank">Book Strategy Call</a>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>🎯 Free Resources</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Free Chapter: Millionaire Financial Literacy</h3>
+          <p>The money habits schools never taught you. Instant download.</p>
+          <a href="https://gumroad.com/l/mfl-free-chapter" class="btn" target="_blank">Get Free Chapter</a>
+        </div>
+        <div class="card">
+          <h3>7-Day Book Outline Challenge</h3>
+          <p>Daily prompts + structure to outline your book in one week. ₹299.</p>
+          <a href="https://gumroad.com/l/7-day-outline" class="btn btn-outline" target="_blank">Start Challenge</a>
+        </div>
+        <div class="card">
+          <h3>Writer Nation Discord</h3>
+          <p>Community of 1,000+ authors. Feedback, accountability, networking.</p>
+          <a href="https://discord.gg/writernation" class="btn" target="_blank">Join Free</a>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>📈 Live Metrics (Auto-updated)</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Monthly Revenue</h3>
+          <p style="font-size:2rem; font-weight:700; color:var(--accent);" id="rev">₹—</p>
+          <p style="color:var(--muted);">MTD from KDP + Gumroad + Services</p>
+        </div>
+        <div class="card">
+          <h3>Books Published</h3>
+          <p style="font-size:2rem; font-weight:700;" id="books-count">50</p>
+          <p style="color:var(--muted);">Across 10 categories</p>
+        </div>
+        <div class="card">
+          <h3>Course Students</h3>
+          <p style="font-size:2rem; font-weight:700;" id="students">—</p>
+          <p style="color:var(--muted);">Write & Publish in 30 Days</p>
+        </div>
+        <div class="card">
+          <h3>Email Subscribers</h3>
+          <p style="font-size:2rem; font-weight:700;" id="subs">—</p>
+          <p style="color:var(--muted);">Brevo list (300/day free tier)</p>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="social-links">
+        <a href="https://twitter.com/sauravkushwaha" target="_blank" aria-label="Twitter">𝕏</a>
+        <a href="https://linkedin.com/in/sauravkushwaha" target="_blank" aria-label="LinkedIn">in</a>
+        <a href="https://youtube.com/@sauravkushwaha" target="_blank" aria-label="YouTube">▶</a>
+        <a href="https://instagram.com/sauravkushwaha" target="_blank" aria-label="Instagram">📷</a>
+        <a href="https://github.com/authorsauravkushwaha" target="_blank" aria-label="GitHub">⌘</a>
+      </div>
+      <p style="margin-top:16px;">© 2025 Saurav Kushwaha · Built with GitHub Actions (zero cost) · <a href="https://github.com/authorsauravkushwaha/saurav-empire" style="color:var(--accent);" target="_blank">Open Source</a></p>
+    </footer>
+  </div>
+  <script>
+    // Fetch live metrics from GitHub Pages JSON (updated by workflows)
+    async function loadMetrics() {
+      try {
+        const [finance, books] = await Promise.all([
+          fetch('https://authorsauravkushwaha.github.io/saurav-empire/data/finance-summary.json').catch(()=>null),
+          fetch('https://authorsauravkushwaha.github.io/saurav-empire/config/books.json').catch(()=>null)
+        ]);
+        if (finance) { const f = await finance.json(); document.getElementById('rev').textContent = '₹' + f.mtd_revenue_inr.toLocaleString(); }
+        if (books) { const b = await books.json(); document.getElementById('books-count').textContent = b.books?.length || 50; }
+      } catch (e) { console.log('Metrics load failed:', e); }
+    }
+    loadMetrics();
+  </script>
+</body>
+</html>
