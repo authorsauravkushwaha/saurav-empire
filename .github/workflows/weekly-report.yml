@@ -25,11 +25,11 @@ jobs:
           script: |
             const fs = require('fs');
             const date = new Date().toISOString().split('T')[0];
-            const md = fs.readFileSync(eports/weekly/weekly-.md, 'utf8');
+            const md = fs.readFileSync(\eports/weekly/weekly-\.md\, 'utf8');
             const { data } = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: 📊 Weekly Report — ,
+              title: \📊 Weekly Report — \\,
               body: md,
               labels: ['weekly', 'report']
             });
@@ -39,4 +39,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/weekly/
-          git diff --staged --quiet || git commit -m "📊 Weekly report: 2026-09-02" && git push
+          git diff --staged --quiet || git commit -m "📊 Weekly report: \2026-09-02" && git push
