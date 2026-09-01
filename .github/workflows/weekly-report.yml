@@ -1,4 +1,4 @@
-﻿name: Weekly Report
+name: Weekly Report
 
 on:
   schedule:
@@ -18,8 +18,8 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Generate Weekly Report
         env:
-          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
-          HF_TOKEN: *** secrets.HF_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/weekly_report.py
       - name: Create GitHub Issue
         uses: actions/github-script@v7
@@ -27,11 +27,12 @@ jobs:
           script: |
             const fs = require('fs');
             const date = new Date().toISOString().split('T')[0];
-            const md = fs.readFileSync(eports/weekly/weekly-.md, 'utf8');
+            const md = fs.readFileSync(
+eports/weekly/weekly-.md, 'utf8');
             const { data } = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: 📊 Weekly Report — ,
+              title: ?? Weekly Report � ,
               body: md,
               labels: ['weekly', 'report']
             });
@@ -41,4 +42,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/weekly/
-          git diff --staged --quiet || git commit -m "📊 Weekly report: 2026-09-01" && git push
+          git diff --staged --quiet || git commit -m "?? Weekly report: 2026-09-01" && git push

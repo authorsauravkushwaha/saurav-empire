@@ -1,4 +1,4 @@
-﻿name: Daily Civilization
+name: Daily Civilization
 on:
   schedule:
     - cron: '0 0 * * *'   # 06:00 IST = 00:30 UTC
@@ -30,15 +30,15 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Run Market Scan
         env:
-          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
-          HF_TOKEN: *** secrets.HF_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/market_scan.py
       - name: Commit trends data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/trends.json
-          git diff --staged --quiet || git commit -m "📊 Market scan: 2026-09-01" && git push
+          git diff --staged --quiet || git commit -m "?? Market scan: 2026-09-01" && git push
   content_gen:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'content_gen'
     needs: market_scan
@@ -53,15 +53,15 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Run Content Generation
         env:
-          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
-          HF_TOKEN: *** secrets.HF_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/content_gen.py
       - name: Commit content
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add content/daily/
-          git diff --staged --quiet || git commit -m "🎬 Content gen: 2026-09-01" && git push
+          git diff --staged --quiet || git commit -m "?? Content gen: 2026-09-01" && git push
   lead_enrich:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'lead_enrich'
     needs: content_gen
@@ -76,15 +76,15 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Run Lead Enrichment
         env:
-          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
-          HF_TOKEN: *** secrets.HF_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/lead_enrich.py
       - name: Commit leads
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/leads.json
-          git diff --staged --quiet || git commit -m "🎯 Lead enrich: 2026-09-01" && git push
+          git diff --staged --quiet || git commit -m "?? Lead enrich: 2026-09-01" && git push
   finance_reconcile:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'finance_reconcile'
     runs-on: ubuntu-latest
@@ -103,7 +103,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/daily-finance.json
-          git diff --staged --quiet || git commit -m "💰 Finance reconcile: 2026-09-01" && git push
+          git diff --staged --quiet || git commit -m "?? Finance reconcile: 2026-09-01" && git push
   experiment_review:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'experiment_review'
     runs-on: ubuntu-latest
@@ -117,12 +117,12 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Run Experiment Review
         env:
-          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
-          HF_TOKEN: *** secrets.HF_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/experiment_review.py
       - name: Commit experiments
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/experiments.json
-          git diff --staged --quiet || git commit -m "🧪 Experiment review: 2026-09-01" && git push
+          git diff --staged --quiet || git commit -m "?? Experiment review: 2026-09-01" && git push
