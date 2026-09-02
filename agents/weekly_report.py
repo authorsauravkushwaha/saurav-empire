@@ -11,7 +11,7 @@ def generate_weekly_report() -> dict:
     leads = load_json('data/leads.json')
     experiments = load_json('reports/experiments.json')
     content_summary = {}
-    content_dir = Path(__file__).parent.parent.parent / 'content/daily'
+    content_dir = Path(__file__).parent.parent / 'content/daily'
     if content_dir.exists():
         for day_dir in sorted(content_dir.iterdir())[-7:]:
             if day_dir.is_dir():
@@ -89,7 +89,7 @@ def main():
 ---
 *Generated automatically by Saurav AI Empire · {date}*
 """
-    (Path(__file__).parent.parent.parent / 'reports/weekly' / f'weekly-{date}.md').write_text(md, encoding='utf-8')
+    (Path(__file__).parent.parent / 'reports/weekly' / f'weekly-{date}.md').write_text(md, encoding='utf-8')
     print(f'[{datetime.now(IST)}] Weekly Report complete → reports/weekly/weekly-{date}.json + .md')
 if __name__ == '__main__':
     main()

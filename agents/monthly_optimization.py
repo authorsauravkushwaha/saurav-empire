@@ -11,29 +11,28 @@ def generate_monthly_optimization() -> dict:
     heroes = load_heroes()
     latest_finance = load_json('reports/daily-finance.json')
     monthly_revenue = latest_finance.get('mtd_revenue_inr', 0)
-    prompt = f'''
-MONTHLY OPTIMIZATION ANALYSIS — {date}
-REVENUE (MTD): ₹{monthly_revenue:,.0f}
-BOOKS CATALOG: {len(books)} titles
-HERO BOOKS: {len(heroes)} prioritized
-CURRENT POLICY:
-- Ad spend: ₹{policy['ad_spend']['daily_limit_inr']}/day
-- Contract auto-approve: ₹{policy['contracts']['auto_approve_limit_inr']}
-- Email limit: {policy['communications']['email']['daily_limit']}/day
-- DM limit: {policy['communications']['dm']['daily_limit']}/day
-- Price change autonomy: ≤{policy['publishing']['max_price_change_pct_per_week']}%/week
-UPGRADE TRIGGERS:
-- VPS: monthly_profit > ₹30k for 2 months
-- Paid email: list > 2000 AND revenue > ₹10k/mo
-- Ad test: monthly_profit > ₹50k for 3 months
-Return JSON with:
-- price_tests: array of {{asin, current_price, test_price, rationale}}
-- kdp_select_decisions: array of {{asin, action: enroll/unenroll/hold, rationale}}
-- affiliate_recruitment: array of {{target_profile, outreach_angle, commission_pct}}
-- policy_changes: array of {{parameter, current, proposed, rationale}}
-- upgrade_actions: array of {{trigger, status, action_needed}}
-- content_strategy_shifts: array of {{from, to, rationale}}
-'''
+    prompt = f"""MONTHLY OPTIMIZATION ANALYSIS — {date}
+    REVENUE (MTD): ₹{monthly_revenue:,.0f}
+    BOOKS CATALOG: {len(books)} titles
+    HERO BOOKS: {len(heroes)} prioritized
+    CURRENT POLICY:
+    - Ad spend: ₹{policy['ad_spend']['daily_limit_inr']}/day
+    - Contract auto-approve: ₹{policy['contracts']['auto_approve_limit_inr']}
+    - Email limit: {policy['communications']['email']['daily_limit']}/day
+    - DM limit: {policy['communications']['dm']['daily_limit']}/day
+    - Price change autonomy: ≤{policy['publishing']['max_price_change_pct_per_week']}%/week
+    UPGRADE TRIGGERS:
+    - VPS: monthly_profit > ₹30k for 2 months
+    - Paid email: list > 2000 AND revenue > ₹10k/mo
+    - Ad test: monthly_profit > ₹50k for 3 months
+    Return JSON with:
+    - price_tests: array of {{asin, current_price, test_price, rationale}}
+    - kdp_select_decisions: array of {{asin, action: enroll/unenroll/hold, rationale}}
+    - affiliate_recruitment: array of {{target_profile, outreach_angle, commission_pct}}
+    - policy_changes: array of {{parameter, current, proposed, rationale}}
+    - upgrade_actions: array of {{trigger, status, action_needed}}
+    - content_strategy_shifts: array of {{from, to, rationale}}
+    """
     response = ai_reason(prompt, 'You are a strategic optimization analyst. Return valid JSON only.')
     try:
         start = response.find('{')
@@ -73,7 +72,7 @@ MTD Revenue: ₹{latest_finance.get('mtd_revenue_inr', 0):,.0f}
 **Reply "APPROVED" on any policy change to authorize.**
 *Generated automatically by Saurav AI Empire · {today_str()}*
 """
-    (Path(__file__).parent.parent.parent / 'reports' / f'monthly-optimization-{today_str()}.md').write_text(md, encoding='utf-8')
+    (Path(__file__).parent.parent / 'reports' / f'monthly-optimization-{today_str()}.md').write_text(md, encoding='utf-8')
     print(f'[{datetime.now(IST)}] Monthly Optimization complete → reports/monthly-optimization-{today_str()}.json + .md')
 if __name__ == '__main__':
     main()
