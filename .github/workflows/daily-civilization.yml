@@ -92,6 +92,7 @@ jobs:
           git add data/leads.json
           git diff --staged --quiet || git commit -m "👥 Lead enrich: $(date -u +'%Y-%m-%d')" && git push
   finance_reconcile:
+    needs: lead_enrich
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'finance_reconcile' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -116,6 +117,7 @@ jobs:
           git add reports/daily-finance.json
           git diff --staged --quiet || git commit -m "💰 Finance reconcile: $(date -u +'%Y-%m-%d')" && git push
   experiment_review:
+    needs: finance_reconcile
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'experiment_review' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 30
