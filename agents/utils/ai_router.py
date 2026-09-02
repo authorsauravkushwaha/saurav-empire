@@ -20,10 +20,10 @@ class AIRouter:
         self.ollama_url = os.getenv('OLLAMA_URL', 'http://localhost:11434')
         # Ollama models available locally (zero cost, no API key needed)
         self.routes = {
-                            'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
-                            'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
-                            'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
-                            'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
+                            'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'mixtral-8x7b-32768'}},
+                            'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'mixtral-8x7b-32768'}},
+                            'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'mixtral-8x7b-32768'}},
+                            'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'groq', 'model': 'mixtral-8x7b-32768'}},
                             'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
                         }
     def call(self, task_type: str, prompt: str, system: str = '', max_tokens: int = 2000, temperature: float = 0.3) -> str:
