@@ -20,9 +20,9 @@ class AIRouter:
         self.ollama_url = os.getenv('OLLAMA_URL', 'http://localhost:11434')
         # Ollama models available locally (zero cost, no API key needed)
         self.routes = {
-                            'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'}},
-                            'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'}},
-                            'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'}},
+                            'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
+                            'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'hf', 'model': 'mistralai/Mistral-7B-Instruct-v0.3'}},
+                            'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
                             'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'hf', 'model': 'mistralai/Mistral-7B-Instruct-v0.3'}},
                             'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
                         }
