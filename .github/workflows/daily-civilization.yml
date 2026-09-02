@@ -21,23 +21,8 @@ jobs:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-cd /c/Users/SAURAV/saurav-empire
-# Write weekly-report.yml
-cat > .github/workflows/weekly-report.yml << 'EOF'
-name: Weekly Report
-on:
-  schedule:
-    - cron: '30 1 * * 0'  # Sunday 07:30 IST = 02:00 UTC
-  workflow_dispatch:
-jobs:
-  weekly_report:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -45,29 +30,112 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - name: Generate Weekly Report
+      - name: Market Scan
         env:
-          GROQ_API_KEY: *** secrets.GROQ_API_KEY }}
-          HF_TOKEN: *** secrets.HF_TOKEN }}
-        run: python agents/weekly_report.py
-      - name: Create GitHub Issue
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const date = new Date().toISOString().split('T')[0];
-            const md = fs.readFileSync(`reports/weekly/weekly-${date}.md`, 'utf8');
-            const { data } = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `📊 Weekly Report — ${date}`,
-              body: md,
-              labels: ['weekly', 'report']
-            });
-            console.log('Issue created:', data.html_url);
-      - name: Commit report JSON
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/market_scan.py
+      - name: Commit trends
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/weekly/
-          git diff --staged --quiet || git commit -m "📊 Weekly report: $(date -u +'%Y-%m-%d')" && git push
+          git add data/trends.json
+          git diff --staged --quiet || git commit -m "📈 Market scan: $(date -u +'%Y-%m-%d')" && git push
+  content_gen:
+    needs: market_scan
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'content_gen' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Content Generation
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/content_gen.py
+      - name: Commit content
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/
+          git diff --staged --quiet || git commit -m "🎬 Content gen: $(date -u +'%Y-%m-%d')" && git push
+  lead_enrich:
+    needs: content_gen
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'lead_enrich' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Lead Enrichment
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/lead_enrich.py
+      - name: Commit leads
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/leads.json
+          git diff --staged --quiet || git commit -m "👥 Lead enrich: $(date -u +'%Y-%m-%d')" && git push
+  finance_reconcile:
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'finance_reconcile' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Finance Reconcile
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/finance_reconcile.py
+      - name: Commit finance
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/daily-finance.json
+          git diff --staged --quiet || git commit -m "💰 Finance reconcile: $(date -u +'%Y-%m-%d')" && git push
+  experiment_review:
+    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'experiment_review' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Experiment Review
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/experiment_review.py
+      - name: Commit experiments
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/experiments.json
+          git diff --staged --quiet || git commit -m "🔬 Experiment review: $(date -u +'%Y-%m-%d')" && git push
