@@ -10,7 +10,7 @@ def load_yaml(path: str) -> Dict:
         return yaml.safe_load(f)
 def load_json(path: str) -> Any:
     full = ROOT / path
-    with open(full, 'r', encoding='utf-8') as f:
+    with open(full, 'r', encoding='utf-8-sig') as f:
         return json.load(f)
 def save_json(path: str, data: Any) -> None:
     full = ROOT / path

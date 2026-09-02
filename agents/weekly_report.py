@@ -56,7 +56,9 @@ def main():
     nl = chr(10)  # newline char - can't use backslash in f-string expression
     print(f'[{datetime.now(IST)}] Weekly Report generating...')
     report = generate_weekly_report()
-    save_json(f'reports/weekly/weekly-{today_str()}.json', report)
+    policy = load_policy()  # Load policy for markdown generation
+    date = today_str()
+    save_json(f'reports/weekly/weekly-{date}.json', report)
     md = f"""# 📊 Weekly Report — {report['week_ending']}
 ## 🏛️ Civilization Health: {report['civilization_health'].upper()}
 ## 📈 Key Metrics

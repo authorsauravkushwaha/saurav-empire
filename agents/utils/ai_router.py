@@ -10,17 +10,20 @@ try:
     from huggingface_hub import InferenceClient
 except ImportError:
     InferenceClient = None
+
 class AIRouter:
     def __init__(self):
         self.groq_key = os.getenv('GROQ_API_KEY')
         self.hf_token = os.getenv('HF_TOKEN')
         self.groq_client = Groq(api_key=self.groq_key) if self.groq_key and Groq else None
         self.hf_client = InferenceClient(token=self.hf_token) if self.hf_token and InferenceClient else None
+        self.ollama_url = os.getenv('OLLAMA_URL', 'http://localhost:11434')
+        # Ollama models available locally (zero cost, no API key needed)
         self.routes = {
-            'classify': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'},
-            'reason': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'},
-            'code': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'},
-            'vision': {'provider': 'hf', 'model': 'mistralai/Mistral-7B-Instruct-v0.3'},
+            'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
+            'reason': {'provider': 'ollama', 'model': 'qwen3.5:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'}},
+            'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'}},
+            'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'hf', 'model': 'mistralai/Mistral-7B-Instruct-v0.3'}},
             'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
         }
     def call(self, task_type: str, prompt: str, system: str = '', max_tokens: int = 2000, temperature: float = 0.3) -> str:
@@ -31,12 +34,21 @@ class AIRouter:
         if system:
             messages.append({'role': 'system', 'content': system})
         messages.append({'role': 'user', 'content': prompt})
+        # Try primary provider
+        result = self._call_provider(provider, model, messages, max_tokens, temperature)
+        if result.startswith('ERROR:') and 'fallback' in route:
+            # Try fallback
+            fb = route['fallback']
+            result = self._call_provider(fb['provider'], fb['model'], messages, max_tokens, temperature)
+        return result
+    def _call_provider(self, provider: str, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
         if provider == 'groq' and self.groq_client:
             return self._call_groq(model, messages, max_tokens, temperature)
         elif provider == 'hf' and self.hf_client:
             return self._call_hf(model, messages, max_tokens, temperature)
-        else:
+        elif provider == 'ollama':
             return self._call_ollama(model, messages, max_tokens, temperature)
+        return f'ERROR: Provider {provider} not available'
     def _call_groq(self, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
         resp = self.groq_client.chat.completions.create(
             model=model, messages=messages, max_tokens=max_tokens, temperature=temperature
@@ -50,24 +62,35 @@ class AIRouter:
         return resp
     def _call_ollama(self, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
         import requests
-        prompt = '\n'.join([f"{m['role']}: {m['content']}" for m in messages])
+        # Use /api/chat for proper chat format
         try:
-            resp = requests.post('http://localhost:11434/api/generate', json={
-                'model': model, 'prompt': prompt, 'stream': False,
+            resp = requests.post(f'{self.ollama_url}/api/chat', json={
+                'model': model,
+                'messages': messages,
+                'stream': False,
                 'options': {'num_predict': max_tokens, 'temperature': temperature}
             }, timeout=60)
-            return resp.json().get('response', 'ERROR: Ollama not running')
+            data = resp.json()
+            if 'message' in data:
+                return data['message'].get('content', 'ERROR: No content')
+            return data.get('response', 'ERROR: Unexpected response')
+        except requests.exceptions.ConnectionError:
+            return 'ERROR: Ollama not running (connection refused)'
         except Exception as e:
             return f'ERROR: {e}'
+
 _router = None
 def get_router() -> AIRouter:
     global _router
     if _router is None:
         _router = AIRouter()
     return _router
+
 def ai_classify(prompt: str) -> str:
     return get_router().call('classify', prompt, 'Classify the input. Return only the category.')
+
 def ai_reason(prompt: str, system: str = '') -> str:
     return get_router().call('reason', prompt, system or 'Think step by step. Be concise.')
+
 def ai_code(prompt: str) -> str:
     return get_router().call('code', prompt, 'Write clean, production-ready Python. No markdown.')
