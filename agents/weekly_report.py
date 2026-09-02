@@ -53,10 +53,11 @@ def generate_weekly_report() -> dict:
 def main():
     from datetime import datetime, timezone, timedelta
     IST = timezone(timedelta(hours=5, minutes=30))
+    nl = chr(10)  # newline char - can't use backslash in f-string expression
     print(f'[{datetime.now(IST)}] Weekly Report generating...')
     report = generate_weekly_report()
     save_json(f'reports/weekly/weekly-{today_str()}.json', report)
-    md = f'''# 📊 Weekly Report — {report['week_ending']}
+    md = f"""# 📊 Weekly Report — {report['week_ending']}
 ## 🏛️ Civilization Health: {report['civilization_health'].upper()}
 ## 📈 Key Metrics
 - **Revenue (MTD)**: ₹{report['metrics']['revenue_inr']:,.0f}
@@ -65,27 +66,27 @@ def main():
 - **Experiments Completed**: {report['metrics']['experiments_completed']}
 - **Active Experiments**: {report['metrics']['active_experiments']}
 ## 💡 Top Insights
-{chr(10).join(f'- {i}' for i in report['top_insights']) if report['top_insights'] else '- No insights yet'}
+{nl.join(f"- {i}" for i in report['top_insights']) if report['top_insights'] else '- No insights yet'}
 ## 📝 Content Performance (Last 7 Days)
-{chr(10).join(f'- {day}: {data[\"reels\"]} Reels' for day, data in report['content_performance'].items())}
+{nl.join(f"- {day}: {data['reels']} Reels" for day, data in report['content_performance'].items())}
 ## 🔍 Trending Keywords
 {', '.join(report['trending_keywords']) if report['trending_keywords'] else 'No trend data'}
 ## 💰 Finance by Platform
-{chr(10).join(f'- {plat}: ₹{amt:,.0f}' for plat, amt in report['finance_by_platform'].items())}
+{nl.join(f"- {plat}: ₹{amt:,.0f}" for plat, amt in report['finance_by_platform'].items())}
 ## 🏆 Top Products
-{chr(10).join(f'- {prod}: ₹{rev:,.0f}' for prod, rev in report['top_products'])}
+{nl.join(f"- {prod}: ₹{rev:,.0f}" for prod, rev in report['top_products'])}
 ## ✅ Policy Compliance
 - Ad Spend: ₹{report['policy_compliance']['ad_spend_inr']} (limit: ₹{policy['ad_spend']['daily_limit_inr']}/day)
 - Contracts Auto-approved: {report['policy_compliance']['contracts_approved']}
 ## 🎯 Next Week Focus
-{chr(10).join(f'- [ ] {item}' for item in report['next_week_focus'])}
+{nl.join(f"- [ ] {item}" for item in report['next_week_focus'])}
 ## 🚫 Blockers
-{chr(10).join(f'- {b}' for b in report['blockers']) if report['blockers'] else 'None'}
+{nl.join(f"- {b}" for b in report['blockers']) if report['blockers'] else 'None'}
 ## ⏳ Approvals Needed
-{chr(10).join(f'- {a}' for a in report['approvals_needed']) if report['approvals_needed'] else 'None'}
+{nl.join(f"- {a}" for a in report['approvals_needed']) if report['approvals_needed'] else 'None'}
 ---
 *Generated automatically by Saurav AI Empire · {date}*
-'''
+"""
     (Path(__file__).parent.parent.parent / 'reports/weekly' / f'weekly-{date}.md').write_text(md, encoding='utf-8')
     print(f'[{datetime.now(IST)}] Weekly Report complete → reports/weekly/weekly-{date}.json + .md')
 if __name__ == '__main__':

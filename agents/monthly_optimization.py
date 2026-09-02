@@ -44,6 +44,7 @@ Return JSON with:
 def main():
     from datetime import datetime, timezone, timedelta
     IST = timezone(timedelta(hours=5, minutes=30))
+    nl = chr(10)  # newline char - can't use backslash in f-string expression
     print(f'[{datetime.now(IST)}] Monthly Optimization starting...')
     optimization = generate_monthly_optimization()
     latest_finance = load_json('reports/daily-finance.json')
@@ -53,25 +54,25 @@ def main():
         'optimization': optimization
     }
     save_json(f'reports/monthly-optimization-{today_str()}.json', report)
-    md = f'''# 📈 Monthly Optimization — {report['month']}
+    md = f"""# 📈 Monthly Optimization — {report['month']}
 ## 💰 Revenue Context
 MTD Revenue: ₹{latest_finance.get('mtd_revenue_inr', 0):,.0f}
 ## 🎯 Price Tests
-{chr(10).join(f'- {p[\"asin\"]}: ₹{p[\"current_price\"]} → ₹{p[\"test_price\"]} ({p[\"rationale\"]})' for p in optimization.get('price_tests', [])) or 'None recommended'}
+{nl.join(f"- {p['asin']}: ₹{p['current_price']} → ₹{p['test_price']} ({p['rationale']})" for p in optimization.get('price_tests', [])) or 'None recommended'}
 ## 📚 KDP Select Decisions
-{chr(10).join(f'- {d[\"asin\"]}: {d[\"action\"]} ({d[\"rationale\"]})' for d in optimization.get('kdp_select_decisions', [])) or 'None'}
+{nl.join(f"- {d['asin']}: {d['action']} ({d['rationale']})" for d in optimization.get('kdp_select_decisions', [])) or 'None'}
 ## 🤝 Affiliate Recruitment
-{chr(10).join(f'- {a[\"target_profile\"]}: {a[\"outreach_angle\"]} ({a[\"commission_pct\"]}%)' for a in optimization.get('affiliate_recruitment', [])) or 'None'}
+{nl.join(f"- {a['target_profile']}: {a['outreach_angle']} ({a['commission_pct']}%)" for a in optimization.get('affiliate_recruitment', [])) or 'None'}
 ## ⚙️ Policy Changes (require your approval)
-{chr(10).join(f'- {c[\"parameter\"]}: {c[\"current\"]} → {c[\"proposed\"]} ({c[\"rationale\"]})' for c in optimization.get('policy_changes', [])) or 'None'}
+{nl.join(f"- {c['parameter']}: {c['current']} → {c['proposed']} ({c['rationale']})" for c in optimization.get('policy_changes', [])) or 'None'}
 ## ⬆️ Upgrade Actions
-{chr(10).join(f'- {u[\"trigger\"]}: {u[\"status\"]} → {u[\"action_needed\"]}' for u in optimization.get('upgrade_actions', [])) or 'None'}
+{nl.join(f"- {u['trigger']}: {u['status']} → {u['action_needed']}" for u in optimization.get('upgrade_actions', [])) or 'None'}
 ## 📝 Content Strategy Shifts
-{chr(10).join(f'- {s[\"from\"]} → {s[\"to\"]} ({s[\"rationale\"]})' for s in optimization.get('content_strategy_shifts', [])) or 'None'}
+{nl.join(f"- {s['from']} → {s['to']} ({s['rationale']})" for s in optimization.get('content_strategy_shifts', [])) or 'None'}
 ---
 **Reply "APPROVED" on any policy change to authorize.**
 *Generated automatically by Saurav AI Empire · {today_str()}*
-'''
+"""
     (Path(__file__).parent.parent.parent / 'reports' / f'monthly-optimization-{today_str()}.md').write_text(md, encoding='utf-8')
     print(f'[{datetime.now(IST)}] Monthly Optimization complete → reports/monthly-optimization-{today_str()}.json + .md')
 if __name__ == '__main__':

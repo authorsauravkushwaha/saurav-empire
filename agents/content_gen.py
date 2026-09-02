@@ -5,12 +5,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils.github_io import load_books, load_heroes, load_course, save_json, daily_path, today_str
 from utils.ai_router import ai_reason
 def generate_reel_hook(book: dict, trend_keywords: list) -> dict:
-    prompt = f'''
-Create a 15-30 second Instagram Reel hook for this book:
-Title: {book['title']}
-Category: {book['category']}
-Hook: {book['hook']}
-Price: ₹{book['price_inr']}
+    # Use book data from heroes + books merged, or fallback to books
+    title = book.get('title', 'Unknown')
+    category = book.get('category', 'General')
+    hook = book.get('hook', book.get('content_angles', [''])[0] if book.get('content_angles') else '')
+    price = book.get('price_inr', 199)
+    prompt = f'''Create a 15-30 second Instagram Reel hook for this book:
+Title: {title}
+Category: {book.get('category', 'General')}
+Hook: {hook}
+Price: ₹{price}
 Trending keywords: {', '.join(trend_keywords[:5])}
 Return JSON:
 - hook: opening 3 seconds (visual + audio)
@@ -27,11 +31,13 @@ Return JSON:
     except:
         return {'hook': 'ERROR', 'script': 'Parse failed', 'cta': '', 'hashtags': [], 'caption': ''}
 def generate_short_script(book: dict, trend_keywords: list) -> dict:
-    prompt = f'''
-Create a 60-second YouTube Short script for this book:
-Title: {book['title']}
-Category: {book['category']}
-Hook: {book['hook']}
+    title = book.get('title', 'Unknown')
+    category = book.get('category', 'General')
+    hook = book.get('hook', book.get('content_angles', [''])[0] if book.get('content_angles') else '')
+    prompt = f'''Create a 60-second YouTube Short script for this book:
+Title: {title}
+Category: {category}
+Hook: {hook}
 Trending: {', '.join(trend_keywords[:5])}
 Return JSON:
 - title: catchy Short title (<60 chars)
@@ -48,11 +54,13 @@ Return JSON:
     except:
         return {'title': 'ERROR', 'script': 'Parse failed', 'cta': '', 'hashtags': [], 'description': ''}
 def generate_tweet_thread(book: dict, trend_keywords: list) -> dict:
-    prompt = f'''
-Create a viral Twitter/X thread (8-12 tweets) for this book:
-Title: {book['title']}
-Category: {book['category']}
-Hook: {book['hook']}
+    title = book.get('title', 'Unknown')
+    category = book.get('category', 'General')
+    hook = book.get('hook', book.get('content_angles', [''])[0] if book.get('content_angles') else '')
+    prompt = f'''Create a viral Twitter/X thread (8-12 tweets) for this book:
+Title: {title}
+Category: {category}
+Hook: {hook}
 Trending: {', '.join(trend_keywords[:5])}
 Return JSON:
 - tweets: array of tweet texts (each <280 chars)
@@ -67,11 +75,13 @@ Return JSON:
     except:
         return {'tweets': ['ERROR'], 'final_cta': '', 'hashtags': []}
 def generate_blog_outline(book: dict, trend_keywords: list) -> dict:
-    prompt = f'''
-Create an SEO blog post outline targeting this book:
-Title: {book['title']}
-Category: {book['category']}
-Hook: {book['hook']}
+    title = book.get('title', 'Unknown')
+    category = book.get('category', 'General')
+    hook = book.get('hook', book.get('content_angles', [''])[0] if book.get('content_angles') else '')
+    prompt = f'''Create an SEO blog post outline targeting this book:
+Title: {title}
+Category: {category}
+Hook: {hook}
 Trending keywords: {', '.join(trend_keywords[:5])}
 Return JSON:
 - title: SEO-optimized title (<60 chars)
@@ -126,15 +136,24 @@ def main():
     except:
         trends = {}
     trend_keywords = trends.get('top_keywords', ['writing', 'money', 'mindset', 'productivity', 'books'])
+    
+    # Merge hero data with full book data from books.json
+    books_by_asin = {b['asin']: b for b in books}
+    enriched_heroes = []
+    for h in heroes:
+        book_data = books_by_asin.get(h['asin'], {})
+        enriched = {**h, 'category': book_data.get('category', 'General'), 'price_inr': book_data.get('price_inr', 199), 'hook': h.get('content_angles', [''])[0] if h.get('content_angles') else ''}
+        enriched_heroes.append(enriched)
+    
     day_num = int(today_str().split('-')[2])
-    selected_books = heroes[day_num % len(heroes):day_num % len(heroes) + 3]
+    selected_books = enriched_heroes[day_num % len(enriched_heroes):day_num % len(enriched_heroes) + 3]
     if len(selected_books) < 3:
-        selected_books = heroes[:3]
+        selected_books = enriched_heroes[:3]
     reels = [generate_reel_hook(b, trend_keywords) for b in selected_books[:3]]
     short = generate_short_script(selected_books[0], trend_keywords)
     thread = generate_tweet_thread(selected_books[1], trend_keywords)
     blog = generate_blog_outline(selected_books[2], trend_keywords)
-    email = generate_email_draft(heroes, trend_keywords)
+    email = generate_email_draft(enriched_heroes, trend_keywords)
     date_dir = Path(__file__).parent.parent.parent / 'content' / 'daily' / today_str()
     date_dir.mkdir(parents=True, exist_ok=True)
     save_json(f'content/daily/{today_str()}/reels.json', reels)

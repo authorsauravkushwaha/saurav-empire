@@ -18,8 +18,8 @@ class AIRouter:
         self.hf_client = InferenceClient(token=self.hf_token) if self.hf_token and InferenceClient else None
         self.routes = {
             'classify': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'},
-            'reason': {'provider': 'groq', 'model': 'llama-3.1-70b-versatile'},
-            'code': {'provider': 'groq', 'model': 'llama-3.1-70b-versatile'},
+            'reason': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'},
+            'code': {'provider': 'groq', 'model': 'llama-3.3-70b-versatile'},
             'vision': {'provider': 'hf', 'model': 'mistralai/Mistral-7B-Instruct-v0.3'},
             'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
         }
