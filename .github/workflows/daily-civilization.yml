@@ -17,10 +17,10 @@ on:
         type: choice
         options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review]
 jobs:
-  market_scan:
+  daily_civilization:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     permissions:
       contents: write
     steps:
@@ -30,112 +30,76 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
+      
       - name: Market Scan
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/market_scan.py
+      
       - name: Commit trends
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/trends.json
           git diff --staged --quiet || git commit -m "📈 Market scan: $(date -u +'%Y-%m-%d')" && git push
-  content_gen:
-    needs: market_scan
-    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'content_gen' || github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
+      
       - name: Content Generation
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'content_gen' || github.event_name == 'schedule'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/content_gen.py
+      
       - name: Commit content
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'content_gen' || github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add content/
           git diff --staged --quiet || git commit -m "🎬 Content gen: $(date -u +'%Y-%m-%d')" && git push
-  lead_enrich:
-    needs: content_gen
-    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'lead_enrich' || github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
+      
       - name: Lead Enrichment
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'lead_enrich' || github.event_name == 'schedule'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/lead_enrich.py
+      
       - name: Commit leads
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'lead_enrich' || github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/leads.json
           git diff --staged --quiet || git commit -m "👥 Lead enrich: $(date -u +'%Y-%m-%d')" && git push
-  finance_reconcile:
-    needs: lead_enrich
-    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'finance_reconcile' || github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
+      
       - name: Finance Reconcile
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'finance_reconcile' || github.event_name == 'schedule'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/finance_reconcile.py
+      
       - name: Commit finance
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'finance_reconcile' || github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/daily-finance.json
           git diff --staged --quiet || git commit -m "💰 Finance reconcile: $(date -u +'%Y-%m-%d')" && git push
-  experiment_review:
-    needs: finance_reconcile
-    if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'experiment_review' || github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
+      
       - name: Experiment Review
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'experiment_review' || github.event_name == 'schedule'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python agents/experiment_review.py
+      
       - name: Commit experiments
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'experiment_review' || github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
