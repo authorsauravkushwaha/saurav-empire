@@ -20,12 +20,12 @@ class AIRouter:
         self.ollama_url = os.getenv('OLLAMA_URL', 'http://localhost:11434')
         # Ollama models available locally (zero cost, no API key needed)
         self.routes = {
-            'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
-            'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
-            'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
-            'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
-            'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
-        }
+                    'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                    'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                    'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                    'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                    'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
+                }
     
     def call(self, task_type: str, prompt: str, system: str = '', max_tokens: int = 2000, temperature: float = 0.3) -> str:
         route = self.routes.get(task_type, self.routes['reason'])
