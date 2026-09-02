@@ -31,10 +31,10 @@
         "note": "Manual CSV import needed"
       }
     ],
-    "timestamp": "2026-09-03T01:11:42.865975+05:30"
+    "timestamp": "2026-09-03T01:15:34.131753+05:30"
   },
   "analysis": {
-    "error": "AI analysis failed: (MaxRetryError('HTTPSConnectionPool(host=\\'api-inference.huggingface.co\\', port=443): Max retries exceeded with url: /models/mistralai/Mistral-7B-Instruct-v0.3 (Caused by NameResolutionError(\"HTTPSConnection(host=\\'api-inference.huggingface.co\\', port=443): Failed to resolve \\'api-inference.huggingface.co\\' ([Errno -5] No address associated with hostname)\"))'), '(Request ID: 3b280d3b-c910-4ddd-b8a0-bd4ff656f331)')",
+    "error": "AI analysis failed: Error code: 404 - {'error': {'message': 'The model `llama-3.1-8b-instant` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}",
     "top_keywords": [],
     "content_gaps": []
   }
