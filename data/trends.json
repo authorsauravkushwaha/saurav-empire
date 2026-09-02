@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-03",
+  "raw_signals": {
+    "google_trends": [
+      {
+        "source": "google_trends",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "reddit_entrepreneur": [
+      {
+        "source": "reddit_entrepreneur",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "reddit_selfpublish": [
+      {
+        "source": "reddit_selfpublish",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "reddit_writing": [
+      {
+        "source": "reddit_writing",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "amazon_bestsellers": [
+      {
+        "source": "amazon_bestsellers",
+        "note": "Manual CSV import needed"
+      }
+    ],
+    "timestamp": "2026-09-03T00:45:14.775191+05:30"
+  },
+  "analysis": {
+    "error": "AI analysis failed: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}",
+    "top_keywords": [],
+    "content_gaps": []
+  }
+}
