@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-03",
+  "date": "2026-09-04",
   "raw_signals": {
     "google_trends": [
       {
@@ -31,11 +31,42 @@
         "note": "Manual CSV import needed"
       }
     ],
-    "timestamp": "2026-09-03T22:24:43.675759+05:30"
+    "timestamp": "2026-09-04T00:14:29.779220+05:30"
   },
   "analysis": {
-    "error": "AI analysis failed: Expecting value: line 1 column 1 (char 0)",
-    "top_keywords": [],
-    "content_gaps": []
+    "top_keywords": [
+      "self publishing",
+      "passive income",
+      "writing tips",
+      "book marketing",
+      "author branding",
+      "kindle publishing",
+      "side hustle",
+      "financial freedom",
+      "personal development",
+      "book launch"
+    ],
+    "content_gaps": [
+      "AI writing tools for authors",
+      "Book marketing on a budget",
+      "Building author email list",
+      "Amazon ads for beginners",
+      "Repurposing book content"
+    ],
+    "audience_questions": [
+      "How to publish on Kindle?",
+      "Book marketing strategies?",
+      "How much do authors earn?",
+      "Best self-publishing platforms?",
+      "How to get book reviews?"
+    ],
+    "recommended_angles": [
+      "30-day book writing system",
+      "50 books published case study",
+      "Zero budget book marketing",
+      "Author branding for introverts",
+      "Financial freedom through books"
+    ],
+    "urgency_score": 7
   }
 }
