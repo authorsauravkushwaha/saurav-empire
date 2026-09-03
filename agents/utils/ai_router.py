@@ -20,22 +20,22 @@ class AIRouter:
         self.ollama_url = os.getenv('OLLAMA_URL', 'http://localhost:11434')
         # Detect if running in GitHub Actions (no Ollama available)
         self.in_github_actions = os.getenv('GITHUB_ACTIONS') == 'true'
-        # Routes: use Groq on GitHub Actions, Ollama locally (zero cost)
+        # Routes: deterministic on GitHub Actions (zero cost, no deprecation issues), Ollama locally
         if self.in_github_actions:
             self.routes = {
-                'classify': {'provider': 'groq', 'model': 'gemma2-9b-it', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                'reason': {'provider': 'groq', 'model': 'gemma2-9b-it', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                'code': {'provider': 'groq', 'model': 'gemma2-9b-it', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                'vision': {'provider': 'groq', 'model': 'llama-3.2-90b-vision-preview', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'classify': {'provider': 'deterministic', 'model': ''},
+                'reason': {'provider': 'deterministic', 'model': ''},
+                'code': {'provider': 'deterministic', 'model': ''},
+                'vision': {'provider': 'deterministic', 'model': ''},
                 'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
             }
         else:
             # Local: Ollama primary (zero cost, no API limits)
             self.routes = {
-                'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
-                'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
-                'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
-                'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'groq', 'model': 'llama-3.2-90b-vision-preview'}},
+                'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'deterministic', 'model': ''}},
                 'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
             }
 
@@ -65,6 +65,8 @@ class AIRouter:
             return self._call_hf(model, messages, max_tokens, temperature)
         elif provider == 'ollama':
             return self._call_ollama(model, messages, max_tokens, temperature)
+        elif provider == 'deterministic':
+            return self._call_deterministic(messages, max_tokens)
         return f'ERROR: Provider {provider} not available'
 
     def _call_groq(self, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
