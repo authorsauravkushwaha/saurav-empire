@@ -1,0 +1,32 @@
+{
+  "week_ending": "2026-09-03",
+  "civilization_health": "operational",
+  "metrics": {
+    "revenue_inr": 0,
+    "leads_generated": 0,
+    "content_pieces": 0,
+    "experiments_completed": 0,
+    "active_experiments": 0
+  },
+  "top_insights": [],
+  "content_performance": {},
+  "trending_keywords": [],
+  "finance_by_platform": {},
+  "top_products": [],
+  "policy_compliance": {
+    "ad_spend_inr": 0,
+    "contracts_approved": 0,
+    "emails_sent": "N/A (manual)",
+    "dms_sent": "N/A (manual)",
+    "publishing_changes": "N/A (manual)"
+  },
+  "next_week_focus": [
+    "Batch record next week Reels/Shorts",
+    "Launch tripwire product (₹299)",
+    "Recruit 5 affiliates for course",
+    "Publish 1 SEO blog post",
+    "Review and approve winning experiments"
+  ],
+  "blockers": [],
+  "approvals_needed": []
+}
