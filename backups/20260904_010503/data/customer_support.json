@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-04",
+  "ticket_summary": {
+    "total": 0,
+    "new": 0,
+    "resolved": 0,
+    "urgent": 0,
+    "sla_breaches": 0
+  },
+  "analysis": {
+    "top_issues": [],
+    "sentiment": "neutral",
+    "urgent_count": 0,
+    "sla_breaches": 0
+  },
+  "auto_responses": [],
+  "knowledge_base_updates": [],
+  "proactive_content": [],
+  "faq_categories": {
+    "publishing": [
+      "How to publish on KDP?",
+      "Cover requirements?",
+      "ISBN needed?",
+      "Royalties explained?",
+      "KDP Select pros/cons?"
+    ],
+    "marketing": [
+      "Book launch strategy?",
+      "Amazon ads setup?",
+      "Email list building?",
+      "Social media for authors?",
+      "Review generation?"
+    ],
+    "course": [
+      "Course content?",
+      "Time commitment?",
+      "Refund policy?",
+      "Lifetime access?",
+      "Results guarantee?"
+    ],
+    "technical": [
+      "Login issues?",
+      "Payment failed?",
+      "Download problems?",
+      "Video playback?",
+      "Mobile access?"
+    ],
+    "general": [
+      "Who is Saurav?",
+      "Writer Nation mission?",
+      "Free resources?",
+      "Contact support?",
+      "Affiliate program?"
+    ]
+  }
+}

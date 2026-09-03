@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-03",
+  "raw_signals": {
+    "google_trends": [
+      {
+        "source": "google_trends",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "reddit_entrepreneur": [
+      {
+        "source": "reddit_entrepreneur",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "reddit_selfpublish": [
+      {
+        "source": "reddit_selfpublish",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "reddit_writing": [
+      {
+        "source": "reddit_writing",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "amazon_bestsellers": [
+      {
+        "source": "amazon_bestsellers",
+        "note": "Manual CSV import needed"
+      }
+    ],
+    "timestamp": "2026-09-03T22:24:43.675759+05:30"
+  },
+  "analysis": {
+    "error": "AI analysis failed: Expecting value: line 1 column 1 (char 0)",
+    "top_keywords": [],
+    "content_gaps": []
+  }
+}

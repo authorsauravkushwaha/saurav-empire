@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-04",
+  "metadata_updates": [],
+  "autonomous_changes": {
+    "price_changes": [],
+    "keyword_updates": [],
+    "category_tweaks": []
+  },
+  "approvals_needed": {
+    "cover_uploads": [],
+    "new_titles": [],
+    "kdp_select": [],
+    "price_changes_gt_15": [],
+    "rights_changes": []
+  },
+  "summary": {
+    "books_optimized": 0,
+    "price_tests": 0,
+    "keyword_updates": 0,
+    "category_tweaks": 0,
+    "approvals_required": 0
+  }
+}

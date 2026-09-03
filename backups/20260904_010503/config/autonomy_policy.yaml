@@ -1,0 +1,112 @@
+﻿# AUTONOMY POLICY v2.0 — ZERO EXPENDITURE
+# All thresholds enforceable via GitHub Actions (no paid infra)
+# Source of truth: this file in repo. Changes = git commit.
+version: "2.0"
+timezone: "Asia/Kolkata"  # IST UTC+5:30
+currency: "INR"
+# === HARD LIMITS (code-enforced) ===
+ad_spend:
+  daily_limit_inr: 0
+  monthly_limit_inr: 0
+  platforms_allowed: []
+  requires_approval: true  # always
+contracts:
+  auto_approve_limit_inr: 0  # ZERO — every contract needs your "APPROVED" reply
+  routine_categories: []  # none auto-approved at zero budget
+  excluded_categories:
+    - ip_licensing
+    - partnerships
+    - loans
+    - equity
+    - legal_settlements
+  approval_method: "github_issue_comment"  # you comment "APPROVED" on issue
+communications:
+  email:
+    daily_limit: 100  # Brevo free tier = 300/day, we use 100 safety margin
+    warm_leads_only: true
+    double_optin_required: true
+    unsubscribe_link_required: true
+    provider: "brevo_free"
+  dm:
+    daily_limit: 30  # Instagram/Twitter/LinkedIn combined
+    personalized_only: true
+    platforms:
+      - instagram
+      - twitter
+      - linkedin
+    human_in_loop: true  # every send requires your click
+publishing:
+  autonomous_actions:
+    - description_edit
+    - price_change  # max 15% per week per title
+    - keyword_update
+    - category_tweak
+  approval_required:
+    - cover_upload
+    - new_title_publish
+    - rights_territory_change
+    - kdp_select_enrollment
+    - price_change_pct_gt_15
+  max_price_change_pct_per_week: 15
+  platform: "kdp_manual"  # you execute via KDP dashboard; agents prepare changes
+orchestration:
+  provider: "github_actions_free"
+  monthly_minutes_limit: 2000
+  cron_schedule_ist:
+    market_scan: "0 6 * * *"      # 06:00 IST
+    content_gen: "0 7 * * *"      # 07:00 IST
+    lead_enrich: "0 8 * * *"      # 08:00 IST
+    finance_reconcile: "0 9 * * *" # 09:00 IST
+    experiment_review: "0 22 * * *" # 22:00 IST
+    weekly_report: "0 2 * * 0"    # Sunday 07:30 IST
+    monthly_optimization: "0 3 1 * *" # 1st of month 08:30 IST
+  state_sync: "git_push_on_change"  # repo = source of truth
+ai_inference:
+  primary_local: "ollama"  # your PC when online
+  cloud_free_tiers:
+    - name: "groq"
+      models: ["llama-3.1-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]
+      daily_limit_requests: 14400  # Groq free tier
+    - name: "huggingface"
+      models: ["mistralai/Mistral-7B-Instruct-v0.3", "meta-llama/Meta-Llama-3-8B-Instruct"]
+      daily_limit_requests: 1000  # HF Inference API free
+    - name: "together"
+      models: ["meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"]
+      daily_limit_requests: 100  # Together free tier
+  routing:
+    classification: "groq:llama-3.1-8b-instant"
+    reasoning: "groq:llama-3.1-70b-versatile"
+    coding: "groq:llama-3.1-70b-versatile"
+    vision: "hf:mistralai/Mistral-7B-Instruct-v0.3"
+    embedding: "hf:sentence-transformers/all-MiniLM-L6-v2"
+payments:
+  processors:
+    - name: "gumroad"
+      fee_pct: 10
+      fee_fixed_usd: 0.00
+      currencies: ["USD", "INR"]
+      webhook: true
+    - name: "stripe"
+      fee_pct: 2.9
+      fee_fixed_inr: 3
+      currencies: ["INR", "USD"]
+      webhook: true
+    - name: "razorpay"
+      fee_pct: 2
+      fee_fixed_inr: 0
+      gst_pct: 18
+      currencies: ["INR"]
+      webhook: true
+  auto_reconcile: true
+  webhook_endpoint: "github_actions"  # workflow_dispatch triggered by webhook
+upgrade_triggers:
+  vps_provision:
+    condition: "monthly_profit_inr > 30000 for 2 consecutive months"
+    action: "create_issue_with_vps_spec"
+  paid_email_upgrade:
+    condition: "list_size > 2000 and monthly_revenue_inr > 10000"
+    action: "create_issue_with_brevo_paid_plan"
+  ad_test_budget:
+    condition: "monthly_profit_inr > 50000 for 3 consecutive months"
+    action: "create_issue_with_ad_test_plan"
+    initial_daily_budget_inr: 500

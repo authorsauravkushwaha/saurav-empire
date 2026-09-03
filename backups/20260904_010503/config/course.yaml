@@ -1,0 +1,48 @@
+﻿course:
+  title: "Write & Publish in 30 Days"
+  tagline: "From blank page to published author — your complete roadmap"
+  price_inr: 2999
+  currency: "INR"
+  platform: "gumroad"
+  gumroad_product_id: ""
+  gumroad_product_url: ""
+  format:
+    - "video_modules"
+    - "pdf_workbooks"
+    - "notion_template"
+    - "discord_community"
+  modules:
+    - week: 1
+      title: "Foundation — Idea to Outline"
+      days: 7
+      deliverables: ["validated book idea", "detailed outline", "writing schedule"]
+    - week: 2
+      title: "Draft — Write Fast, Edit Later"
+      days: 7
+      deliverables: ["complete first draft (30k+ words)", "daily word count log"]
+    - week: 3
+      title: "Polish — Professional Editing"
+      days: 7
+      deliverables: ["edited manuscript", "cover brief", "back cover copy"]
+    - week: 4
+      title: "Publish — KDP + Wide Distribution"
+      days: 7
+      deliverables: ["live on Amazon", "ISBN assigned", "author page setup"]
+    - week: 5
+      title: "Launch — Marketing Your Book"
+      days: 2
+      deliverables: ["launch plan", "review team", "ads setup (optional)"]
+  bonuses:
+    - "30-day content calendar for author brand"
+    - "KDP keyword research template"
+    - "Email swipe files for launch sequence"
+    - "Discord: Writer Nation community access"
+  fulfillment:
+    gumroad_auto_deliver: true
+    notion_template_link: ""
+    discord_invite: ""
+  marketing:
+    lead_magnet: "Free Chapter: Millionaire Financial Literacy"
+    tripwire: "7-Day Book Outline Challenge (₹299)"
+    upsell: "Writer Nation Author Services (₹15k-25k)"
+    affiliate_commission_pct: 30

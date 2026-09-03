@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-04",
+  "contracts": [],
+  "flagged": [],
+  "summary": {
+    "total_pending": 0,
+    "auto_approved": 0,
+    "flagged_for_review": 0,
+    "by_risk_level": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    },
+    "total_value_inr": 0
+  }
+}

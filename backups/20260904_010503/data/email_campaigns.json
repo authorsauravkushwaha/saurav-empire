@@ -1,0 +1,105 @@
+{
+  "date": "2026-09-04",
+  "plan": {
+    "segments": {
+      "new_subscribers": 0,
+      "active_leads": 0,
+      "buyers": 0,
+      "inactive": 0
+    },
+    "daily_limit": 0,
+    "campaigns_ready": [],
+    "total_to_send": 0
+  },
+  "sequences": [
+    {
+      "day": 0,
+      "subject": "Welcome to Writer Nation 🎯",
+      "template": "welcome_day0",
+      "trigger": "signup",
+      "content_type": "welcome"
+    },
+    {
+      "day": 1,
+      "subject": "The 30-day book system (50 books prove it works)",
+      "template": "welcome_day1",
+      "content_type": "value"
+    },
+    {
+      "day": 3,
+      "subject": "Most writers fail at this one step",
+      "template": "welcome_day3",
+      "content_type": "education"
+    },
+    {
+      "day": 5,
+      "subject": "Free: My book outline template",
+      "template": "welcome_day5",
+      "content_type": "lead_magnet"
+    },
+    {
+      "day": 7,
+      "subject": "Ready to publish your first book?",
+      "template": "welcome_day7",
+      "content_type": "pitch"
+    },
+    {
+      "name": "course_funnel",
+      "trigger": "lead_magnet_download",
+      "emails": [
+        {
+          "day": 0,
+          "subject": "Your template is ready 📋",
+          "template": "funnel_day0"
+        },
+        {
+          "day": 2,
+          "subject": "From template to published book",
+          "template": "funnel_day2"
+        },
+        {
+          "day": 4,
+          "subject": "The pricing mistake that costs authors ₹50k+",
+          "template": "funnel_day4"
+        },
+        {
+          "day": 7,
+          "subject": "Special offer: Write & Publish in 30 Days",
+          "template": "funnel_day7_pitch"
+        }
+      ]
+    },
+    {
+      "name": "buyer_sequence",
+      "trigger": "purchase",
+      "emails": [
+        {
+          "day": 0,
+          "subject": "Welcome to the course! 🎓",
+          "template": "buyer_day0"
+        },
+        {
+          "day": 3,
+          "subject": "Your Day 1-7 action plan",
+          "template": "buyer_day3"
+        },
+        {
+          "day": 14,
+          "subject": "Halfway there - progress check",
+          "template": "buyer_day14"
+        },
+        {
+          "day": 30,
+          "subject": "You published! What's next?",
+          "template": "buyer_day30"
+        }
+      ]
+    }
+  ],
+  "compliance": {
+    "daily_limit": 100,
+    "brevo_limit": 300,
+    "double_optin": true,
+    "unsubscribe_required": true
+  }
+}

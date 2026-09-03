@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-09-04T01:05:03.350853+05:30",
+  "backup_path": "C:\\Users\\SAURAV\\saurav-empire\\backups\\20260904_010503",
+  "backed_up": [
+    "config/",
+    "data/",
+    "reports/",
+    "content/daily/",
+    "agents/",
+    "config/books.json",
+    "config/heroes.json",
+    "config/course.yaml",
+    "config/autonomy_policy.yaml",
+    "requirements.txt",
+    ".github/workflows/daily-civilization.yml",
+    ".github/workflows/weekly-report.yml",
+    ".github/workflows/monthly-optimization.yml"
+  ],
+  "failed": [],
+  "total_items": 13
+}
