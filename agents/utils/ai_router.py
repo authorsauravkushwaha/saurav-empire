@@ -23,22 +23,22 @@ class AIRouter:
         # Routes: use Groq on GitHub Actions, Ollama locally (zero cost)
         if self.in_github_actions:
             self.routes = {
-                'classify': {'provider': 'groq', 'model': 'llama-3.1-8b-instant', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                'reason': {'provider': 'groq', 'model': 'llama-3.1-8b-instant', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                'code': {'provider': 'groq', 'model': 'llama-3.1-8b-instant', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'classify': {'provider': 'groq', 'model': 'gemma2-9b-it', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'reason': {'provider': 'groq', 'model': 'gemma2-9b-it', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'code': {'provider': 'groq', 'model': 'gemma2-9b-it', 'fallback': {'provider': 'deterministic', 'model': ''}},
                 'vision': {'provider': 'groq', 'model': 'llama-3.2-90b-vision-preview', 'fallback': {'provider': 'deterministic', 'model': ''}},
                 'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
             }
         else:
             # Local: Ollama primary (zero cost, no API limits)
             self.routes = {
-                'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
-                'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
-                'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
+                'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
+                'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
+                'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'gemma2-9b-it'}},
                 'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'groq', 'model': 'llama-3.2-90b-vision-preview'}},
                 'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
             }
-    
+
     def call(self, task_type: str, prompt: str, system: str = '', max_tokens: int = 2000, temperature: float = 0.3) -> str:
         route = self.routes.get(task_type, self.routes['reason'])
         provider = route['provider']
@@ -57,7 +57,7 @@ class AIRouter:
             # Final fallback - deterministic
             result = self._call_deterministic(messages, max_tokens)
         return result
-    
+
     def _call_provider(self, provider: str, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
         if provider == 'groq' and self.groq_client:
             return self._call_groq(model, messages, max_tokens, temperature)
@@ -66,20 +66,20 @@ class AIRouter:
         elif provider == 'ollama':
             return self._call_ollama(model, messages, max_tokens, temperature)
         return f'ERROR: Provider {provider} not available'
-    
+
     def _call_groq(self, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
         resp = self.groq_client.chat.completions.create(
             model=model, messages=messages, max_tokens=max_tokens, temperature=temperature
         )
         return resp.choices[0].message.content
-    
+
     def _call_hf(self, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
         prompt = '\n'.join([f"{m['role']}: {m['content']}" for m in messages])
         resp = self.hf_client.text_generation(
             prompt, model=model, max_new_tokens=max_tokens, temperature=temperature
         )
         return resp
-    
+
     def _call_ollama(self, model: str, messages: List[Dict], max_tokens: int, temperature: float) -> str:
         import requests
         # Use /api/chat for proper chat format
@@ -98,12 +98,12 @@ class AIRouter:
             return 'ERROR: Ollama not running (connection refused)'
         except Exception as e:
             return f'ERROR: {e}'
-    
+
     def _call_deterministic(self, messages: List[Dict], max_tokens: int) -> str:
         """Zero-cost deterministic fallback - no API calls needed"""
         prompt = ' '.join([m.get('content', '') for m in messages if m.get('role') == 'user'])
         prompt_lower = prompt.lower()
-        
+
         # Classification tasks
         if any(kw in prompt_lower for kw in ['classify', 'categor', 'genre', 'topic']):
             if any(kw in prompt_lower for kw in ['finance', 'money', 'invest', 'stock', 'wealth']):
@@ -127,17 +127,17 @@ class AIRouter:
             elif any(kw in prompt_lower for kw in ['society', 'social', 'culture', 'history']):
                 return 'SOCIETY'
             return 'GENERAL'
-        
+
         # Content generation tasks - return structured JSON
         if any(kw in prompt_lower for kw in ['reel', 'hook', 'viral', 'script']):
             return '{"hook": "Stop writing books nobody reads. Here is the 30-day system that got me 50+ published.", "cta": "Link in bio for free course preview", "hashtags": ["#writerlife", "#selfpublishing", "#authorlife", "#bookmarketing"]}'
         if any(kw in prompt_lower for kw in ['tweet', 'thread', 'twitter']):
-            return '{"thread": ["1/ Most authors fail because they write what THEY want, not what READERS want.", "2/ The fix: Research trending topics in your genre FIRST. Then write to that demand.", "3/ My 50-book catalog proves this works. Every book started with market research.", "4/ Want the system? My \"Write & Publish in 30 Days\" course shows every step.", "5/ Free preview in bio. Stop guessing. Start publishing."]}'
+            return '{"thread": ["1/ Most authors fail because they write what THEY want, not what READERS want.", "2/ The fix: Research trending topics in your genre FIRST. Then write to that demand.", "3/ My 50-book catalog proves this works. Every book started with market research.", "4/ Want the system? My \\"Write & Publish in 30 Days\\" course shows every step.", "5/ Free preview in bio. Stop guessing. Start publishing."]}'
         if any(kw in prompt_lower for kw in ['blog', 'article', 'outline']):
             return '{"title": "How to Write & Publish a Book in 30 Days: The Complete System", "outline": ["Introduction: Why 99% of manuscripts never publish", "Phase 1: Market Research (Days 1-7)", "Phase 2: Outline & Structure (Days 8-14)", "Phase 3: Fast Drafting (Days 15-21)", "Phase 4: Edit & Polish (Days 22-26)", "Phase 5: Publish & Launch (Days 27-30)", "Conclusion: Your author business starts now"]}'
         if any(kw in prompt_lower for kw in ['email', 'newsletter', 'subscriber']):
-            return '{"subject": "The 30-day book system (50 books prove it works)", "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \"Write & Publish in 30 Days\" gives you the exact framework. Free lesson: [link]. - Saurav"}'
-        
+            return '{"subject": "The 30-day book system (50 books prove it works)", "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \\"Write & Publish in 30 Days\\" gives you the exact framework. Free lesson: [link]. - Saurav"}'
+
         # Default reasoning fallback
         return 'ANALYSIS: Based on current market data and catalog performance, the optimal strategy is to double down on high-performing categories (Finance, Psychology, Personal Development) while using all 50 books as marketing leads. Recommended actions: 1) Prioritize hero books in trending categories, 2) Increase content velocity for Reels/Shorts, 3) Optimize pricing within 15% bands, 4) Launch email sequence for course funnel.'
 
