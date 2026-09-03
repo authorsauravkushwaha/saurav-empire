@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-04",
+  "total_violations": 0,
+  "violations": {
+    "ad_spend_violations": [],
+    "contract_violations": [],
+    "communication_violations": [],
+    "publishing_violations": [],
+    "financial_anomalies": []
+  },
+  "ai_analysis": {
+    "subject": "The 30-day book system (50 books prove it works)",
+    "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \"Write & Publish in 30 Days\" gives you the exact framework. Free lesson: [link]. - Saurav"
+  },
+  "policy_version": "2.0"
+}
