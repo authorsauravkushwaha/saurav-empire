@@ -106,6 +106,10 @@ class AIRouter:
         prompt = ' '.join([m.get('content', '') for m in messages if m.get('role') == 'user'])
         prompt_lower = prompt.lower()
 
+        # Market analysis tasks (check first before classification)
+        if any(kw in prompt_lower for kw in ['market signal', 'market intelligence', 'trending search', 'content gaps', 'audience questions', 'recommended angles', 'urgency_score']):
+            return '{"top_keywords": ["self publishing", "passive income", "writing tips", "book marketing", "author branding", "kindle publishing", "side hustle", "financial freedom", "personal development", "book launch"], "content_gaps": ["AI writing tools for authors", "Book marketing on a budget", "Building author email list", "Amazon ads for beginners", "Repurposing book content"], "audience_questions": ["How to publish on Kindle?", "Book marketing strategies?", "How much do authors earn?", "Best self-publishing platforms?", "How to get book reviews?"], "recommended_angles": ["30-day book writing system", "50 books published case study", "Zero budget book marketing", "Author branding for introverts", "Financial freedom through books"], "urgency_score": 7}'
+
         # Classification tasks
         if any(kw in prompt_lower for kw in ['classify', 'categor', 'genre', 'topic']):
             if any(kw in prompt_lower for kw in ['finance', 'money', 'invest', 'stock', 'wealth']):

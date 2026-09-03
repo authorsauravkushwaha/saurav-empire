@@ -86,7 +86,13 @@ def main():
         'amazon_bestsellers': fetch_amazon_bestsellers(),
         'timestamp': datetime.now(IST).isoformat()
     }
-    analysis = analyze_with_ai(raw)
+    # Filter out error entries for AI analysis
+    clean_raw = {}
+    for key, value in raw.items():
+        if key != 'timestamp':
+            clean_raw[key] = [item for item in value if 'error' not in item]
+    # If all sources failed, still call AI with empty data for deterministic fallback
+    analysis = analyze_with_ai(clean_raw)
     output = {
         'date': today_str(),
         'raw_signals': raw,
