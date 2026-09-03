@@ -1,0 +1,17 @@
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.DS_Store
+.env
+.venv
+venv/
+*.log
+*.pot
+*.pyc
+__pycache__/
+.coverage
+*.cover
+*.py,cover
+.cache
+pytest_cache/
