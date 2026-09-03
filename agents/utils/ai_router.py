@@ -18,14 +18,26 @@ class AIRouter:
         self.groq_client = Groq(api_key=self.groq_key) if self.groq_key and Groq else None
         self.hf_client = InferenceClient(token=self.hf_token) if self.hf_token and InferenceClient else None
         self.ollama_url = os.getenv('OLLAMA_URL', 'http://localhost:11434')
-        # Ollama models available locally (zero cost, no API key needed)
-        self.routes = {
-                    'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                    'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                    'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                    'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'deterministic', 'model': ''}},
-                    'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
-                }
+        # Detect if running in GitHub Actions (no Ollama available)
+        self.in_github_actions = os.getenv('GITHUB_ACTIONS') == 'true'
+        # Routes: use Groq on GitHub Actions, Ollama locally (zero cost)
+        if self.in_github_actions:
+            self.routes = {
+                'classify': {'provider': 'groq', 'model': 'llama-3.1-8b-instant', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'reason': {'provider': 'groq', 'model': 'llama-3.1-8b-instant', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'code': {'provider': 'groq', 'model': 'llama-3.1-8b-instant', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'vision': {'provider': 'groq', 'model': 'llama-3.2-90b-vision-preview', 'fallback': {'provider': 'deterministic', 'model': ''}},
+                'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
+            }
+        else:
+            # Local: Ollama primary (zero cost, no API limits)
+            self.routes = {
+                'classify': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
+                'reason': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
+                'code': {'provider': 'ollama', 'model': 'qwen3:4b', 'fallback': {'provider': 'groq', 'model': 'llama-3.1-8b-instant'}},
+                'vision': {'provider': 'ollama', 'model': 'qwen3-vl:4b-instruct-q4_K_M', 'fallback': {'provider': 'groq', 'model': 'llama-3.2-90b-vision-preview'}},
+                'embedding': {'provider': 'hf', 'model': 'sentence-transformers/all-MiniLM-L6-v2'},
+            }
     
     def call(self, task_type: str, prompt: str, system: str = '', max_tokens: int = 2000, temperature: float = 0.3) -> str:
         route = self.routes.get(task_type, self.routes['reason'])
