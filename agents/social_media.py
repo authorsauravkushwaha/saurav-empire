@@ -62,10 +62,16 @@ def prepare_dm_outreach(leads: dict) -> list:
     return dms
 
 def schedule_content_from_gen(content_gen: dict) -> dict:
-    # Extract content from content_gen output
-    reels = content_gen.get('reels', [])
-    tweets = content_gen.get('tweets', [])
-    blogs = content_gen.get('blogs', [])
+    # Extract content from content_gen output - handle both dict and list
+    if isinstance(content_gen, list):
+        # If it's a list (from content/daily/date/reels.json), use directly
+        reels = content_gen
+        tweets = []
+        blogs = []
+    else:
+        reels = content_gen.get('reels', [])
+        tweets = content_gen.get('tweets', [])
+        blogs = content_gen.get('blogs', [])
     
     schedule = {'instagram': [], 'twitter': [], 'linkedin': []}
     
