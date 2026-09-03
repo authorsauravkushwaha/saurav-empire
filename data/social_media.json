@@ -2,7 +2,47 @@
   "date": "2026-09-04",
   "dm_outreach": [],
   "content_schedule": {
-    "instagram": [],
+    "instagram": [
+      {
+        "type": "reel",
+        "content": {
+          "hook": "ERROR",
+          "script": "Parse failed",
+          "cta": "",
+          "hashtags": [],
+          "caption": ""
+        },
+        "day_offset": 0,
+        "time_ist": "18:00",
+        "status": "ready"
+      },
+      {
+        "type": "reel",
+        "content": {
+          "hook": "ERROR",
+          "script": "Parse failed",
+          "cta": "",
+          "hashtags": [],
+          "caption": ""
+        },
+        "day_offset": 1,
+        "time_ist": "18:00",
+        "status": "ready"
+      },
+      {
+        "type": "reel",
+        "content": {
+          "hook": "ERROR",
+          "script": "Parse failed",
+          "cta": "",
+          "hashtags": [],
+          "caption": ""
+        },
+        "day_offset": 2,
+        "time_ist": "18:00",
+        "status": "ready"
+      }
+    ],
     "twitter": [],
     "linkedin": []
   },
@@ -50,7 +90,7 @@
   },
   "summary": {
     "dms_pending": 0,
-    "posts_scheduled": 0,
+    "posts_scheduled": 3,
     "fresh_content_generated": 3
   }
 }
