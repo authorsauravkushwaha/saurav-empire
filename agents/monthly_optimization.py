@@ -45,8 +45,8 @@ def main():
     import os
     IST = timezone(timedelta(hours=5, minutes=30))
     nl = chr(10)
-    # Use UTC date from environment (set by workflow) to match GitHub Actions
-    date = os.getenv('REPORT_DATE', today_str()).split('T')[0]
+    # Use UTC date to match GitHub Actions
+    date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     print(f'[{datetime.now(IST)}] Monthly Optimization starting for {date}...')
     optimization = generate_monthly_optimization()
     latest_finance = load_json('reports/daily-finance.json')

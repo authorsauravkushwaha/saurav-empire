@@ -55,8 +55,8 @@ def main():
     import os
     IST = timezone(timedelta(hours=5, minutes=30))
     nl = chr(10)
-    # Use UTC date from environment (set by workflow) to match GitHub Actions
-    date = os.getenv('REPORT_DATE', today_str()).split('T')[0]
+    # Use UTC date to match GitHub Actions
+    date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     print(f'[{datetime.now(IST)}] Weekly Report generating for {date}...')
     report = generate_weekly_report()
     # Override week_ending with the workflow date
