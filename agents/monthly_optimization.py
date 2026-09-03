@@ -42,17 +42,20 @@ def generate_monthly_optimization() -> dict:
         return {'price_tests': [], 'kdp_select_decisions': [], 'affiliate_recruitment': [], 'policy_changes': [], 'upgrade_actions': [], 'content_strategy_shifts': []}
 def main():
     from datetime import datetime, timezone, timedelta
+    import os
     IST = timezone(timedelta(hours=5, minutes=30))
-    nl = chr(10)  # newline char - can't use backslash in f-string expression
-    print(f'[{datetime.now(IST)}] Monthly Optimization starting...')
+    nl = chr(10)
+    # Use UTC date from environment (set by workflow) to match GitHub Actions
+    date = os.getenv('REPORT_DATE', today_str()).split('T')[0]
+    print(f'[{datetime.now(IST)}] Monthly Optimization starting for {date}...')
     optimization = generate_monthly_optimization()
     latest_finance = load_json('reports/daily-finance.json')
     report = {
-        'month': today_str()[:7],
-        'generated': today_str(),
+        'month': date[:7],
+        'generated': date,
         'optimization': optimization
     }
-    save_json(f'reports/monthly-optimization-{today_str()}.json', report)
+    save_json(f'reports/monthly-optimization-{date}.json', report)
     md = f"""# 📈 Monthly Optimization — {report['month']}
 ## 💰 Revenue Context
 MTD Revenue: ₹{latest_finance.get('mtd_revenue_inr', 0):,.0f}
@@ -70,9 +73,9 @@ MTD Revenue: ₹{latest_finance.get('mtd_revenue_inr', 0):,.0f}
 {nl.join(f"- {s['from']} → {s['to']} ({s['rationale']})" for s in optimization.get('content_strategy_shifts', [])) or 'None'}
 ---
 **Reply "APPROVED" on any policy change to authorize.**
-*Generated automatically by Saurav AI Empire · {today_str()}*
+*Generated automatically by Saurav AI Empire · {date}*
 """
-    (Path(__file__).parent.parent / 'reports' / f'monthly-optimization-{today_str()}.md').write_text(md, encoding='utf-8')
-    print(f'[{datetime.now(IST)}] Monthly Optimization complete → reports/monthly-optimization-{today_str()}.json + .md')
+    (Path(__file__).parent.parent / 'reports' / f'monthly-optimization-{date}.md').write_text(md, encoding='utf-8')
+    print(f'[{datetime.now(IST)}] Monthly Optimization complete → reports/monthly-optimization-{date}.json + .md')
 if __name__ == '__main__':
     main()

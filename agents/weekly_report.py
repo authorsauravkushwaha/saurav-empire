@@ -52,12 +52,16 @@ def generate_weekly_report() -> dict:
     return report
 def main():
     from datetime import datetime, timezone, timedelta
+    import os
     IST = timezone(timedelta(hours=5, minutes=30))
-    nl = chr(10)  # newline char - can't use backslash in f-string expression
-    print(f'[{datetime.now(IST)}] Weekly Report generating...')
+    nl = chr(10)
+    # Use UTC date from environment (set by workflow) to match GitHub Actions
+    date = os.getenv('REPORT_DATE', today_str()).split('T')[0]
+    print(f'[{datetime.now(IST)}] Weekly Report generating for {date}...')
     report = generate_weekly_report()
-    policy = load_policy()  # Load policy for markdown generation
-    date = today_str()
+    # Override week_ending with the workflow date
+    report['week_ending'] = date
+    policy = load_policy()
     save_json(f'reports/weekly/weekly-{date}.json', report)
     md = f"""# 📊 Weekly Report — {report['week_ending']}
 ## 🏛️ Civilization Health: {report['civilization_health'].upper()}
