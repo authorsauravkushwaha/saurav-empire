@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-04",
+  "dm_outreach": [],
+  "content_schedule": {
+    "instagram": [],
+    "twitter": [],
+    "linkedin": []
+  },
+  "fresh_content": {
+    "instagram": {
+      "hook": "Stop writing books nobody reads. Here is the 30-day system that got me 50+ published.",
+      "cta": "Link in bio for free course preview",
+      "hashtags": [
+        "#writerlife",
+        "#selfpublishing",
+        "#authorlife",
+        "#bookmarketing"
+      ]
+    },
+    "twitter": {
+      "hook": "Stop writing books nobody reads. Here is the 30-day system that got me 50+ published.",
+      "cta": "Link in bio for free course preview",
+      "hashtags": [
+        "#writerlife",
+        "#selfpublishing",
+        "#authorlife",
+        "#bookmarketing"
+      ]
+    },
+    "linkedin": {
+      "hook": "Stop writing books nobody reads. Here is the 30-day system that got me 50+ published.",
+      "cta": "Link in bio for free course preview",
+      "hashtags": [
+        "#writerlife",
+        "#selfpublishing",
+        "#authorlife",
+        "#bookmarketing"
+      ]
+    }
+  },
+  "compliance": {
+    "daily_dm_limit": 30,
+    "platforms": [
+      "instagram",
+      "twitter",
+      "linkedin"
+    ],
+    "human_in_loop": true,
+    "personalized_only": true
+  },
+  "summary": {
+    "dms_pending": 0,
+    "posts_scheduled": 0,
+    "fresh_content_generated": 3
+  }
+}

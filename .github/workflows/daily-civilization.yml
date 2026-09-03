@@ -15,7 +15,7 @@ on:
         required: false
         default: 'all'
         type: choice
-        options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review]
+        options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review, risk_compliance, publishing_ops, email_marketing, social_media, affiliate_management, customer_support, analytics_dashboard, contract_review, backup_recovery]
 jobs:
   daily_civilization:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
@@ -105,3 +105,138 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/experiments.json
           git diff --staged --quiet || git commit -m "🔬 Experiment review: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Risk & Compliance
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'risk_compliance' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/risk_compliance.py
+      
+      - name: Commit risk compliance
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'risk_compliance' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/risk-compliance.json
+          git diff --staged --quiet || git commit -m "🛡️ Risk compliance: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Publishing Ops
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'publishing_ops' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/publishing_ops.py
+      
+      - name: Commit publishing changes
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'publishing_ops' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/publishing_changes.json
+          git diff --staged --quiet || git commit -m "📚 Publishing ops: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Email Marketing
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'email_marketing' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/email_marketing.py
+      
+      - name: Commit email campaigns
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'email_marketing' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/email_campaigns.json
+          git diff --staged --quiet || git commit -m "📧 Email marketing: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Social Media
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'social_media' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/social_media.py
+      
+      - name: Commit social media
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'social_media' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/social_media.json
+          git diff --staged --quiet || git commit -m "📱 Social media: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Affiliate Management
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'affiliate_management' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/affiliate_management.py
+      
+      - name: Commit affiliate management
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'affiliate_management' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/affiliate_management.json
+          git diff --staged --quiet || git commit -m "🤝 Affiliate mgmt: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Customer Support
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'customer_support' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/customer_support.py
+      
+      - name: Commit customer support
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'customer_support' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/customer_support.json
+          git diff --staged --quiet || git commit -m "🎧 Customer support: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Analytics Dashboard
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'analytics_dashboard' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/analytics_dashboard.py
+      
+      - name: Commit analytics
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'analytics_dashboard' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/analytics.json reports/kpi_history.json
+          git diff --staged --quiet || git commit -m "📊 Analytics dashboard: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Contract Review
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'contract_review' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/contract_review.py
+      
+      - name: Commit contract review
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'contract_review' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/contract_review.json
+          git diff --staged --quiet || git commit -m "📋 Contract review: $(date -u +'%Y-%m-%d')" && git push
+
+      - name: Backup & Recovery
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'backup_recovery' || github.event_name == 'schedule'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python agents/backup_recovery.py
+      
+      - name: Commit backup status
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'backup_recovery' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/backup_status.json
+          git diff --staged --quiet || git commit -m "💾 Backup recovery: $(date -u +'%Y-%m-%d')" && git push

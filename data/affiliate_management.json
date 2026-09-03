@@ -1,0 +1,75 @@
+{
+  "date": "2026-09-04",
+  "payouts_pending": [],
+  "total_payout_inr": 0,
+  "affiliate_count": 2,
+  "active_affiliates": 0,
+  "performance_tiers": {
+    "affiliates": {
+      "tier": "bronze",
+      "sales": 0,
+      "revenue": 0,
+      "conversion_rate": 0,
+      "last_active": "never"
+    },
+    "settings": {
+      "tier": "bronze",
+      "sales": 0,
+      "revenue": 0,
+      "conversion_rate": 0,
+      "last_active": "never"
+    }
+  },
+  "recruitment_queue": [
+    {
+      "profile": "writing_coaches",
+      "outreach": {
+        "subject": "The 30-day book system (50 books prove it works)",
+        "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \"Write & Publish in 30 Days\" gives you the exact framework. Free lesson: [link]. - Saurav"
+      },
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "profile": "author_influencers",
+      "outreach": {
+        "subject": "The 30-day book system (50 books prove it works)",
+        "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \"Write & Publish in 30 Days\" gives you the exact framework. Free lesson: [link]. - Saurav"
+      },
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "profile": "writing_communities",
+      "outreach": {
+        "subject": "The 30-day book system (50 books prove it works)",
+        "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \"Write & Publish in 30 Days\" gives you the exact framework. Free lesson: [link]. - Saurav"
+      },
+      "priority": "medium",
+      "status": "pending"
+    },
+    {
+      "profile": "productivity_creators",
+      "outreach": {
+        "subject": "The 30-day book system (50 books prove it works)",
+        "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \"Write & Publish in 30 Days\" gives you the exact framework. Free lesson: [link]. - Saurav"
+      },
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "profile": "book_reviewers",
+      "outreach": {
+        "subject": "The 30-day book system (50 books prove it works)",
+        "body": "Most writers spend years on one book. I published 50 in the same time. The difference? A repeatable system. My new course \"Write & Publish in 30 Days\" gives you the exact framework. Free lesson: [link]. - Saurav"
+      },
+      "priority": "medium",
+      "status": "pending"
+    }
+  ],
+  "commission_structure": {
+    "default_pct": 30,
+    "course_price_inr": 2999,
+    "per_sale_earning": 900
+  }
+}
