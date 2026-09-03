@@ -4,7 +4,7 @@
   "metrics": {
     "revenue_inr": 0,
     "leads_generated": 0,
-    "content_pieces": 3,
+    "content_pieces": 6,
     "experiments_completed": 0,
     "active_experiments": 0
   },
@@ -12,9 +12,23 @@
   "content_performance": {
     "2026-09-03": {
       "reels": 3
+    },
+    "2026-09-04": {
+      "reels": 3
     }
   },
-  "trending_keywords": [],
+  "trending_keywords": [
+    "self publishing",
+    "passive income",
+    "writing tips",
+    "book marketing",
+    "author branding",
+    "kindle publishing",
+    "side hustle",
+    "financial freedom",
+    "personal development",
+    "book launch"
+  ],
   "finance_by_platform": {},
   "top_products": [],
   "policy_compliance": {
