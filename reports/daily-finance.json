@@ -1,8 +1,10 @@
 {
   "date": "2026-09-03",
+  "total_sales_count": 0,
+  "total_revenue_inr": 0,
   "mtd_revenue_inr": 0,
   "by_platform": {},
+  "by_product": {},
   "top_products": [],
-  "expenses": {},
-  "notes": "No data yet"
+  "raw_sales": []
 }
