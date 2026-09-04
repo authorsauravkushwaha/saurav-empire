@@ -270,9 +270,10 @@ jobs:
           git add content/ data/
           git diff --staged --quiet || git commit -m "🎨 Visual/Calendar/Post/Email/IG agents: $(date -u +'%Y-%m-%d')" && git push
       
-      # Upload branded images to GitHub for public URLs
+      # Upload branded images to GitHub for public URLs (continue on error)
       - name: Upload branded images
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'image_uploader' || github.event_name == 'schedule'
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python agents/image_uploader.py --dir content/daily/${{ github.run_started_at || github.event.schedule }} --method github --output image_urls.json
@@ -280,6 +281,7 @@ jobs:
       # Post to Instagram (if configured)
       - name: Post to Instagram
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'instagram_poster' || github.event_name == 'schedule'
+        continue-on-error: true
         env:
           IG_APP_ID: ${{ secrets.IG_APP_ID }}
           IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
