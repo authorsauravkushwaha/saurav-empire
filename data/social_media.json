@@ -1,8 +1,81 @@
 {
-  "date": "2026-09-04",
+  "date": "2026-09-05",
   "dm_outreach": [],
   "content_schedule": {
-    "instagram": [],
+    "instagram": [
+      {
+        "type": "reel",
+        "content": {
+          "hook": "Stop writing books nobody reads. Here's the 30-day system that got me 50+ published.",
+          "script": "0-3s: Hook - Stop writing books nobody reads. Here's the 30-day system that got me 50+ published.\n3-10s: Show the 5-phase system on screen\n10-20s: Walk through each phase with visuals\n20-25s: Show your 50-book shelf\n25-30s: CTA",
+          "cta": "🎓 Free lesson: 'Write & Publish in 30 Days' → Link in bio",
+          "hashtags": [
+            "#writerlife",
+            "#selfpublishing",
+            "#authorlife",
+            "#bookmarketing",
+            "#writeyourbook",
+            "#30daybook",
+            "#authorlife",
+            "#indieauthor",
+            "#kdp",
+            "#booklaunch"
+          ],
+          "caption": "Stop writing books nobody reads. Here's the 30-day system that got me 50+ published.\n\nThe 5-phase system that published 50+ books:\n\nPhase 1: Research (Days 1-7)\nPhase 2: Outline (Days 8-14)\nPhase 3: Draft (Days 15-21)\nPhase 4: Edit (Days 22-26)\nPhase 5: Publish (Days 27-30)\n\nWant the full system? Free lesson in bio 👆\n\n#writerlife #selfpublishing #authorlife #bookmarketing #writeyourbook #30daybook #authorlife #indieauthor #kdp #booklaunch"
+        },
+        "day_offset": 0,
+        "time_ist": "18:00",
+        "status": "ready"
+      },
+      {
+        "type": "reel",
+        "content": {
+          "hook": "Stop writing books nobody reads. Here's the 30-day system that got me 50+ published.",
+          "script": "0-3s: Hook - This book outline template helped me publish 50+ books. Here's the exact structure.\n3-10s: Show the 5-phase system on screen\n10-20s: Walk through each phase with visuals\n20-25s: Show your 50-book shelf\n25-30s: CTA",
+          "cta": "🎓 Free lesson: 'Write & Publish in 30 Days' → Link in bio",
+          "hashtags": [
+            "#writerlife",
+            "#selfpublishing",
+            "#authorlife",
+            "#bookmarketing",
+            "#writeyourbook",
+            "#30daybook",
+            "#authorlife",
+            "#indieauthor",
+            "#kdp",
+            "#booklaunch"
+          ],
+          "caption": "Stop writing books nobody reads. Here's the 30-day system that got me 50+ published.\n\nThe 5-phase system that published 50+ books:\n\nPhase 1: Research (Days 1-7)\nPhase 2: Outline (Days 8-14)\nPhase 3: Draft (Days 15-21)\nPhase 4: Edit (Days 22-26)\nPhase 5: Publish (Days 27-30)\n\nWant the full system? Free lesson in bio 👆\n\n#writerlife #selfpublishing #authorlife #bookmarketing #writeyourbook #30daybook #authorlife #indieauthor #kdp #booklaunch"
+        },
+        "day_offset": 1,
+        "time_ist": "18:00",
+        "status": "ready"
+      },
+      {
+        "type": "reel",
+        "content": {
+          "hook": "Stop writing books nobody reads. Here's the 30-day system that got me 50+ published.",
+          "script": "0-3s: Hook - This book outline template helped me publish 50+ books. Here's the exact structure.\n3-10s: Show the 5-phase system on screen\n10-20s: Walk through each phase with visuals\n20-25s: Show your 50-book shelf\n25-30s: CTA",
+          "cta": "🎓 Free lesson: 'Write & Publish in 30 Days' → Link in bio",
+          "hashtags": [
+            "#writerlife",
+            "#selfpublishing",
+            "#authorlife",
+            "#bookmarketing",
+            "#writeyourbook",
+            "#30daybook",
+            "#authorlife",
+            "#indieauthor",
+            "#kdp",
+            "#booklaunch"
+          ],
+          "caption": "Stop writing books nobody reads. Here's the 30-day system that got me 50+ published.\n\nThe 5-phase system that published 50+ books:\n\nPhase 1: Research (Days 1-7)\nPhase 2: Outline (Days 8-14)\nPhase 3: Draft (Days 15-21)\nPhase 4: Edit (Days 22-26)\nPhase 5: Publish (Days 27-30)\n\nWant the full system? Free lesson in bio 👆\n\n#writerlife #selfpublishing #authorlife #bookmarketing #writeyourbook #30daybook #authorlife #indieauthor #kdp #booklaunch"
+        },
+        "day_offset": 2,
+        "time_ist": "18:00",
+        "status": "ready"
+      }
+    ],
     "twitter": [],
     "linkedin": []
   },
@@ -50,7 +123,7 @@
   },
   "summary": {
     "dms_pending": 0,
-    "posts_scheduled": 0,
+    "posts_scheduled": 3,
     "fresh_content_generated": 3
   }
 }
