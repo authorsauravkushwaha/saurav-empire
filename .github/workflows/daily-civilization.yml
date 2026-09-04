@@ -15,7 +15,7 @@ on:
         required: false
         default: 'all'
         type: choice
-        options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review, risk_compliance, publishing_ops, email_marketing, social_media, affiliate_management, customer_support, analytics_dashboard, contract_review, backup_recovery, visual_content, content_calendar, manual_post_helper, email_automation]
+        options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review, risk_compliance, publishing_ops, email_marketing, social_media, affiliate_management, customer_support, analytics_dashboard, contract_review, backup_recovery, visual_content, content_calendar, manual_post_helper, email_automation, instagram_poster, image_uploader]
 jobs:
   daily_civilization:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
@@ -105,7 +105,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/experiments.json
           git diff --staged --quiet || git commit -m "🔬 Experiment review: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Risk & Compliance
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'risk_compliance' || github.event_name == 'schedule'
         env:
@@ -120,7 +120,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/risk-compliance.json
           git diff --staged --quiet || git commit -m "🛡️ Risk compliance: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Publishing Ops
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'publishing_ops' || github.event_name == 'schedule'
         env:
@@ -135,7 +135,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/publishing_changes.json
           git diff --staged --quiet || git commit -m "📚 Publishing ops: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Email Marketing
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'email_marketing' || github.event_name == 'schedule'
         env:
@@ -150,7 +150,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/email_campaigns.json
           git diff --staged --quiet || git commit -m "📧 Email marketing: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Social Media
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'social_media' || github.event_name == 'schedule'
         env:
@@ -165,7 +165,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/social_media.json
           git diff --staged --quiet || git commit -m "📱 Social media: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Affiliate Management
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'affiliate_management' || github.event_name == 'schedule'
         env:
@@ -180,7 +180,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/affiliate_management.json
           git diff --staged --quiet || git commit -m "🤝 Affiliate mgmt: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Customer Support
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'customer_support' || github.event_name == 'schedule'
         env:
@@ -195,7 +195,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/customer_support.json
           git diff --staged --quiet || git commit -m "🎧 Customer support: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Analytics Dashboard
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'analytics_dashboard' || github.event_name == 'schedule'
         env:
@@ -210,7 +210,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/analytics.json reports/kpi_history.json
           git diff --staged --quiet || git commit -m "📊 Analytics dashboard: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Contract Review
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'contract_review' || github.event_name == 'schedule'
         env:
@@ -225,7 +225,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/contract_review.json
           git diff --staged --quiet || git commit -m "📋 Contract review: $(date -u +'%Y-%m-%d')" && git push
-
+      
       - name: Backup & Recovery
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'backup_recovery' || github.event_name == 'schedule'
         env:
@@ -258,10 +258,39 @@ jobs:
         if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'email_automation' || github.event_name == 'schedule'
         run: python agents/email_automation.py
       
+      - name: Visual Content with Photo
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'visual_content' || github.event_name == 'schedule'
+        run: python agents/instagram_poster.py
+      
       - name: Commit new agent outputs
-        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'visual_content' || github.event.inputs.agent == 'content_calendar' || github.event.inputs.agent == 'manual_post_helper' || github.event.inputs.agent == 'email_automation' || github.event_name == 'schedule'
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'visual_content' || github.event.inputs.agent == 'content_calendar' || github.event.inputs.agent == 'manual_post_helper' || github.event.inputs.agent == 'email_automation' || github.event.inputs.agent == 'instagram_poster' || github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add content/ data/
-          git diff --staged --quiet || git commit -m "🎨 Visual/Calendar/Post/Email agents: $(date -u +'%Y-%m-%d')" && git push
+          git diff --staged --quiet || git commit -m "🎨 Visual/Calendar/Post/Email/IG agents: $(date -u +'%Y-%m-%d')" && git push
+      
+      # Upload branded images to GitHub for public URLs
+      - name: Upload branded images
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'image_uploader' || github.event_name == 'schedule'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python agents/image_uploader.py --dir content/daily/${{ github.run_started_at || github.event.schedule }} --method github --output image_urls.json
+      
+      # Post to Instagram (if configured)
+      - name: Post to Instagram
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'instagram_poster' || github.event_name == 'schedule'
+        env:
+          IG_APP_ID: ${{ secrets.IG_APP_ID }}
+          IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_LONG_LIVED_TOKEN: ${{ secrets.IG_LONG_LIVED_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Load image URLs
+          if [ -f image_urls.json ]; then
+            python agents/instagram_post.py --type carousel --images $(cat image_urls.json | jq -r 'to_entries[] | select(.key | endswith(".png")) | .value' | tr '\n' ' ') --caption "$(cat content/daily/$(date -u +%Y-%m-%d)/post_ready.txt | head -200)"
+          else
+            echo "No image URLs found, skipping Instagram post"
+          fi

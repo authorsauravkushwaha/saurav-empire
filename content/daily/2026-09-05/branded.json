@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-05",
+  "photo_used": "assets/your_photo.jpg",
+  "generated_images": {
+    "reel_cover": "content\\daily\\2026-09-05\\branded\\images\\reel_cover_branded.png",
+    "quote_branded": "content\\daily\\2026-09-05\\branded\\images\\quote_branded.png",
+    "carousel_branded": [
+      "content\\daily\\2026-09-05\\branded\\images\\carousel\\carousel_1.png",
+      "content\\daily\\2026-09-05\\branded\\images\\carousel\\carousel_2.png",
+      "content\\daily\\2026-09-05\\branded\\images\\carousel\\carousel_3.png",
+      "content\\daily\\2026-09-05\\branded\\images\\carousel\\carousel_4.png"
+    ]
+  }
+}
