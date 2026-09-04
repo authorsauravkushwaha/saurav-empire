@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-04",
+  "day": "Friday",
+  "category": "motivation",
+  "theme": "Weekend writing goals",
+  "quote": "Don't wait for inspiration. Build a system that writes for you.",
+  "author": "Saurav Kushwaha",
+  "generated_images": {
+    "quote_square": "content\\daily\\2026-09-04\\images\\quote_square.png",
+    "reel_cover": "content\\daily\\2026-09-04\\images\\reel_cover.png",
+    "carousel": [
+      "content\\daily\\2026-09-04\\images\\carousel\\carousel_1.png",
+      "content\\daily\\2026-09-04\\images\\carousel\\carousel_2.png",
+      "content\\daily\\2026-09-04\\images\\carousel\\carousel_3.png",
+      "content\\daily\\2026-09-04\\images\\carousel\\carousel_4.png"
+    ],
+    "story": "content\\daily\\2026-09-04\\images\\story.png",
+    "post_portrait": "content\\daily\\2026-09-04\\images\\post_portrait.png"
+  },
+  "carousel_slides": 4
+}

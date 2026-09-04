@@ -216,7 +216,8 @@ def generate_post_ready_file(date_str=None):
     
     day_name = datetime.strptime(date_str, '%Y-%m-%d').strftime('%A')
     pillar = plan.get('pillar', 'Book Writing System')
-    hashtags = format_hashtags('writing', 10)
+    hashtags_list = format_hashtags('writing', 10).split()
+    hashtags = ' '.join(hashtags_list)
     cta = get_cta('course')
     
     lines = []
@@ -280,7 +281,7 @@ def generate_post_ready_file(date_str=None):
         lines.append("Slide through for the full system →")
         lines.append("")
         lines.append(cta)
-        lines.append(hashtags)
+        lines.append(' '.join(hashtags_list))
     
     # Blog post
     blogs = content.get('blogs', [])
@@ -297,7 +298,7 @@ def generate_post_ready_file(date_str=None):
                 lines.append(f"    • {point}")
         lines.append("")
         lines.append(cta)
-        lines.append(hashtags)
+        lines.append(' '.join(hashtags_list))
     
     # Tweet thread
     tweets_data = content.get('tweets', {})
@@ -308,7 +309,7 @@ def generate_post_ready_file(date_str=None):
             lines.append(tweet)
         lines.append("")
         lines.append(tweets_data.get('final_cta', cta) if isinstance(tweets_data, dict) else cta)
-        lines.append(tweets_data.get('hashtags', hashtags) if isinstance(tweets_data, dict) else hashtags)
+        lines.append(' '.join(tweets_data.get('hashtags', hashtags_list)) if isinstance(tweets_data, dict) else ' '.join(hashtags_list))
     
     # Email
     emails = content.get('emails', {})
