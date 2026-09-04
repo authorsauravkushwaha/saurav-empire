@@ -3,19 +3,19 @@
   "day": "Saturday",
   "category": "personal",
   "theme": "Personal growth",
-  "quote": "Your first draft is just you telling yourself the story.",
-  "author": "Terry Pratchett",
+  "quote": "Write the book you want to read.",
+  "author": "Saurav Kushwaha",
   "generated_images": {
-    "quote_square": "content\\daily\\2026-09-05\\images\\quote_square.png",
-    "reel_cover": "content\\daily\\2026-09-05\\images\\reel_cover.png",
+    "quote_square": "content/daily/2026-09-05/images/quote_square.png",
+    "reel_cover": "content/daily/2026-09-05/images/reel_cover.png",
     "carousel": [
-      "content\\daily\\2026-09-05\\images\\carousel\\carousel_1.png",
-      "content\\daily\\2026-09-05\\images\\carousel\\carousel_2.png",
-      "content\\daily\\2026-09-05\\images\\carousel\\carousel_3.png",
-      "content\\daily\\2026-09-05\\images\\carousel\\carousel_4.png"
+      "content/daily/2026-09-05/images/carousel/carousel_1.png",
+      "content/daily/2026-09-05/images/carousel/carousel_2.png",
+      "content/daily/2026-09-05/images/carousel/carousel_3.png",
+      "content/daily/2026-09-05/images/carousel/carousel_4.png"
     ],
-    "story": "content\\daily\\2026-09-05\\images\\story.png",
-    "post_portrait": "content\\daily\\2026-09-05\\images\\post_portrait.png"
+    "story": "content/daily/2026-09-05/images/story.png",
+    "post_portrait": "content/daily/2026-09-05/images/post_portrait.png"
   },
   "carousel_slides": 4
 }

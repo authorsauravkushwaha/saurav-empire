@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-05",
+  "total_leads": 0,
+  "campaigns": {
+    "sequence_welcome": {
+      "name": "Welcome Sequence",
+      "trigger": "signup",
+      "emails": 5,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    },
+    "sequence_course_funnel": {
+      "name": "Course Funnel",
+      "trigger": "lead_magnet_download",
+      "emails": 4,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    },
+    "sequence_buyer_sequence": {
+      "name": "Buyer Onboarding",
+      "trigger": "purchase",
+      "emails": 4,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    },
+    "sequence_reengagement": {
+      "name": "Re-engagement",
+      "trigger": "inactive_30_days",
+      "emails": 3,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    }
+  }
+}
