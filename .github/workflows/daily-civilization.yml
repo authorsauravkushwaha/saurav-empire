@@ -15,7 +15,7 @@ on:
         required: false
         default: 'all'
         type: choice
-        options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review, risk_compliance, publishing_ops, email_marketing, social_media, affiliate_management, customer_support, analytics_dashboard, contract_review, backup_recovery]
+        options: [all, market_scan, content_gen, lead_enrich, finance_reconcile, experiment_review, risk_compliance, publishing_ops, email_marketing, social_media, affiliate_management, customer_support, analytics_dashboard, contract_review, backup_recovery, visual_content, content_calendar, manual_post_helper, email_automation]
 jobs:
   daily_civilization:
     if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'market_scan' || github.event_name == 'schedule'
@@ -240,3 +240,28 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/backup_status.json
           git diff --staged --quiet || git commit -m "💾 Backup recovery: $(date -u +'%Y-%m-%d')" && git push
+
+      # NEW AGENTS - Zero API, Local Only
+      - name: Visual Content
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'visual_content' || github.event_name == 'schedule'
+        run: python agents/visual_content.py
+      
+      - name: Content Calendar
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'content_calendar' || github.event_name == 'schedule'
+        run: python agents/content_calendar.py
+      
+      - name: Manual Post Helper
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'manual_post_helper' || github.event_name == 'schedule'
+        run: python agents/manual_post_helper.py
+      
+      - name: Email Automation
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'email_automation' || github.event_name == 'schedule'
+        run: python agents/email_automation.py
+      
+      - name: Commit new agent outputs
+        if: github.event.inputs.agent == 'all' || github.event.inputs.agent == 'visual_content' || github.event.inputs.agent == 'content_calendar' || github.event.inputs.agent == 'manual_post_helper' || github.event.inputs.agent == 'email_automation' || github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/ data/
+          git diff --staged --quiet || git commit -m "🎨 Visual/Calendar/Post/Email agents: $(date -u +'%Y-%m-%d')" && git push
