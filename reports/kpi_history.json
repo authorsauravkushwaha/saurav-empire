@@ -142,5 +142,41 @@
         "hero_books": 10
       }
     }
+  },
+  {
+    "date": "2026-09-05",
+    "kpis": {
+      "financial": {
+        "mtd_revenue_inr": 0,
+        "mtd_expenses_inr": 0,
+        "mtd_profit_inr": 0,
+        "profit_margin_pct": 0
+      },
+      "leads": {
+        "total": 0,
+        "qualified": 0,
+        "conversion_rate_pct": 0,
+        "cost_per_lead_inr": 0
+      },
+      "content": {
+        "total_pieces": 0,
+        "reels": 0,
+        "tweets": 0,
+        "blogs": 0,
+        "velocity_per_day": 0.0
+      },
+      "experiments": {
+        "active": 0,
+        "completed": 0,
+        "winning": 0,
+        "win_rate_pct": 0
+      },
+      "publishing": {
+        "books_optimized": 0,
+        "price_tests_running": 0,
+        "catalog_size": 50,
+        "hero_books": 10
+      }
+    }
   }
 ]
