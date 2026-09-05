@@ -28,14 +28,14 @@
           },
           "focus": "Start week with actionable system",
           "hashtags": [
-            "#amazon",
             "#bookcover",
-            "#publish",
-            "#selfpublishing",
-            "#kdpselect",
-            "#indieauthor",
             "#booklaunch",
-            "#kdp"
+            "#selfpublishing",
+            "#kdp",
+            "#publish",
+            "#kdpselect",
+            "#amazon",
+            "#indieauthor"
           ],
           "featured_book": "Focus On What You Want",
           "cta": "Get my KDP checklist free → Link in bio",
@@ -60,12 +60,12 @@
           "hashtags": [
             "#authorbrand",
             "#bookpromo",
-            "#reader",
-            "#bookads",
-            "#booklaunch",
-            "#authormarketing",
+            "#emailmarketing",
             "#bookmarketing",
-            "#emailmarketing"
+            "#authormarketing",
+            "#bookads",
+            "#reader",
+            "#booklaunch"
           ],
           "featured_book": "Write & Publish in 30 Days",
           "cta": "Join free author marketing workshop → Link in bio",
@@ -88,13 +88,13 @@
           },
           "focus": "Industry knowledge",
           "hashtags": [
-            "#expert",
-            "#authorplatform",
-            "#personalbrand",
             "#authorbrand",
+            "#niche",
             "#authority",
+            "#expert",
+            "#personalbrand",
             "#writerbrand",
-            "#niche"
+            "#authorplatform"
           ],
           "featured_book": "Stoic Wealth",
           "cta": "Grab my author brand worksheet → Link in bio",
@@ -117,13 +117,13 @@
           },
           "focus": "Writing process transparency",
           "hashtags": [
+            "#coursecreator",
             "#passiveincome",
-            "#digitalcourse",
-            "#writecourse",
             "#onlinecourse",
             "#teachonline",
             "#authorcourse",
-            "#coursecreator"
+            "#digitalcourse",
+            "#writecourse"
           ],
           "featured_book": "Dark Psychology Defense",
           "cta": "Free lesson: Write & Publish in 30 Days → Link in bio",
@@ -146,14 +146,14 @@
           },
           "focus": "Set up productive weekend",
           "hashtags": [
-            "#outline",
-            "#writetip",
             "#30daybook",
-            "#authorlife",
             "#booksystem",
-            "#writerlife",
+            "#firstdraft",
+            "#outline",
+            "#authorlife",
             "#amwriting",
-            "#firstdraft"
+            "#writerlife",
+            "#writetip"
           ],
           "featured_book": "Atomic Habits for Writers",
           "cta": "Download free 30-day outline template → Link in bio",
@@ -176,14 +176,14 @@
           },
           "focus": "Authentic connection",
           "hashtags": [
-            "#indieauthor",
-            "#booklaunch",
-            "#kdp",
-            "#bookcover",
-            "#selfpublishing",
             "#publish",
+            "#kdp",
+            "#selfpublishing",
+            "#indieauthor",
+            "#amazon",
             "#kdpselect",
-            "#amazon"
+            "#booklaunch",
+            "#bookcover"
           ],
           "featured_book": "The 5 AM Entrepreneur",
           "cta": "Get my KDP checklist free → Link in bio",
@@ -206,14 +206,14 @@
           },
           "focus": "Strategic planning",
           "hashtags": [
-            "#reader",
+            "#bookads",
             "#authorbrand",
             "#emailmarketing",
             "#bookmarketing",
-            "#bookads",
-            "#bookpromo",
+            "#reader",
             "#booklaunch",
-            "#authormarketing"
+            "#authormarketing",
+            "#bookpromo"
           ],
           "featured_book": "Love Without Losing Yourself",
           "cta": "Join free author marketing workshop → Link in bio",
@@ -252,14 +252,14 @@
           },
           "focus": "Start week with actionable system",
           "hashtags": [
-            "#authorbrand",
-            "#emailmarketing",
-            "#bookpromo",
             "#bookads",
+            "#authorbrand",
+            "#authormarketing",
+            "#bookpromo",
             "#bookmarketing",
-            "#booklaunch",
             "#reader",
-            "#authormarketing"
+            "#emailmarketing",
+            "#booklaunch"
           ],
           "featured_book": "Society Decoded",
           "cta": "Join free author marketing workshop → Link in bio",
@@ -282,13 +282,13 @@
           },
           "focus": "Teach one actionable skill",
           "hashtags": [
-            "#authority",
-            "#authorplatform",
             "#writerbrand",
             "#expert",
+            "#authority",
+            "#niche",
             "#authorbrand",
             "#personalbrand",
-            "#niche"
+            "#authorplatform"
           ],
           "featured_book": "Poetry for the Broken",
           "cta": "Grab my author brand worksheet → Link in bio",
@@ -311,13 +311,13 @@
           },
           "focus": "Industry knowledge",
           "hashtags": [
-            "#authorcourse",
-            "#coursecreator",
-            "#writecourse",
             "#onlinecourse",
             "#teachonline",
-            "#passiveincome",
-            "#digitalcourse"
+            "#coursecreator",
+            "#writecourse",
+            "#digitalcourse",
+            "#authorcourse",
+            "#passiveincome"
           ],
           "featured_book": "Financial Freedom Blueprint",
           "cta": "Free lesson: Write & Publish in 30 Days → Link in bio",
@@ -340,14 +340,14 @@
           },
           "focus": "Writing process transparency",
           "hashtags": [
-            "#authorlife",
+            "#30daybook",
+            "#booksystem",
+            "#amwriting",
             "#outline",
             "#writerlife",
-            "#amwriting",
-            "#firstdraft",
             "#writetip",
-            "#30daybook",
-            "#booksystem"
+            "#authorlife",
+            "#firstdraft"
           ],
           "featured_book": "Mindset Mastery",
           "cta": "Download free 30-day outline template → Link in bio",
@@ -371,12 +371,12 @@
           "focus": "Set up productive weekend",
           "hashtags": [
             "#kdpselect",
-            "#bookcover",
-            "#booklaunch",
             "#publish",
-            "#indieauthor",
             "#selfpublishing",
+            "#indieauthor",
+            "#booklaunch",
             "#kdp",
+            "#bookcover",
             "#amazon"
           ],
           "featured_book": "The Writer's Business",
@@ -400,14 +400,14 @@
           },
           "focus": "Authentic connection",
           "hashtags": [
-            "#bookpromo",
-            "#authorbrand",
-            "#reader",
-            "#booklaunch",
-            "#bookmarketing",
             "#emailmarketing",
             "#bookads",
-            "#authormarketing"
+            "#authormarketing",
+            "#bookpromo",
+            "#authorbrand",
+            "#bookmarketing",
+            "#booklaunch",
+            "#reader"
           ],
           "featured_book": "Discipline Equals Freedom",
           "cta": "Join free author marketing workshop → Link in bio",
@@ -430,13 +430,13 @@
           },
           "focus": "Strategic planning",
           "hashtags": [
-            "#writerbrand",
+            "#authority",
             "#expert",
             "#authorbrand",
-            "#authorplatform",
             "#personalbrand",
-            "#authority",
-            "#niche"
+            "#writerbrand",
+            "#niche",
+            "#authorplatform"
           ],
           "featured_book": "Investing for Beginners",
           "cta": "Grab my author brand worksheet → Link in bio",
@@ -475,13 +475,13 @@
           },
           "focus": "Start week with actionable system",
           "hashtags": [
-            "#expert",
-            "#authority",
-            "#authorplatform",
-            "#authorbrand",
             "#niche",
+            "#authorbrand",
             "#personalbrand",
-            "#writerbrand"
+            "#authority",
+            "#expert",
+            "#writerbrand",
+            "#authorplatform"
           ],
           "featured_book": "Emotional Intelligence",
           "cta": "Grab my author brand worksheet → Link in bio",
@@ -504,13 +504,13 @@
           },
           "focus": "Teach one actionable skill",
           "hashtags": [
-            "#coursecreator",
             "#authorcourse",
+            "#writecourse",
             "#onlinecourse",
             "#teachonline",
-            "#writecourse",
-            "#passiveincome",
-            "#digitalcourse"
+            "#coursecreator",
+            "#digitalcourse",
+            "#passiveincome"
           ],
           "featured_book": "Self-Publishing Empire",
           "cta": "Free lesson: Write & Publish in 30 Days → Link in bio",
@@ -533,14 +533,14 @@
           },
           "focus": "Industry knowledge",
           "hashtags": [
-            "#writetip",
-            "#30daybook",
-            "#firstdraft",
-            "#amwriting",
-            "#outline",
             "#writerlife",
+            "#outline",
+            "#amwriting",
+            "#booksystem",
             "#authorlife",
-            "#booksystem"
+            "#firstdraft",
+            "#30daybook",
+            "#writetip"
           ],
           "featured_book": "Networking for Introverts",
           "cta": "Download free 30-day outline template → Link in bio",
@@ -563,14 +563,14 @@
           },
           "focus": "Writing process transparency",
           "hashtags": [
-            "#kdpselect",
             "#bookcover",
             "#kdp",
+            "#booklaunch",
+            "#selfpublishing",
             "#publish",
             "#amazon",
-            "#indieauthor",
-            "#selfpublishing",
-            "#booklaunch"
+            "#kdpselect",
+            "#indieauthor"
           ],
           "featured_book": "The Art of Letting Go",
           "cta": "Get my KDP checklist free → Link in bio",
@@ -593,14 +593,14 @@
           },
           "focus": "Set up productive weekend",
           "hashtags": [
+            "#emailmarketing",
+            "#booklaunch",
             "#authormarketing",
-            "#bookads",
+            "#authorbrand",
+            "#bookpromo",
             "#bookmarketing",
             "#reader",
-            "#bookpromo",
-            "#authorbrand",
-            "#emailmarketing",
-            "#booklaunch"
+            "#bookads"
           ],
           "featured_book": "Crypto for Skeptics",
           "cta": "Join free author marketing workshop → Link in bio",
@@ -623,13 +623,13 @@
           },
           "focus": "Authentic connection",
           "hashtags": [
-            "#authorbrand",
-            "#writerbrand",
-            "#expert",
             "#niche",
+            "#expert",
             "#personalbrand",
+            "#authorbrand",
+            "#authority",
             "#authorplatform",
-            "#authority"
+            "#writerbrand"
           ],
           "featured_book": "Shadow Work Journal",
           "cta": "Grab my author brand worksheet → Link in bio",
@@ -653,12 +653,12 @@
           "focus": "Strategic planning",
           "hashtags": [
             "#teachonline",
+            "#digitalcourse",
             "#passiveincome",
-            "#authorcourse",
-            "#writecourse",
             "#onlinecourse",
             "#coursecreator",
-            "#digitalcourse"
+            "#authorcourse",
+            "#writecourse"
           ],
           "featured_book": "Write Your First Novel",
           "cta": "Free lesson: Write & Publish in 30 Days → Link in bio",
@@ -697,13 +697,13 @@
           },
           "focus": "Start week with actionable system",
           "hashtags": [
-            "#writecourse",
+            "#authorcourse",
             "#coursecreator",
-            "#passiveincome",
-            "#teachonline",
-            "#digitalcourse",
             "#onlinecourse",
-            "#authorcourse"
+            "#teachonline",
+            "#passiveincome",
+            "#writecourse",
+            "#digitalcourse"
           ],
           "featured_book": "Scale Your Service Business",
           "cta": "Free lesson: Write & Publish in 30 Days → Link in bio",
@@ -726,13 +726,13 @@
           },
           "focus": "Teach one actionable skill",
           "hashtags": [
-            "#writetip",
-            "#30daybook",
-            "#outline",
             "#booksystem",
-            "#writerlife",
-            "#amwriting",
+            "#outline",
             "#authorlife",
+            "#amwriting",
+            "#30daybook",
+            "#writetip",
+            "#writerlife",
             "#firstdraft"
           ],
           "featured_book": "Minimalist Living",
@@ -756,13 +756,13 @@
           },
           "focus": "Industry knowledge",
           "hashtags": [
-            "#kdpselect",
-            "#kdp",
-            "#amazon",
-            "#selfpublishing",
-            "#bookcover",
             "#booklaunch",
+            "#amazon",
             "#indieauthor",
+            "#selfpublishing",
+            "#kdp",
+            "#bookcover",
+            "#kdpselect",
             "#publish"
           ],
           "featured_book": "Tax Secrets for Creators",
@@ -786,14 +786,14 @@
           },
           "focus": "Writing process transparency",
           "hashtags": [
-            "#authormarketing",
-            "#bookmarketing",
-            "#reader",
-            "#authorbrand",
+            "#bookpromo",
             "#bookads",
             "#booklaunch",
-            "#bookpromo",
-            "#emailmarketing"
+            "#bookmarketing",
+            "#authorbrand",
+            "#reader",
+            "#emailmarketing",
+            "#authormarketing"
           ],
           "featured_book": "Attachment Styles in Love",
           "cta": "Join free author marketing workshop → Link in bio",
@@ -816,13 +816,13 @@
           },
           "focus": "Set up productive weekend",
           "hashtags": [
-            "#personalbrand",
-            "#authority",
-            "#authorbrand",
             "#expert",
-            "#authorplatform",
             "#niche",
-            "#writerbrand"
+            "#authorbrand",
+            "#writerbrand",
+            "#authorplatform",
+            "#personalbrand",
+            "#authority"
           ],
           "featured_book": "Modern Society & You",
           "cta": "Grab my author brand worksheet → Link in bio",
@@ -845,12 +845,12 @@
           },
           "focus": "Authentic connection",
           "hashtags": [
-            "#writecourse",
-            "#passiveincome",
-            "#coursecreator",
-            "#teachonline",
-            "#onlinecourse",
             "#authorcourse",
+            "#teachonline",
+            "#coursecreator",
+            "#writecourse",
+            "#onlinecourse",
+            "#passiveincome",
             "#digitalcourse"
           ],
           "featured_book": "Healing Verses",
@@ -874,14 +874,14 @@
           },
           "focus": "Strategic planning",
           "hashtags": [
-            "#firstdraft",
-            "#amwriting",
             "#30daybook",
-            "#authorlife",
-            "#booksystem",
+            "#amwriting",
             "#outline",
+            "#writerlife",
+            "#authorlife",
+            "#firstdraft",
             "#writetip",
-            "#writerlife"
+            "#booksystem"
           ],
           "featured_book": "Passive Income Playbook",
           "cta": "Download free 30-day outline template → Link in bio",
