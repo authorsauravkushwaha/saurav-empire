@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-07",
+  "total_leads": 0,
+  "campaigns": {
+    "weekly_newsletter": {
+      "name": "Weekly Newsletter",
+      "subject": "Writer Nation Weekly - 2026-09-07",
+      "segment": "all_subscribers",
+      "template": "weekly_newsletter",
+      "scheduled": "09:00",
+      "cta": "course",
+      "send_via": "brevo_dashboard"
+    },
+    "sequence_welcome": {
+      "name": "Welcome Sequence",
+      "trigger": "signup",
+      "emails": 5,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    },
+    "sequence_course_funnel": {
+      "name": "Course Funnel",
+      "trigger": "lead_magnet_download",
+      "emails": 4,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    },
+    "sequence_buyer_sequence": {
+      "name": "Buyer Onboarding",
+      "trigger": "purchase",
+      "emails": 4,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    },
+    "sequence_reengagement": {
+      "name": "Re-engagement",
+      "trigger": "inactive_30_days",
+      "emails": 3,
+      "status": "active_in_brevo",
+      "configured_in": "brevo_automation"
+    }
+  }
+}

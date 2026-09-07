@@ -1,0 +1,223 @@
+{
+  "week_number": 37,
+  "year": 2026,
+  "theme": "Publishing Strategies",
+  "dates": [
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16",
+    "2026-09-17",
+    "2026-09-18",
+    "2026-09-19",
+    "2026-09-20"
+  ],
+  "days": {
+    "2026-09-14": {
+      "day": "Monday",
+      "date": "2026-09-14",
+      "theme": "Motivation & Systems",
+      "pillar": "Author Marketing",
+      "content_types": {
+        "reel": "System spotlight",
+        "post": "Quote graphic",
+        "story": "Weekly goal setting"
+      },
+      "focus": "Start week with actionable system",
+      "hashtags": [
+        "#authormarketing",
+        "#bookmarketing",
+        "#bookpromo",
+        "#authorbrand",
+        "#booklaunch",
+        "#bookads",
+        "#emailmarketing",
+        "#reader"
+      ],
+      "featured_book": "Society Decoded",
+      "cta": "Join free author marketing workshop → Link in bio",
+      "content_ideas": [
+        "Amazon ads: My $5/day strategy",
+        "Email list: First 1000 subscribers",
+        "BookBub feature: How I got it",
+        "TikTok for authors: Worth it?"
+      ]
+    },
+    "2026-09-15": {
+      "day": "Tuesday",
+      "date": "2026-09-15",
+      "theme": "Education & Craft",
+      "pillar": "Author Brand",
+      "content_types": {
+        "reel": "Writing tip",
+        "post": "Carousel: How-to",
+        "story": "Book recommendation"
+      },
+      "focus": "Teach one actionable skill",
+      "hashtags": [
+        "#expert",
+        "#authorplatform",
+        "#personalbrand",
+        "#authority",
+        "#niche",
+        "#authorbrand",
+        "#writerbrand"
+      ],
+      "featured_book": "Poetry for the Broken",
+      "cta": "Grab my author brand worksheet → Link in bio",
+      "content_ideas": [
+        "My author bio that converts",
+        "Choosing your author niche",
+        "Consistent visual brand",
+        "Voice: Finding yours"
+      ]
+    },
+    "2026-09-16": {
+      "day": "Wednesday",
+      "date": "2026-09-16",
+      "theme": "Business & Publishing",
+      "pillar": "Course Creation",
+      "content_types": {
+        "reel": "Publishing insight",
+        "post": "Stat/Infographic",
+        "story": "Q&A"
+      },
+      "focus": "Industry knowledge",
+      "hashtags": [
+        "#writecourse",
+        "#passiveincome",
+        "#coursecreator",
+        "#teachonline",
+        "#onlinecourse",
+        "#digitalcourse",
+        "#authorcourse"
+      ],
+      "featured_book": "Financial Freedom Blueprint",
+      "cta": "Free lesson: Write & Publish in 30 Days → Link in bio",
+      "content_ideas": [
+        "Course outline template",
+        "Pricing your first course",
+        "Recording without fancy gear",
+        "Student results: Case study"
+      ]
+    },
+    "2026-09-17": {
+      "day": "Thursday",
+      "date": "2026-09-17",
+      "theme": "Writing & Craft",
+      "pillar": "Book Writing System",
+      "content_types": {
+        "reel": "Writing technique",
+        "post": "Quote graphic",
+        "story": "Behind the scenes"
+      },
+      "focus": "Writing process transparency",
+      "hashtags": [
+        "#30daybook",
+        "#authorlife",
+        "#outline",
+        "#booksystem",
+        "#amwriting",
+        "#writerlife",
+        "#firstdraft",
+        "#writetip"
+      ],
+      "featured_book": "Mindset Mastery",
+      "cta": "Download free 30-day outline template → Link in bio",
+      "content_ideas": [
+        "My exact 30-day writing calendar",
+        "How I outline a book in 2 hours",
+        "The 5-minute daily writing habit",
+        "From idea to outline in 3 steps"
+      ]
+    },
+    "2026-09-18": {
+      "day": "Friday",
+      "date": "2026-09-18",
+      "theme": "Weekend Planning",
+      "pillar": "Publishing Journey",
+      "content_types": {
+        "reel": "Weekend writing plan",
+        "post": "Motivation quote",
+        "story": "Weekly wins"
+      },
+      "focus": "Set up productive weekend",
+      "hashtags": [
+        "#bookcover",
+        "#booklaunch",
+        "#selfpublishing",
+        "#amazon",
+        "#indieauthor",
+        "#publish",
+        "#kdp",
+        "#kdpselect"
+      ],
+      "featured_book": "The Writer's Business",
+      "cta": "Get my KDP checklist free → Link in bio",
+      "content_ideas": [
+        "KDP Select: My honest review",
+        "Cover design: DIY vs Pro",
+        "My launch day checklist",
+        "ISBN: Do you really need one?"
+      ]
+    },
+    "2026-09-19": {
+      "day": "Saturday",
+      "date": "2026-09-19",
+      "theme": "Personal Growth",
+      "pillar": "Author Marketing",
+      "content_types": {
+        "reel": "Personal story",
+        "post": "Personal insight",
+        "story": "Weekend reading"
+      },
+      "focus": "Authentic connection",
+      "hashtags": [
+        "#emailmarketing",
+        "#authorbrand",
+        "#authormarketing",
+        "#booklaunch",
+        "#bookads",
+        "#reader",
+        "#bookmarketing",
+        "#bookpromo"
+      ],
+      "featured_book": "Discipline Equals Freedom",
+      "cta": "Join free author marketing workshop → Link in bio",
+      "content_ideas": [
+        "Amazon ads: My $5/day strategy",
+        "Email list: First 1000 subscribers",
+        "BookBub feature: How I got it",
+        "TikTok for authors: Worth it?"
+      ]
+    },
+    "2026-09-20": {
+      "day": "Sunday",
+      "date": "2026-09-20",
+      "theme": "Planning & Strategy",
+      "pillar": "Author Brand",
+      "content_types": {
+        "reel": "Week ahead preview",
+        "post": "Weekly recap",
+        "story": "Planning session"
+      },
+      "focus": "Strategic planning",
+      "hashtags": [
+        "#authorplatform",
+        "#personalbrand",
+        "#expert",
+        "#niche",
+        "#authority",
+        "#authorbrand",
+        "#writerbrand"
+      ],
+      "featured_book": "Investing for Beginners",
+      "cta": "Grab my author brand worksheet → Link in bio",
+      "content_ideas": [
+        "My author bio that converts",
+        "Choosing your author niche",
+        "Consistent visual brand",
+        "Voice: Finding yours"
+      ]
+    }
+  }
+}
