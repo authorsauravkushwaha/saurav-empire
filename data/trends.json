@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-07",
+  "date": "2026-09-08",
   "raw_signals": {
     "google_trends": [
       {
@@ -31,7 +31,7 @@
         "note": "Manual CSV import needed"
       }
     ],
-    "timestamp": "2026-09-07T17:51:52.869676+05:30"
+    "timestamp": "2026-09-08T00:59:08.743196+05:30"
   },
   "analysis": {
     "top_keywords": [
