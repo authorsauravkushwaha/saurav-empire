@@ -1,8 +1,8 @@
 {
   "date": "2026-09-18",
   "latest_backup": {
-    "timestamp": "2026-09-18T00:54:31.667179+05:30",
-    "backup_path": "/home/runner/work/saurav-empire/saurav-empire/backups/20260918_005431",
+    "timestamp": "2026-09-18T09:14:06.110520+05:30",
+    "backup_path": "/home/runner/work/saurav-empire/saurav-empire/backups/20260918_091406",
     "backed_up": [
       "config/",
       "data/",
@@ -25,8 +25,8 @@
     "valid": true,
     "missing": [],
     "manifest": {
-      "timestamp": "2026-09-18T00:54:31.667179+05:30",
-      "backup_path": "/home/runner/work/saurav-empire/saurav-empire/backups/20260918_005431",
+      "timestamp": "2026-09-18T09:14:06.110520+05:30",
+      "backup_path": "/home/runner/work/saurav-empire/saurav-empire/backups/20260918_091406",
       "backed_up": [
         "config/",
         "data/",
@@ -52,8 +52,8 @@
   },
   "all_backups": [
     {
-      "timestamp": "2026-09-18T00:54:31.667179+05:30",
-      "path": "/home/runner/work/saurav-empire/saurav-empire/backups/20260918_005431",
+      "timestamp": "2026-09-18T09:14:06.110520+05:30",
+      "path": "/home/runner/work/saurav-empire/saurav-empire/backups/20260918_091406",
       "items": 13,
       "valid": true
     },
