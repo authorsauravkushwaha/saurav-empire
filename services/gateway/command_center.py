@@ -254,18 +254,48 @@ def kill_switch_cmd(text: str, m: re.Match) -> dict:
             "state": result}
 
 
+SPEND_VERB = re.compile(r"\b(spend|spent|invest|invested|pay|paid|buy|purchase|budget|cost|costs)\b", re.I)
+AMOUNT = re.compile(r"(?:₹|rs\.?|inr)\s*([\d][\d,]*(?:\.\d+)?)\s*(k|thousand)?"
+                    r"|([\d][\d,]*(?:\.\d+)?)\s*(k|thousand)\b", re.I)
+
+
+def money_mentioned(text: str) -> float:
+    """Read a spend out of the owner's sentence, so 'should I spend ₹10,000' is judged on ₹10,000.
+
+    Only amounts near a spend verb count. A price the owner intends to charge is not a cost, and
+    guessing wrong here would silently mis-classify the decision — so anything ambiguous stays
+    unknown instead of being assumed.
+    """
+    out = 0.0
+    for verb in SPEND_VERB.finditer(text):
+        found = AMOUNT.search(text[verb.end(): verb.end() + 40])
+        if not found:
+            continue
+        raw = found.group(1) or found.group(3)
+        multiplier = 1000.0 if (found.group(2) or found.group(4)) else 1.0
+        try:
+            out = max(out, float(str(raw).replace(",", "")) * multiplier)
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
 @command("judge_decision", r"\b(should|is it worth|evaluate|judge|分析)\b")
 def judge(text: str, m: re.Match) -> dict:
     """Answer in the §28 DECISION OUTPUT STANDARD, stored so it can be scored later."""
+    spend = money_mentioned(text)
     record = chairman.decide(
         question=text, facts=[],
         assumptions=["The framing of the question already assumes this is worth doing."],
         unknowns=["Whether the buyer will pay", "Whether you have the hours",
-                  "What else those hours would produce"],
-        numbers={"displaced": "the current top-ranked opportunity that these hours would otherwise serve"},
+                  "What else those hours would produce"] + ([f"Whether ₹{spend:,.0f} can be avoided "
+                                                            "entirely"] if spend else []),
+        numbers={"displaced": "the current top-ranked opportunity that these hours would otherwise serve",
+                 "required_capital": spend, "incremental_costs": spend},
         structured=True, domain="owner-command")
     verdict = record["verdict"]
-    return {"said": verdict["decision"], "confidence": verdict["confidence"],
+    return {"said": verdict["decision"], "verdict": verdict,
+            "confidence": verdict["confidence"],
             "classification": record["classification"], "decision_id": record["id"],
             "confidence_note": verdict["confidence_note"],
             "evidence": {"strength": record["evidence"]["strength"],
@@ -318,7 +348,7 @@ def interpret(text: str) -> dict:
         "intent": "analysis_only", "matched": False,
         "said": "No system action matched that sentence, so nothing was changed. Here is the analysis instead.",
         "decision_id": record["id"], "classification": record["classification"],
-        "verdict": verdict["decision"], "confidence": verdict["confidence"],
+        "verdict": verdict, "confidence": verdict["confidence"],
         "evidence": {"strength": record["evidence"]["strength"],
                      "claims": record["evidence"]["claims"][:6]},
         "disagreement": record["disagreement"], "reality_check": record["reality_check"],

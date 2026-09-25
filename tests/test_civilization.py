@@ -919,6 +919,21 @@ class TestDecisionStandard(Base):
         self.assertFalse(review["launchable"])
         self.assertIn("fake_scarcity", {b["rule"] for b in review["ethics"]["blocks"]})
 
+    def test_the_owner_command_path_reads_a_real_spend_and_defers_it(self):
+        from services.gateway.command_center import interpret, money_mentioned
+        self.assertEqual(money_mentioned("should I spend ₹10,000 on a course to learn ads?"), 10000.0)
+        self.assertEqual(money_mentioned("should I buy a 2k mic"), 2000.0)
+        self.assertEqual(money_mentioned("should I launch a tier at ₹199?"), 0.0,
+                         "a price we charge is not a cost we bear")
+        result = interpret("should I spend ₹10,000 on a course to learn ads?")
+        self.assertEqual(result["intent"], "judge_decision")
+        self.assertEqual(result["classification"], "DEFER",
+                         "with ₹0 available, a ₹10,000 spend must defer, not proceed")
+        self.assertEqual(result["expected_impact"]["financial"]["required_capital_inr"], 10000.0)
+        self.assertIn("₹0 path", result["verdict"]["decision"])
+        self.assertIn("STANDARD", str(result["standard"]).upper())
+        self.assertEqual(len(result["eight_minds"]["minds"]), 8)
+
     def test_label_report_counts_claims_honestly(self):
         self._record()
         report = decision_engine.label_report()
