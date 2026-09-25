@@ -85,16 +85,26 @@ def unit_economics(body: dict, _: str = Depends(require_owner)) -> dict:
 
 @application.post("/finance/scenarios")
 def scenarios(body: dict, _: str = Depends(require_owner)) -> dict:
+    """Scenario modelling through the §28 standard: numbers, evidence tier and a kill criterion.
+
+    Every figure here is an ESTIMATE unless `facts` carries verified sources, and projected revenue
+    is reported as modelled contribution — never as revenue.
+    """
     question = body.get("question", "Should we proceed?")
-    verdict = chairman.decide(
+    numbers = {k: body.get(k, 0) for k in ("expected_revenue", "variable_costs", "incremental_costs",
+                                           "required_capital", "payback_days")}
+    numbers.update({k: v for k, v in body.items() if k in (
+        "cac", "ltv", "downside_cost", "forecast_metric", "forecast_expected", "forecast_unit",
+        "forecast_horizon_days", "strategic_fit", "buyer_segment", "content_job", "displaced")})
+    return chairman.decide(
         question=question,
         facts=body.get("facts") or [],
         assumptions=body.get("assumptions") or [],
         unknowns=body.get("unknowns") or ["Whether anyone will pay"],
-        numbers={k: body.get(k, 0) for k in ("expected_revenue", "variable_costs", "incremental_costs",
-                                             "required_capital", "payback_days")},
+        numbers=numbers,
+        structured=bool(body.get("structured", True)),
+        domain="finance",
     )
-    return verdict.to_dict()
 
 
 @application.post("/finance/spend-check")

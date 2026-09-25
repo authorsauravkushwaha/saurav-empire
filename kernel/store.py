@@ -175,7 +175,8 @@ CREATE TABLE IF NOT EXISTS ledger (
   source      TEXT,
   verified    INTEGER DEFAULT 0,
   evidence_json TEXT DEFAULT '{}',
-  recorded_by TEXT
+  recorded_by TEXT,
+  customer_id TEXT                -- optional: which customer paid, for honest LTV (NULL otherwise)
 );
 CREATE INDEX IF NOT EXISTS idx_ledger_ts ON ledger(ts);
 
@@ -201,6 +202,9 @@ CREATE TABLE IF NOT EXISTS opportunities (
   status        TEXT DEFAULT 'DISCOVERED',
   score         REAL DEFAULT 0,
   owner_agent   TEXT,
+  department_id TEXT,
+  decision_id   TEXT,                  -- the §28 record that judged this opportunity
+  decision_class TEXT,                 -- STOP|CONTINUE|IMPROVE|SCALE|TEST|DEFER|REJECT
   evidence_json TEXT DEFAULT '[]',
   updated_at    REAL
 );
@@ -300,6 +304,65 @@ CREATE TABLE IF NOT EXISTS integrations (
   calls_today INTEGER DEFAULT 0,
   quota_note  TEXT
 );
+
+CREATE TABLE IF NOT EXISTS decisions (
+  id                TEXT PRIMARY KEY,
+  question          TEXT NOT NULL,
+  domain            TEXT DEFAULT 'business',
+  verdict           TEXT,
+  classification    TEXT,                  -- STOP|CONTINUE|IMPROVE|SCALE|TEST|DEFER
+  confidence        TEXT,                  -- LOW|MEDIUM|HIGH
+  record_json       TEXT DEFAULT '{}',     -- the full Decision Output Standard
+  evidence_json     TEXT DEFAULT '[]',     -- ranked evidence used
+  opportunity_cost  TEXT,
+  decided_by        TEXT DEFAULT 'chairman',
+  department_id     TEXT,
+  task_id           TEXT,
+  outcome           TEXT,                  -- NULL until the world answers
+  outcome_json      TEXT DEFAULT '{}',
+  created_at        REAL,
+  resolved_at       REAL
+);
+
+CREATE TABLE IF NOT EXISTS customers (
+  id            TEXT PRIMARY KEY,
+  display_name  TEXT,                      -- a label the owner recognises, nothing more
+  segment       TEXT,
+  source        TEXT,                      -- how they arrived (channel), not surveillance
+  status        TEXT DEFAULT 'LEAD',       -- LEAD|QUALIFIED|CUSTOMER|REPEAT|INACTIVE|DISQUALIFIED
+  consent       TEXT DEFAULT 'UNKNOWN',    -- GRANTED|WITHDRAWN|UNKNOWN
+  contact_ref   TEXT,                      -- pointer to the connector, never raw credentials
+  interest_json TEXT DEFAULT '[]',
+  objections_json TEXT DEFAULT '[]',
+  score         REAL,
+  band          TEXT,                      -- HIGH|MEDIUM|LOW|DISQUALIFY
+  ltv_inr       REAL DEFAULT 0,
+  revenue_inr   REAL DEFAULT 0,
+  notes         TEXT,
+  created_at    REAL,
+  updated_at    REAL
+);
+
+CREATE TABLE IF NOT EXISTS offers (
+  id            TEXT PRIMARY KEY,
+  name          TEXT NOT NULL,
+  target_customer TEXT,
+  problem       TEXT,
+  desired_outcome TEXT,
+  what_it_is    TEXT,                      -- the actual deliverable
+  proof_json    TEXT DEFAULT '[]',
+  objections_json TEXT DEFAULT '[]',
+  call_to_action TEXT,
+  funnel_json   TEXT DEFAULT '[]',
+  follow_up     TEXT,
+  retention     TEXT,
+  referral      TEXT,
+  price_inr     REAL DEFAULT 0,
+  status        TEXT DEFAULT 'DRAFT',      -- DRAFT|VALIDATED|LIVE|PAUSED|RETIRED
+  gaps_json     TEXT DEFAULT '[]',         -- what is missing before this may go live
+  created_at    REAL,
+  updated_at    REAL
+);
 """
 
 
@@ -319,10 +382,33 @@ def conn() -> sqlite3.Connection:
     return _connect()
 
 
+# Additive migrations: existing databases gain new optional columns without being rebuilt.
+# (A column added here is always nullable or defaulted, so old rows stay valid.)
+ADDITIVE_COLUMNS: tuple[tuple[str, str, str], ...] = (
+    ("ledger", "customer_id", "TEXT"),
+    ("opportunities", "department_id", "TEXT"),
+    ("opportunities", "decision_id", "TEXT"),
+    ("opportunities", "decision_class", "TEXT"),
+)
+
+
+def _migrate(c: sqlite3.Connection) -> list[str]:
+    added: list[str] = []
+    for table, column, ddl in ADDITIVE_COLUMNS:
+        cols = {r["name"] for r in c.execute(f"PRAGMA table_info({table})")}
+        if not cols:
+            continue
+        if column not in cols:
+            c.execute(f"ALTER TABLE {table} ADD COLUMN {column} {ddl}")
+            added.append(f"{table}.{column}")
+    return added
+
+
 def init_db() -> None:
     c = _connect()
     with _write_lock:
         c.executescript(DDL)
+        _migrate(c)
         c.execute(
             "INSERT INTO settings(key, value, updated_at) VALUES('schema_version', ?, ?) "
             "ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at",

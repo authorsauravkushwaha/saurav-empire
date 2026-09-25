@@ -55,6 +55,8 @@ export const api = {
   services: () => get<any>('/api/services'),
   commands: () => get<any>('/api/commands'),
   command: (text: string) => post<any>('/api/command', { text }),
+  decisionEngine: () => get<any>('/api/customer/decision/engine'),
+  decisionRecords: () => get<any>('/api/customer/decision/records?limit=20'),
 
   layout: () => get<WorldLayout>('/api/world/world/layout'),
   worldState: () => get<WorldState>('/api/world/world/state'),

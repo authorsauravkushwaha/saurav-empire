@@ -31,7 +31,7 @@ RISK_SCORE = {"LOW": 0.2, "MEDIUM": 0.5, "HIGH": 0.9}
 class Ledger:
     def record(self, *, direction: str, amount_inr: float, category: str, description: str,
                source: str, verified: bool = False, evidence: dict | None = None,
-               recorded_by: str = "system") -> dict:
+               recorded_by: str = "system", customer_id: str | None = None) -> dict:
         direction = direction.upper()
         if direction not in ("IN", "OUT"):
             raise ValueError("direction must be IN or OUT")
@@ -47,6 +47,7 @@ class Ledger:
             "amount_inr": float(amount_inr), "category": category, "description": description,
             "source": source, "verified": bool(verified),
             "evidence_json": json.dumps(evidence or {}, default=str), "recorded_by": recorded_by,
+            "customer_id": customer_id,
         }
         store.insert("ledger", row)
         bus.publish(E.LEDGER_ENTRY, source="economy", subject=row["id"],
@@ -196,18 +197,23 @@ class Opportunities:
             "required_capital": opp.get("required_capital_inr") or 0,
             "strategic_fit": 0.7,
         }
-        verdict = chairman.decide(
+        record = chairman.decide(
             question=f"Should we pursue: {opp['title']} — {opp['problem']} (buyer: {opp['customer']})?",
             facts=facts or [e.get("value", "") if isinstance(e, dict) else str(e) for e in opp.get("evidence", [])],
             assumptions=[f"Demand confidence is self-assessed at {opp.get('demand_confidence')}."],
             unknowns=unknowns or ["Whether the buyer will pay", "Whether the channel reaches them"],
-            numbers=numbers,
+            numbers={**numbers, "displaced": "the other discovered opportunities competing for the same hours"},
+            structured=True, domain="opportunity", department_id=opp.get("department_id"),
         )
+        verdict = record["verdict"]
         store.update("opportunities", opp_id, {"updated_at": store.now(),
-                                              "model_confidence": 0.5 if verdict.confidence == "MEDIUM" else 0.25})
+                                              "model_confidence": 0.5 if verdict["confidence"] == "MEDIUM" else 0.25,
+                                              "decision_id": record["id"],
+                                              "decision_class": record["classification"]})
         bus.publish(E.OPPORTUNITY_SCORED, source="economy", subject=opp_id, severity="notice",
-                    payload={"verdict": verdict.verdict, "confidence": verdict.confidence})
-        return verdict.to_dict()
+                    payload={"verdict": verdict["decision"], "confidence": verdict["confidence"],
+                             "classification": record["classification"], "decision_id": record["id"]})
+        return record
 
     # ---- zero-capital discovery ---------------------------------------
     def discover_zero_capital(self, *, owner_agent: str | None = None) -> list[dict]:

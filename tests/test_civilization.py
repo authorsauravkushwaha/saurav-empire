@@ -31,8 +31,12 @@ from kernel.config import config, building_index                 # noqa: E402
 from kernel.crypto import Vault                                  # noqa: E402
 from kernel.economy import Experiments, Ledger, Opportunities, free_resources  # noqa: E402
 from kernel.eventbus import E, bus                                # noqa: E402
-from kernel.governance import (Evidence, approvals, chairman, claims, injection,  # noqa: E402
-                               permissions)
+from kernel.governance import (Evidence, approvals, chairman, claims, decision_engine_status,  # noqa: E402
+                               injection, permissions)
+from kernel.customers import (CustomerLedger, OfferDesign, Qualification,  # noqa: E402
+                              WriterNationGate)
+from kernel.decision import (ActionStep, Claim, DecisionError, EvidenceLedger, Forecast,  # noqa: E402
+                             decision_engine)
 from kernel.killswitch import disengage, engage, status as ks_status  # noqa: E402
 from kernel.memory import memory                                  # noqa: E402
 from kernel.model_router import router                            # noqa: E402
@@ -750,3 +754,271 @@ class TestWorldFraming(Base):
             self.assertLessEqual(vertical, _math.tan(fov) * depth, f"{city['id']} is cropped vertically")
             self.assertLessEqual(horizontal, _math.tan(fov) * depth * aspect,
                                  f"{city['id']} is cropped horizontally")
+
+# ---------------------------------------------------------------------------
+class TestDecisionStandard(Base):
+    """§28 DECISION OUTPUT STANDARD — the shape, the label discipline, and the refusals."""
+
+    def _record(self, **overrides):
+        kwargs = dict(
+            question="Launch a ₹199/month membership for existing readers?",
+            domain="revenue",
+            facts=["2 readers asked in writing for a paid tier [FACT — memory-service mem-1]"],
+            assumptions=["About 1% of 340 current readers would pay"],
+            unknowns=["Willingness to pay at exactly ₹199"],
+            numbers={"expected_revenue": 678, "variable_costs": 0, "incremental_costs": 40,
+                     "required_capital": 0, "forecast_metric": "paid subscriptions",
+                     "forecast_expected": 3, "forecast_unit": "subscriptions"},
+            minutes=45, use_model=False,
+        )
+        kwargs.update(overrides)
+        return decision_engine.decide(**kwargs)
+
+    def test_every_required_section_is_present_and_non_empty(self):
+        record = self._record()
+        payload = record.to_dict()
+        for section in ("verdict", "evidence", "eight_minds", "agreement", "disagreement",
+                        "reality_check", "action_plan", "expected_impact", "forecast",
+                        "opportunity_cost", "confidence", "classification"):
+            self.assertIn(section, payload)
+            self.assertTrue(payload[section], f"section {section} is empty")
+        self.assertEqual(payload["standard"], "master prompt §28 — DECISION OUTPUT STANDARD")
+        self.assertEqual(record.validate(), [])
+
+    def test_a_fact_needs_a_source_and_cannot_be_a_hypothesis(self):
+        with self.assertRaises(DecisionError):
+            Claim(text="customers love us", kind="FACT")
+        with self.assertRaises(DecisionError):
+            Claim(text="maybe 10% convert", kind="HYPOTHESIS", verified=True)
+        self.assertEqual(Claim(text="1% convert", kind="HYPOTHESIS").label, "HYPOTHESIS — Estimate.")
+        self.assertTrue(Claim(text="x", kind="ASSUMPTION").label.startswith("ASSUMPTION — Scenario."))
+
+    def test_assumptions_cannot_compound_into_evidence(self):
+        ledger = EvidenceLedger()
+        ledger.labelled("ASSUMPTION", ["a", "b", "c", "d", "e"])
+        self.assertEqual(ledger.proof_count(), 0)
+        self.assertLessEqual(ledger.strength(), 0.5, "assumptions must never read as proof")
+        self.assertTrue(ledger.blind())
+
+    def test_revenue_is_never_projected_from_zero_evidence(self):
+        record = self._record(facts=[], assumptions=["people will pay ₹199"])
+        financial = record.to_dict()["expected_impact"]["financial"]
+        self.assertEqual(financial["revenue_inr"], 0.0, "revenue stays ₹0 until a ledger entry exists")
+        self.assertIn("modelled_contribution_inr", financial)
+        self.assertIn("no verified fact", " ".join(record.validate()).lower())
+
+    def test_revenue_projected_without_proof_is_a_hard_refusal(self):
+        from kernel.decision import DecisionRecord, RealityCheck
+        with self.assertRaises(DecisionError):
+            DecisionRecord(
+                question="Can we claim ₹50,000 revenue this month?", verdict="Yes, easily",
+                classification="TEST", confidence="LOW", evidence=EvidenceLedger(),
+                action_plan=[ActionStep(order=1, action="Publish", success_metric="1 post live")],
+                reality_check=RealityCheck(cheapest_test="ask 3 readers", kill_criterion="<1 sale"),
+                expected_impact={"financial": {"revenue_inr": 50000}},
+            )
+
+    def test_action_steps_need_a_metric_and_obey_the_approval_gate(self):
+        with self.assertRaises(DecisionError):     # no metric at all
+            ActionStep(order=1, action="Improve marketing", success_metric="")
+        with self.assertRaises(DecisionError):     # metric is not measurable
+            ActionStep(order=1, action="Grow the list", success_metric="more subscribers")
+        with self.assertRaises(DecisionError):     # a wish, not a checkpoint
+            ActionStep(order=1, action="Improve reach soon", success_metric="1 metric")
+        with self.assertRaises(DecisionError):     # money without a human approval reference
+            ActionStep(order=1, action="Run ads", success_metric="1 campaign live", budget_inr=5000)
+        ok = ActionStep(order=1, action="Publish the free chapter", success_metric="1 post live by Friday")
+        self.assertEqual(ok.to_dict()["spends_money"], False)
+
+    def test_classification_rules_are_deterministic(self):
+        stop = self._record(question="Giveaway", numbers={"expected_revenue": 500,
+                                                          "incremental_costs": 2000},
+                            facts=["₹2,000 prize cost verified [FACT — invoice 7]"])
+        self.assertEqual(stop.classification, "STOP")
+        defer = self._record(numbers={"expected_revenue": 90000, "incremental_costs": 4000,
+                                      "required_capital": 25000})
+        self.assertEqual(defer.classification, "DEFER")
+        reject = self._record(numbers={"expected_revenue": 50000, "incremental_costs": 0,
+                                       "unethical": True})
+        self.assertEqual(reject.classification, "REJECT")
+        scale = self._record(facts=["12 months of verified sales data [FACT — ledger]"],
+                             assumptions=[], unknowns=[])
+        self.assertEqual(scale.classification, "SCALE")
+        self.assertIn("SCALE", scale.verdict)
+
+    def test_confidence_is_not_certainty_and_is_capped_by_evidence(self):
+        blind = self._record(facts=[], assumptions=["people will pay"], unknowns=[])
+        self.assertEqual(blind.confidence, "LOW")
+        self.assertIn("Confidence is not certainty", blind.to_dict()["verdict"]["confidence_note"])
+        with self.assertRaises(DecisionError):     # a forecast with no kill criterion is a wish
+            Forecast(metric="revenue", expected=10, confidence="HIGH")
+        with self.assertRaises(DecisionError):     # and with no revision rule it cannot be scored
+            Forecast(metric="revenue", expected=10, kill_criterion="<50 signups", confidence="HIGH")
+        scored = Forecast(metric="signups", expected=3, kill_criterion="<1 signup in 14 days",
+                          revision_rule="revise on first real measurement", confidence="LOW")
+        self.assertEqual(scored.to_dict()["label"], "Scenario.")
+
+    def test_chairman_structured_output_is_persisted_and_scoreable(self):
+        payload = chairman.decide("Should we run a ₹0 test of the tier?",
+                                  facts=["2 readers asked [FACT — mem-1]"],
+                                  unknowns=["price elasticity"], numbers={"required_capital": 0},
+                                  structured=True, use_model=False, minutes=30)
+        self.assertIn("evidence", payload)
+        stored = store.get("decisions", payload["id"])
+        self.assertIsNotNone(stored)
+        outcome = decision_engine.record_outcome(payload["id"], metric_value=0.0,
+                                                 note="no subscriber in week 1")
+        self.assertFalse(outcome["verdict_held"])
+        self.assertIn("variance_pct", outcome)
+        lesson = store.query_one("SELECT lesson FROM lessons WHERE source = ?",
+                                 (f"decision {payload['id']}",))
+        self.assertIsNotNone(lesson, "every outcome must produce a stored lesson")
+
+    def test_all_eight_minds_have_a_mandate_and_declare_blind_spots(self):
+        status = decision_engine_status()
+        self.assertEqual(len(status["minds"]), 8)
+        names = {m["mind"] for m in status["minds"]}
+        self.assertEqual(names, {"CEO", "DEAL_MANAGER", "SALES_DIRECTOR", "MARKETING_DIRECTOR",
+                                 "FINANCE_ADVISOR", "LEGAL_RISK_ADVISOR", "CUSTOMER_BUYER",
+                                 "FUTURE_STRATEGIST"})
+        for mind in status["minds"]:
+            self.assertTrue(mind["domain"], f"{mind['mind']} has no domain")
+            self.assertGreaterEqual(len(mind["questions"]), 4)
+        record = self._record(facts=[], unknowns=[])
+        for opinion in record.to_dict()["eight_minds"]["minds"]:
+            self.assertTrue(opinion["blind_spots"], f"{opinion['mind']} hides its missing inputs")
+
+    def test_agents_can_run_the_same_decision_standard_through_a_gated_tool(self):
+        from kernel.tools import TOOLS, execute
+        self.assertIn("decide", TOOLS)
+        self.assertIn("offer_review", TOOLS)
+        agent = {"id": "ag-x", "name": "Test Agent", "rank": "AGENT", "department_id": "dept-revenue"}
+        out = execute({"id": "task-t", "task_type": "decision", "department_id": "dept-revenue",
+                       "payload": {"tool": "decide", "question": "Should we sell the pack at ₹499?",
+                                   "facts": ["11 readers asked [FACT — mem-2]"],
+                                   "unknowns": ["price elasticity at ₹499"],
+                                   "numbers": {"expected_revenue": 5489, "required_capital": 0}}}, agent)
+        self.assertEqual(out["status"], "ok")
+        self.assertIn(out["classification"], ("TEST", "SCALE", "DEFER", "IMPROVE", "CONTINUE"))
+        self.assertIn("STANDARD", str(out["standard"]).upper())
+        self.assertTrue(out["kill_criterion"], "a decision without a kill criterion is not a decision")
+        self.assertTrue(out["evidence"], "tool output must carry labels")
+
+    def test_a_trainee_cannot_run_decisions_and_manipulation_never_launches(self):
+        from kernel.tools import execute
+        trainee = {"id": "ag-t", "name": "Trainee", "rank": "TRAINEE", "department_id": "dept-revenue"}
+        denied = execute({"id": "task-d", "task_type": "decision", "department_id": "dept-revenue",
+                          "payload": {"tool": "decide", "question": "anything"}}, trainee)
+        self.assertEqual(denied["status"], "denied")
+        agent = {"id": "ag-y", "name": "Agent Y", "rank": "AGENT", "department_id": "dept-revenue"}
+        review = execute({"id": "task-o", "task_type": "offer_review", "department_id": "dept-revenue",
+                          "payload": {"tool": "offer_review", "offer": {
+                              "name": "Pack", "target_customer": "readers",
+                              "call_to_action": "Buy now — only 3 spots left!", "price_inr": 499}}}, agent)
+        self.assertEqual(review["status"], "ok")
+        self.assertFalse(review["launchable"])
+        self.assertIn("fake_scarcity", {b["rule"] for b in review["ethics"]["blocks"]})
+
+    def test_label_report_counts_claims_honestly(self):
+        self._record()
+        report = decision_engine.label_report()
+        self.assertGreaterEqual(report["records"], 1)
+        self.assertEqual(set(report["claim_counts"]), {"FACT", "ASSUMPTION", "INFERENCE",
+                                                       "HYPOTHESIS", "OPINION", "UNKNOWN"})
+        kinds = {t["kind"]: t["counts_as_proof"] for t in report["hierarchy"]}
+        self.assertTrue(kinds["FACT"])
+        for kind in ("ASSUMPTION", "INFERENCE", "HYPOTHESIS", "OPINION", "UNKNOWN"):
+            self.assertFalse(kinds[kind], f"{kind} must not count as proof")
+
+
+# ---------------------------------------------------------------------------
+class TestCustomerIntelligence(Base):
+    """§11–§18 — offers that may not launch on wishes, and customers that may not be farmed."""
+
+    def _honest_offer(self, name="Membership") -> OfferDesign:
+        offer = OfferDesign(
+            name=name, target_customer="readers who reply to the weekly email",
+            problem="free posts are too shallow for people who want depth",
+            desired_outcome="a weekly deep chapter plus templates",
+            what_it_is="₹199/month membership: weekly chapter, template pack, Q&A thread",
+            objections=["₹199 feels high for me"], call_to_action="Reply TIER for the payment link",
+            follow_up="one reminder after 3 days, then stop", retention="monthly member survey",
+            referral="one free month per referred reader", price_inr=199,
+            funnel=[{"step": "ATTRACT", "job": "awareness", "asset": "public post"},
+                    {"step": "CONVERT", "job": "conversion", "asset": "offer page"},
+                    {"step": "DELIVER", "job": "education", "asset": "weekly chapter"}],
+        )
+        offer.add_proof("2 readers asked in writing for this [FACT — memory-service mem-1]",
+                        kind="FACT", source="memory-service mem-1", verified=True)
+        return offer
+
+    def test_an_incomplete_offer_may_not_go_live(self):
+        offer = OfferDesign(name="Coaching", target_customer="everyone", what_it_is="coaching",
+                            price_inr=4999)
+        live = offer.launch()
+        self.assertFalse(live["launched"])
+        gaps = offer.gaps()
+        self.assertTrue(any("problem" in g for g in gaps))
+        self.assertTrue(any("proof" in g for g in gaps), gaps)
+        self.assertTrue(any("journey" in g for g in gaps), gaps)
+
+    def test_an_honest_offer_passes_and_is_recorded(self):
+        offer = self._honest_offer("Honest membership")
+        self.assertEqual(offer.gaps(), [])
+        self.assertTrue(offer.ethics_scan()["clean"])
+        live = offer.launch()
+        self.assertTrue(live["launched"])
+        self.assertEqual(live["status"], "LIVE")
+        self.assertIsNotNone(store.get("offers", live["id"]))
+
+    def test_forbidden_persuasion_blocks_launch(self):
+        offer = self._honest_offer("Pressure tactic")
+        offer.call_to_action = "Buy now — guaranteed results or your money back, only 3 spots left!"
+        check = offer.may_go_live()
+        self.assertFalse(check["allowed"])
+        rules = {b["rule"] for b in check["ethics"]["blocks"]}
+        self.assertTrue(rules & {"fake_scarcity", "guaranteed_results"}, rules)
+
+    def test_customer_records_refuse_sensitive_data_and_credentials(self):
+        ledger = CustomerLedger()
+        with self.assertRaises(ValueError):
+            ledger.add(display_name="x", notes="aadhaar 1234 5678 9012")
+        with self.assertRaises(ValueError):
+            ledger.add(display_name="y", contact_ref="ghp_ABCdef1234567890")
+        with self.assertRaises(ValueError):
+            ledger.add(display_name="z", consent="PROBABLY")
+
+    def test_qualification_is_rational_and_disqualifies(self):
+        strong = Qualification(need=.9, ability_to_pay=.8, urgency=.6, fit=.9, trust=.8,
+                               conversion_probability=.6, ltv_inr=2400)
+        self.assertEqual(strong.band(), "HIGH")
+        no_money = Qualification(need=.9, ability_to_pay=.1, urgency=.9, fit=.9, trust=.9,
+                                 conversion_probability=.9)
+        self.assertEqual(no_money.band(), "DISQUALIFY",
+                         "enthusiasm cannot override the inability to pay")
+        with self.assertRaises(ValueError):
+            Qualification(need=1.4)
+
+    def test_consent_gates_contact_and_revenue_needs_a_ledger_entry(self):
+        ledger = CustomerLedger()
+        quiet = ledger.add(display_name="reader Q", consent="WITHDRAWN")
+        self.assertFalse(ledger.may_contact(quiet["id"], purpose="marketing")["allowed"])
+        unknown = ledger.add(display_name="reader U", consent="UNKNOWN")
+        self.assertFalse(ledger.may_contact(unknown["id"], purpose="marketing")["allowed"])
+        self.assertTrue(ledger.may_contact(unknown["id"], purpose="service")["allowed"])
+        paid = ledger.add(display_name="reader P", consent="GRANTED")
+        self.assertEqual(ledger.verified_revenue(paid["id"]), 0.0, "an intention is not revenue")
+        Ledger().record(direction="IN", amount_inr=199, category="subscription", description="tier",
+                        source="upi statement row 91", verified=True, evidence={"ref": "upi-91"},
+                        customer_id=paid["id"])
+        self.assertEqual(ledger.verified_revenue(paid["id"]), 199.0)
+
+    def test_writer_nation_gate_blocks_launch_on_unanswered_stages(self):
+        gate = WriterNationGate().pass_stage("DEMAND", "3 strangers asked in public comments",
+                                             kind="OPINION")
+        review = gate.review()
+        self.assertEqual(review["verdict"], "BLOCK")
+        self.assertIn("TRUST", review["missing_stages"])
+        self.assertIn("DEMAND", review["stages_answered_without_verified_evidence"])
+        with self.assertRaises(ValueError):
+            WriterNationGate().pass_stage("VIBES", "everyone will love it")

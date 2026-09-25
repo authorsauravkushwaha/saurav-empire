@@ -169,7 +169,15 @@ def discover(body: dict | None = None, _: str = Depends(require_owner)) -> dict:
 
 
 @application.get("/economy/decide")
-def decide_endpoint(question: str, _: str = Depends(require_owner)) -> dict:
-    """Run the 8-MIND engine + chairman over an arbitrary owner question (no numbers supplied)."""
-    return chairman.decide(question=question, facts=[], assumptions=[], unknowns=[
-        "Whether the buyer will pay", "Whether the channel reaches them"]).to_dict()
+def decide_endpoint(question: str, structured: bool = True, _: str = Depends(require_owner)) -> dict:
+    """Run the 8-MIND engine + chairman over an owner question.
+
+    Defaults to the §28 DECISION OUTPUT STANDARD (persisted, auditable, scoreable later).
+    `structured=false` returns the legacy verdict object for older clients.
+    """
+    return chairman.decide(
+        question=question, facts=[], assumptions=[], unknowns=[
+            "Whether the buyer will pay", "Whether the channel reaches them"],
+        structured=structured, domain="opportunity",
+        displaced="the next-best owner question that the same hours would answer",
+    )

@@ -16,7 +16,7 @@ from typing import Callable
 from kernel import store
 from kernel.economy import economic_summary, experiments, ledger, opportunities
 from kernel.eventbus import E, bus
-from kernel.governance import audit, chairman
+from kernel.governance import audit, chairman, decision_engine_status
 from kernel.model_router import router
 from kernel.registry import agents as agent_registry
 from kernel.registry import departments as dept_registry
@@ -256,13 +256,38 @@ def kill_switch_cmd(text: str, m: re.Match) -> dict:
 
 @command("judge_decision", r"\b(should|is it worth|evaluate|judge|分析)\b")
 def judge(text: str, m: re.Match) -> dict:
-    verdict = chairman.decide(question=text, facts=[],
-                              assumptions=["The framing of the question assumes this is worth doing."],
-                              unknowns=["Whether the buyer will pay", "Whether you have the hours",
-                                        "What else those hours would produce"])
-    return {"said": verdict.verdict, "confidence": verdict.confidence,
-            "cheapest_test": verdict.cheapest_test, "action_plan": verdict.action_plan,
-            "disagreements": verdict.disagreements, "reality_check": verdict.reality_check}
+    """Answer in the §28 DECISION OUTPUT STANDARD, stored so it can be scored later."""
+    record = chairman.decide(
+        question=text, facts=[],
+        assumptions=["The framing of the question already assumes this is worth doing."],
+        unknowns=["Whether the buyer will pay", "Whether you have the hours",
+                  "What else those hours would produce"],
+        numbers={"displaced": "the current top-ranked opportunity that these hours would otherwise serve"},
+        structured=True, domain="owner-command")
+    verdict = record["verdict"]
+    return {"said": verdict["decision"], "confidence": verdict["confidence"],
+            "classification": record["classification"], "decision_id": record["id"],
+            "confidence_note": verdict["confidence_note"],
+            "evidence": {"strength": record["evidence"]["strength"],
+                         "verified_facts": record["evidence"]["proof_count"],
+                         "claims": record["evidence"]["claims"][:6]},
+            "agreement": record["agreement"], "disagreement": record["disagreement"],
+            "reality_check": record["reality_check"], "action_plan": record["action_plan"],
+            "expected_impact": record["expected_impact"], "forecast": record["forecast"],
+            "opportunity_cost": record["opportunity_cost"], "eight_minds": record["eight_minds"],
+            "cheapest_test": record["reality_check"]["cheapest_test"],
+            "standard": record["standard"]}
+
+
+@command("decision_engine", r"\b(how do you decide|decision engine|8 minds|eight minds|8-mind)\b")
+def engine_cmd(text: str, m: re.Match) -> dict:
+    status = decision_engine_status()
+    return {"said": "Eight minds, one chairman, one evidence hierarchy. Opinions are never averaged — "
+                    "the chairman resolves with evidence, economics, probability, risk, strategic value, "
+                    "customer value and compounding, then names the disagreement.",
+            "minds": status["minds"], "evidence_hierarchy": status["evidence_hierarchy"],
+            "classes": status["classes"], "calibration": status["calibration"],
+            "labels": status["labels"]}
 
 
 # ---------------------------------------------------------------------------
@@ -286,14 +311,20 @@ def interpret(text: str) -> dict:
             return result
 
     # No system action matched: answer honestly using the decision engine rather than pretending.
-    verdict = chairman.decide(question=text, facts=[], assumptions=[], unknowns=[
-        "What evidence supports the premise of this question"])
+    record = chairman.decide(question=text, facts=[], assumptions=[], unknowns=[
+        "What evidence supports the premise of this question"], structured=True, domain="owner-command")
+    verdict = record["verdict"]
     return {
         "intent": "analysis_only", "matched": False,
-        "said": ("No system action matched that sentence, so nothing was changed. Here is the analysis instead.",
-                 ),
-        "verdict": verdict.verdict, "confidence": verdict.confidence,
-        "cheapest_test": verdict.cheapest_test,
+        "said": "No system action matched that sentence, so nothing was changed. Here is the analysis instead.",
+        "decision_id": record["id"], "classification": record["classification"],
+        "verdict": verdict["decision"], "confidence": verdict["confidence"],
+        "evidence": {"strength": record["evidence"]["strength"],
+                     "claims": record["evidence"]["claims"][:6]},
+        "disagreement": record["disagreement"], "reality_check": record["reality_check"],
+        "action_plan": record["action_plan"], "forecast": record["forecast"],
+        "standard": record["standard"],
+        "cheapest_test": record["reality_check"]["cheapest_test"],
         "available_commands": [name for name, _, _ in COMMANDS],
         "try": ["show me everything generating revenue", "status",
                 "create a new department for digital products", "train 10 agents in Python",

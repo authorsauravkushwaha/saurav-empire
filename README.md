@@ -59,6 +59,12 @@ finance `8010` · security `8011` · event `8012` · world `8013`.
 | Any supervisor may STOP; only the owner may RESUME | `kernel/killswitch.py` |
 | Prompt-injection from the web is quarantined, never obeyed | `kernel/governance.py` `InjectionDefence` |
 | Papers, not promises: data hygiene problems get fixed and reported | `scripts/empire.py repair` |
+| A FACT without a source, or a "verified" hypothesis, raises instead of shipping | `kernel/decision.py` `Claim` |
+| Evidence is ranked in six tiers; assumptions cannot compound into proof | `kernel/decision.py` `EVIDENCE_HIERARCHY`, `EvidenceLedger.strength()` |
+| Every serious decision emits the §28 shape and is scored against reality later | `kernel/decision.py` `DecisionEngine`, `record_outcome`, `calibration` |
+| An action step with no measurable metric, a vague deadline, or spending without approval is refused | `kernel/decision.py` `ActionStep` |
+| An offer may not go LIVE without its 11 fields, verified proof and a clean ethics screen | `kernel/customers.py` `OfferDesign.may_go_live` |
+| Customers: minimum necessary data, consent-gated contact, no credentials, no revenue without a ledger entry | `kernel/customers.py` `CustomerLedger` |
 
 ## The 3D world is a read-out, not a cartoon
 
@@ -80,10 +86,30 @@ can reach, or a camera preset crops the civilization. It writes
 `data/state/artifacts/world-map.svg` and `.png` — a top-down projection of the exact coordinates
 the client renders.
 
+## The decision standard (§28)
+
+Every consequential decision is produced, stored and displayed in one shape — VERDICT, EVIDENCE,
+8-MIND ANALYSIS, AGREEMENT/DISAGREEMENT, REALITY CHECK, ACTION PLAN, EXPECTED IMPACT, CONFIDENCE —
+with a forecast and a kill criterion attached, so a decision can be scored later against what
+actually happened instead of being remembered fondly. `docs/DECISION_STANDARD.md` maps each clause of
+the constitution to the code that enforces it, lists the deterministic classification rules, and
+enumerates what gets refused.
+
+```
+POST /api/customer/decision/standard                  # ask for a decision, get the §28 record
+GET  /api/customer/decision/engine                    # the 8 mandates, the hierarchy, the calibration
+GET  /api/customer/decision/calibration               # how often forecasts actually held (null until measured)
+POST /api/customer/customer/offers/validate           # offer gate: fields, journey, verified proof, ethics
+POST /api/customer/customer/customers                 # consent-aware customer records (refuses sensitive data)
+```
+
+The owner command centre renders the same record, and `GET /api/customer/decision/labels` counts
+every claim by label across stored decisions — the anti-hallucination dashboard.
+
 ## Tests
 
 ```
-python3 -m unittest discover -s tests -v      # 63 tests, standard library only
+python3 -m unittest discover -s tests -v      # 91 tests, standard library only
 cd apps/civilization-web && npm run build     # type-checks then builds the client
 cd apps/civilization-web && npm run smoke     # boots the built bundle in jsdom
 ```
@@ -95,6 +121,8 @@ never queued, an agent that keeps failing ends up in front of the owner instead 
 ## Honest status (2026-09-25)
 
 * Verified revenue: **₹0.00** — no real customer has paid yet. That is the truth, not a bug.
+* Forecast calibration has **0 scored decisions**, so the system reports `hit_rate: null` rather
+  than inventing an accuracy figure.
 * No local model is installed in this environment, so every artifact is templated and says so.
 * The API, the event stream, the task loop and the client build are verified; the *visual* look of
   the 3D scene has not been eyeballed in a browser by the author of this file — open

@@ -76,9 +76,19 @@ def estimate(value: Any, assumptions: Iterable[str], source: str = "internal_mod
 # Claims validator — blocks fabricated proof and manipulative tactics
 # ---------------------------------------------------------------------------
 # Context words that turn a number into an outcome claim (as opposed to a price or a budget).
-OUTCOME_CONTEXT = re.compile(
+# Words that assert money was (or will certainly be) obtained — the real signal of a fabricated claim.
+ACHIEVEMENT_CONTEXT = re.compile(
     r"(?:revenue|profit|earn(?:ed|ings)?|income|sales|made|generated|cash|withdraw|cashed|"
-    r"per\s+month|per\s+day|/month|monthly|guaranteed|return|ROI|payout)", re.I)
+    r"guaranteed|return|ROI|payout)", re.I)
+# A period alone is not a claim: "₹199/month membership" is a price. "₹50,000/month" with no price
+# noun is an income claim.
+PERIOD_CONTEXT = re.compile(r"(?:per\s+month|per\s+day|per\s+week|/month|/day|/week|monthly|"
+                            r"daily|weekly|per\s+annum|/year|per\s+year)", re.I)
+PRICE_CONTEXT = re.compile(
+    r"(?:price|priced|tier|plan|membership|subscription|subscriber|fee|course|ebook|book|workshop|"
+    r"coaching|retainer|licen[cs]e|seat|pack|bundle|budget|discount|costs?|cost of|starting at|"
+    r"from|only|free|₹0|investment of|deposit|token amount|cancel|subscri(?:be|ption)|join|"
+    r"trial|refund|buy|checkout|pay\b)", re.I)
 
 
 def _currency_is_outcome_claim(match: "re.Match", text: str) -> bool:
@@ -90,7 +100,11 @@ def _currency_is_outcome_claim(match: "re.Match", text: str) -> bool:
     except ValueError:
         pass
     window = text[max(0, match.start() - 70): match.end() + 70]
-    return bool(OUTCOME_CONTEXT.search(window))
+    if ACHIEVEMENT_CONTEXT.search(window):
+        return True
+    if PERIOD_CONTEXT.search(window) and not PRICE_CONTEXT.search(window):
+        return True
+    return False
 
 
 @dataclass
@@ -400,33 +414,86 @@ def activity_audit(*, value: float, cost: float, evidence_strength: float, strat
 
 
 # ---------------------------------------------------------------------------
-# The 8-MIND decision engine
+# The 8-MIND decision engine — master prompt §5, one perspective per mind
 # ---------------------------------------------------------------------------
 MINDS = ["CEO", "DEAL_MANAGER", "SALES_DIRECTOR", "MARKETING_DIRECTOR",
          "FINANCE_ADVISOR", "LEGAL_RISK_ADVISOR", "CUSTOMER_BUYER", "FUTURE_STRATEGIST"]
 
-MIND_QUESTIONS = {
-    "CEO": ["Is this strategically important or a distraction?", "Does it create an asset?",
-            "Does it improve future bargaining power or defensibility?", "What is the opportunity cost?"],
-    "DEAL_MANAGER": ["What does each party gain?", "Where is the leverage?", "What is our BATNA?",
-                     "What walk-away point protects us?", "Which term creates asymmetric downside?"],
-    "SALES_DIRECTOR": ["Who exactly is the buyer?", "What problem triggers purchase?",
-                       "What makes them hesitate?", "What proof do they need?", "Why act now?",
-                       "Why this instead of the alternative?"],
-    "MARKETING_DIRECTOR": ["What attention can be earned, and is it relevant?",
-                           "What message creates interest?", "What builds trust?",
-                           "What converts attention into qualified demand?"],
-    "FINANCE_ADVISOR": ["What is the expected contribution?", "What are the variable and incremental costs?",
-                        "What is the payback period?", "What does the downside case cost us?"],
-    "LEGAL_RISK_ADVISOR": ["What contracts, IP, privacy or platform rules apply?",
-                           "Which claims must be provable?", "What is irreversible?",
-                           "Where is professional counsel required?"],
-    "CUSTOMER_BUYER": ["Why should I care?", "Why should I trust this?", "Why should I buy now?",
-                       "What am I afraid of?", "What would make me reject or recommend this?"],
-    "FUTURE_STRATEGIST": ["What happens if this succeeds?", "What happens if it fails?",
-                          "What happens if a competitor copies it?", "What technology could erase the advantage?",
-                          "What compounds? What should stay human?"],
+# The mandate each mind is accountable for (§5). Kept as data so the API and the UI can show the
+# owner *why* a mind spoke, instead of a black box that merely asserts.
+MIND_DOMAINS = {
+    "CEO": "direction, business model, positioning, defensibility, capital allocation, opportunity cost",
+    "DEAL_MANAGER": "leverage, BATNA, terms, payment, exclusivity, asymmetric downside, walk-away point",
+    "SALES_DIRECTOR": "buyer, trigger, hesitation, proof, urgency, alternative, follow-up, referral",
+    "MARKETING_DIRECTOR": "attention, relevance, message, trust, attention → qualified demand",
+    "FINANCE_ADVISOR": "contribution margin, CAC, LTV, payback, ROI, cash, scenarios",
+    "LEGAL_RISK_ADVISOR": "IP, privacy, platform rules, claims, refunds, regulation (never claims to be a lawyer; "
+                          "recommends professional counsel where consequences are material)",
+    "CUSTOMER_BUYER": "why care, why trust, why buy now, what I fear, what makes me reject or recommend",
+    "FUTURE_STRATEGIST": "5–10 year effects, compounding assets, what to automate vs keep human",
 }
+
+MIND_QUESTIONS = {
+    "CEO": ["Is this strategically important or a distraction?",
+            "Does it create an asset (IP, audience, code, data) that survives this initiative?",
+            "Does it improve future bargaining power or defensibility?",
+            "What is the opportunity cost — what does this slot displace?",
+            "Is this capital allocation, or just activity?"],
+    "DEAL_MANAGER": ["What does each party gain, and is the value exchange real?",
+                     "Where is the leverage, and who holds it?",
+                     "What is our BATNA if this negotiation fails?",
+                     "What walk-away point protects us, in numbers?",
+                     "Which term creates asymmetric downside — and what is the exit?"],
+    "SALES_DIRECTOR": ["Who exactly is the buyer, named as a segment, not 'everyone'?",
+                       "What problem triggers the purchase, and when does it bite?",
+                       "What makes them hesitate, and how is that overcome honestly?",
+                       "What proof do they need before paying — and do we actually have it?",
+                       "Why act now, without fake urgency?",
+                       "Why this instead of the alternative (including doing nothing)?",
+                       "What is the follow-up and the referral? Nothing closes once."],
+    "MARKETING_DIRECTOR": ["What attention can be earned, and is it relevant attention?",
+                           "What message creates interest without exaggeration?",
+                           "What builds trust that a stranger can verify?",
+                           "What converts attention into qualified demand, not vanity reach?"],
+    "FINANCE_ADVISOR": ["What is the expected contribution (revenue − variable − incremental)?",
+                        "What are the variable and incremental costs, itemised?",
+                        "What is the payback period against available cash?",
+                        "What does the downside case cost us, and can we survive it?",
+                        "What are CAC and expected LTV — and are they estimates from ₹0 evidence?"],
+    "LEGAL_RISK_ADVISOR": ["What contracts, IP, privacy or platform rules apply here?",
+                           "Which claims must be provable before we publish them?",
+                           "What is irreversible — and is it approval-gated?",
+                           "Where is professional counsel required? (I am not a lawyer.)",
+                           "Does anything touch another person's data, likeness or work without consent?"],
+    "CUSTOMER_BUYER": ["Why should I care about this at all?",
+                       "Why should I trust this — what have you shown me?",
+                       "Why should I buy now rather than later?",
+                       "What am I afraid of losing, wasting or being embarrassed by?",
+                       "What would make me reject this — and what would make me recommend it?"],
+    "FUTURE_STRATEGIST": ["What does this look like in 5–10 years if it works?",
+                          "What compounds here (asset) versus what decays (activity)?",
+                          "What happens if a competitor copies it tomorrow?",
+                          "What technology or platform change could erase the advantage?",
+                          "What should be automated, and what must stay human?"],
+}
+
+# A mind whose domain is silent on a decision is itself a finding: name the silence.
+MIND_KEYS = ("verdict", "confidence", "findings", "risks", "questions", "evidence_used")
+
+# What a mind needs before its answer can be trusted. A missing input is not a reason to stay
+# silent — it is a reason to say so out loud.
+MIND_REQUIREMENTS = {
+    "CEO": ("strategic_fit", "opportunity_cost_inr"),
+    "DEAL_MANAGER": ("batna", "walk_away"),
+    "SALES_DIRECTOR": ("buyer_segment", "proof_available"),
+    "MARKETING_DIRECTOR": ("content_job", "channel"),
+    "FINANCE_ADVISOR": ("expected_revenue", "variable_costs", "incremental_costs"),
+    "LEGAL_RISK_ADVISOR": ("claims_to_prove", "irreversible"),
+    "CUSTOMER_BUYER": ("objections", "offer_proof"),
+    "FUTURE_STRATEGIST": ("compounding_asset", "five_year_effect"),
+}
+
+MINDS_BY_DOMAIN = {mind: domain for mind, domain in MIND_DOMAINS.items()}
 
 
 @dataclass
@@ -438,6 +505,10 @@ class MindOpinion:
     risks: list[str]
     questions: list[str]
     evidence_used: list[str] = field(default_factory=list)
+    domain: str = ""                       # the mandate this mind is accountable for (§5)
+    inputs_supplied: list[str] = field(default_factory=list)
+    inputs_missing: list[str] = field(default_factory=list)
+    blind_spots: list[str] = field(default_factory=list)
 
 
 class EightMinds:
@@ -474,7 +545,14 @@ class EightMinds:
         q = MIND_QUESTIONS[mind]
         findings: list[str] = []
         risks: list[str] = []
+        blind_spots: list[str] = []
         confidence = "LOW"
+        required = MIND_REQUIREMENTS.get(mind, ())
+        supplied = [k for k in required if numbers.get(k) not in (None, "", [], {})]
+        missing = [k for k in required if k not in supplied]
+        if missing:
+            blind_spots.append(f"{mind} is reasoning without its own required input(s): {', '.join(missing)}. "
+                               "Any conclusion from this mind is provisional.")
 
         if mind == "FINANCE_ADVISOR":
             rev = float(numbers.get("expected_revenue", 0) or 0)
@@ -492,6 +570,21 @@ class EightMinds:
                 confidence = "MEDIUM"
             else:
                 confidence = "MEDIUM"
+            cash = float(store.get_setting("cash_available_inr", 0) or 0)
+            capital = float(numbers.get("required_capital", 0) or 0)
+            if rev > 0 and contribution > 0:
+                findings.append(f"Contribution is positive; capital need {capital:,.2f} vs available cash {cash:,.2f}. [{ESTIMATE_STAMP}]")
+                if capital > cash:
+                    risks.append(f"Required capital {capital:,.2f} exceeds available cash {cash:,.2f} — this needs outside money or a smaller scope.")
+            for key, label in (("cac", "CAC"), ("ltv", "LTV"), ("downside_cost", "downside cost")):
+                if numbers.get(key) is not None:
+                    findings.append(f"{label} supplied: {float(numbers[key]):,.2f}. [{ESTIMATE_STAMP}]")
+            if numbers.get("cac") is not None and numbers.get("ltv") is not None:
+                cac, ltv = float(numbers["cac"]), float(numbers["ltv"])
+                if ltv <= cac:
+                    risks.append("LTV does not exceed CAC — every customer acquired destroys value.")
+                else:
+                    findings.append(f"LTV:CAC ≈ {ltv / cac:.2f}x. [{ESTIMATE_STAMP}]")
             if numbers.get("payback_days") is not None:
                 pd = float(numbers["payback_days"])
                 findings.append(f"Payback ≈ {pd:.0f} days. [{ESTIMATE_STAMP}]")
@@ -509,35 +602,81 @@ class EightMinds:
                 findings.append(f"The buyer can be given {len(facts)} checkable fact(s) to reduce perceived risk.")
             if not facts:
                 risks.append("Nothing checkable has been offered to the buyer — trust will be low.")
-            findings.append("Reduce perceived risk honestly: refund terms, sample, transparent limitations.")
+            objections = numbers.get("objections") or []
+            if objections:
+                findings.append(f"{len(objections)} known objection(s) to answer honestly: {', '.join(str(o)[:60] for o in list(objections)[:3])}.")
+            else:
+                risks.append("No objections recorded — sellers who have not heard objections have not listened yet.")
+            findings.append("Reduce perceived risk honestly: refund terms, sample, transparent limitations. "
+                            "Never fake scarcity, reviews or urgency to close.")
             confidence = "MEDIUM" if facts else "LOW"
         elif mind == "FUTURE_STRATEGIST":
             findings.append("Assets that compound here: audience, IP, code, customer data with consent, distribution.")
             risks.append("If a platform or model provider changes terms or pricing, this advantage can evaporate — keep a portable fallback.")
+            findings.append("Split the work: automate the repeatable, keep humans for judgement, relationships and taste.")
+            if numbers.get("compounding_asset"):
+                findings.append(f"Compounding asset named: {str(numbers['compounding_asset'])[:100]} — protect and reinvest in it.")
+            else:
+                risks.append("No compounding asset named: in 5 years this may leave nothing behind but invoices.")
+            if numbers.get("five_year_effect"):
+                findings.append(f"5–10 year effect: {str(numbers['five_year_effect'])[:140]}")
             confidence = "LOW"
         elif mind == "CEO":
             findings.append("Test for asset creation: after 12 months, what still exists if we stop working on it?")
             if not numbers.get("strategic_fit"):
                 risks.append("Strategic fit was not scored — this may be a distraction wearing ambition as a costume.")
+            if numbers.get("displaced"):
+                findings.append(f"Opportunity cost is named: {str(numbers['displaced'])[:120]}. Every yes is a no to something else.")
+            else:
+                risks.append("Opportunity cost unnamed — the thing being sacrificed has not been identified.")
+            findings.append("Loyalty order applied: TRUTH → SURVIVAL → ETHICS → CUSTOMER VALUE → CASH FLOW → "
+                            "PROFITABILITY → SCALE → BRAND → LONG-TERM VALUE.")
             confidence = "MEDIUM"
         elif mind == "DEAL_MANAGER":
             findings.append("Write down the BATNA before entering any negotiation. If it is empty, you have no leverage.")
             if not numbers.get("batna"):
-                risks.append("No BATNA recorded.")
+                risks.append("No BATNA recorded — walking away cannot be credible without one.")
+            if not numbers.get("walk_away"):
+                risks.append("No walk-away point in numbers: without it, any term can be pushed onto us.")
+            if numbers.get("exclusivity"):
+                risks.append("Exclusivity requested or granted: check that the asymmetric downside is bounded and time-limited.")
             confidence = "LOW"
         elif mind == "SALES_DIRECTOR":
             findings.append("Qualify with NEED + ABILITY TO PAY + URGENCY + FIT + TRUST + CONVERSION PROBABILITY + LTV.")
             risks.append("Treating every lead equally wastes the only scarce resource: attention.")
+            if not numbers.get("buyer_segment"):
+                risks.append("No buyer segment named — 'everyone' is not a buyer and cannot be sold to.")
+            if not numbers.get("proof_available") and not facts:
+                risks.append("No proof available at the point of sale; the buyer is being asked to believe a stranger.")
+            if not numbers.get("follow_up"):
+                findings.append("Define the follow-up and the referral step before the first contact — nothing closes once.")
             confidence = "MEDIUM" if facts else "LOW"
         elif mind == "MARKETING_DIRECTOR":
             findings.append("Declare the job of the content before creating it: awareness, trust, lead, conversion, retention or referral.")
             risks.append("Vanity reach without qualified demand is not progress.")
+            draft = str(numbers.get("draft") or numbers.get("copy") or "")
+            if draft:
+                review = claims.review(draft, context="content")   # the same hard gate the publisher uses
+                if review["blocks"]:
+                    risks.append(f"Draft blocked by the claims screen ({len(review['blocks'])} blocking issue(s)): "
+                                 f"{review['blocks'][0]['rule']}. Attention bought with a lie is not an asset.")
+                else:
+                    findings.append(f"Draft passed the claims screen ({len(review['warnings'])} warning(s)); "
+                                    "no fabricated proof or manipulative tactic detected.")
+            if not numbers.get("content_job"):
+                risks.append("Content job not declared — 'we must post today' is not a strategy.")
             confidence = "MEDIUM"
 
         if assumptions:
-            findings.append(f"Depends on {len(assumptions)} assumption(s), each of which can be falsified.")
+            findings.append(f"Depends on {len(assumptions)} assumption(s) [{SCENARIO_STAMP}], each of which can be falsified: "
+                            f"{'; '.join(a[:70] for a in assumptions[:2])}.")
         if unknowns:
             risks.append(f"{len(unknowns)} unknown(s) remain — the cheapest resolving test should be run before commitment.")
+        if not facts:
+            blind_spots.append("No verified FACT was supplied to this review: every mind here is reasoning on "
+                               "assumptions and inference only.")
+        if not unknowns:
+            blind_spots.append("No UNKNOWN declared. Decisions that admit no ignorance are usually hiding it.")
 
         if use_model and self._use_model:
             try:
@@ -553,9 +692,13 @@ class EightMinds:
             except Exception:
                 pass
 
-        return MindOpinion(mind=mind, verdict=", ".join(findings[:1])[:200] or "No data.",
-                           confidence=confidence, findings=findings, risks=risks,
-                           questions=q, evidence_used=[f[:120] for f in facts[:5]])
+        verdict = ", ".join(findings[:1])[:200] or "No data."
+        if confidence == "LOW" and not facts:
+            verdict = "Provisional (no verified evidence): " + verdict[:170]
+        return MindOpinion(mind=mind, verdict=verdict, confidence=confidence, findings=findings,
+                           risks=risks, questions=q, evidence_used=[f[:120] for f in facts[:5]],
+                           domain=MIND_DOMAINS[mind], inputs_supplied=supplied,
+                           inputs_missing=missing, blind_spots=blind_spots)
 
 
 @dataclass
@@ -585,7 +728,22 @@ class Chairman:
 
     def decide(self, question: str, *, facts: list[str] | None = None, assumptions: list[str] | None = None,
                unknowns: list[str] | None = None, numbers: dict | None = None,
-               minutes: int = 0, use_model: bool = True) -> ChairmanVerdict:
+               minutes: int = 0, use_model: bool = True, structured: bool = False,
+               domain: str = "business", **structured_kwargs) -> ChairmanVerdict | dict:
+        """Resolve the eight minds into one decision.
+
+        `structured=True` emits the master prompt §28 DECISION OUTPUT STANDARD (a persisted
+        `decisions` row with VERDICT / EVIDENCE / 8-MIND ANALYSIS / AGREEMENT-DISAGREEMENT /
+        REALITY CHECK / ACTION PLAN / EXPECTED IMPACT / CONFIDENCE) instead of the legacy verdict
+        object. The legacy path stays byte-compatible for existing callers.
+        """
+        if structured:
+            from .decision import decision_engine
+            return decision_engine.decide(
+                question, domain=domain, facts=facts or [], assumptions=assumptions or [],
+                unknowns=unknowns or [], numbers=numbers or {}, minutes=minutes,
+                use_model=use_model, **structured_kwargs,
+            ).to_dict()
         facts, assumptions, unknowns, numbers = facts or [], assumptions or [], unknowns or [], numbers or {}
         analysis = EightMinds().analyse(question, facts=facts, assumptions=assumptions,
                                         unknowns=unknowns, numbers=numbers, use_model=use_model)
@@ -672,6 +830,30 @@ class Chairman:
                                disagreements=disagreements, reality_check=reality,
                                action_plan=action_plan, expected_impact=impact,
                                cheapest_test=cheapest, eight_minds=analysis)
+
+
+def decision_standard(question: str, **kwargs: Any) -> dict:
+    """The §28 DECISION OUTPUT STANDARD for one question, persisted and auditable.
+
+    Example:
+        decision_standard("Launch the ₹199 tier?", facts=[...], unknowns=[...],
+                          numbers={"expected_revenue": 678, "incremental_costs": 40})
+    """
+    from .decision import decision_engine
+    return decision_engine.decide(question, **kwargs).to_dict()
+
+
+def decision_engine_status() -> dict:
+    """What the decision engine is made of: minds, hierarchy, classes, calibration."""
+    from .decision import CONFIDENCE_BANDS, DECISION_CLASSES, EVIDENCE_HIERARCHY, decision_engine
+    return {"standard": "master prompt §28", "minds": [{"mind": m, "domain": MIND_DOMAINS[m],
+                                                       "questions": MIND_QUESTIONS[m]} for m in MINDS],
+            "evidence_hierarchy": EVIDENCE_HIERARCHY, "claim_labels": list(EVIDENCE_KINDS),
+            "classes": list(DECISION_CLASSES), "confidence_bands": list(CONFIDENCE_BANDS),
+            "calibration": decision_engine.calibration(),
+            "labels": decision_engine.label_report(),
+            "chairman": "resolves with evidence + economics + probability + risk + strategic value + "
+                        "customer value + compounding; never averages opinions"}
 
 
 # ---------------------------------------------------------------------------

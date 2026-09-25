@@ -41,11 +41,32 @@ CARD = ServiceCard(
 )
 application = service_app(CARD)
 
-SERVICES = {
+# The proxy map is derived from config/services.yaml — one topology, one source of truth. A new
+# service becomes reachable through the gateway without editing this file (and can never be listed
+# here while missing from the topology, or vice versa). The literal below is only a fallback for a
+# missing/unreadable config file.
+_FALLBACK_SERVICES = {
     "agent": 8001, "model": 8002, "memory": 8003, "analytics": 8004, "workflow": 8005,
     "economy": 8006, "university": 8007, "research": 8008, "integration": 8009,
-    "finance": 8010, "security": 8011, "event": 8012, "world": 8013,
+    "finance": 8010, "security": 8011, "event": 8012, "world": 8013, "customer": 8014,
 }
+
+
+def _service_map() -> dict[str, int]:
+    try:
+        topology = config().section("services") or {}
+    except Exception:
+        return dict(_FALLBACK_SERVICES)
+    out: dict[str, int] = {}
+    for name, spec in topology.items():
+        if name == "gateway" or not isinstance(spec, dict) or "port" not in spec:
+            continue
+        key = name[:-8] if name.endswith("-service") else name
+        out[key] = int(spec["port"])
+    return out or dict(_FALLBACK_SERVICES)
+
+
+SERVICES = _service_map()
 HOST = os.environ.get("EMPIRE_SERVICE_HOST", "127.0.0.1")
 TIMEOUT = httpx.Timeout(30.0, connect=5.0)
 _client: httpx.AsyncClient | None = None

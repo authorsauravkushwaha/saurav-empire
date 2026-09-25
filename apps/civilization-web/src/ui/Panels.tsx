@@ -78,6 +78,127 @@ function Table({ head, rows }: { head: string[]; rows: (JSX.Element | string)[][
   );
 }
 
+/** The master prompt §28 DECISION OUTPUT STANDARD, rendered so the owner sees the reasoning. */
+function DecisionStandard({ d }: { d: any }) {
+  if (!d?.verdict || typeof d.verdict !== 'object') return null;
+  const v = d.verdict;
+  const cls = String(d.classification ?? v.classification ?? '');
+  const tone = cls === 'STOP' || cls === 'REJECT' ? 'failed'
+    : cls === 'DEFER' || cls === 'TEST' ? 'pending'
+      : cls === 'SCALE' || cls === 'CONTINUE' ? 'done' : 'info';
+  const claims: any[] = d.evidence?.claims ?? [];
+  return (
+    <div className="decision">
+      <div className="decision-head">
+        <span className={`badge ${tone}`}>{cls || 'DECISION'}</span>
+        <span className={`badge ${d.confidence === 'HIGH' ? 'done' : d.confidence === 'MEDIUM' ? 'info' : 'pending'}`}>
+          confidence {d.confidence}
+        </span>
+        <strong>{v.decision}</strong>
+      </div>
+      {v.confidence_note && <div className="note">{v.confidence_note}</div>}
+      <div className="decision-section">
+        <span className="muted">EVIDENCE — strength {(Number(d.evidence?.strength ?? 0) * 100).toFixed(0)}%,
+          {' '}{d.evidence?.proof_count ?? 0} verified FACT(s)</span>
+        <ul className="tight">
+          {claims.slice(0, 8).map((c: any, i: number) => (
+            <li key={i}><span className="claim-kind">{c.kind}</span> {c.text}</li>
+          ))}
+          {!claims.length && <li className="muted">Nothing verified was supplied — every mind is provisional.</li>}
+        </ul>
+      </div>
+      <div className="decision-section">
+        <span className="muted">AGREEMENT / DISAGREEMENT</span>
+        <ul className="tight">
+          {(d.agreement ?? []).map((a: string, i: number) => <li key={`a${i}`}>{a}</li>)}
+          {(d.disagreement ?? []).map((a: string, i: number) => <li key={`d${i}`} className="disagree">{a}</li>)}
+        </ul>
+      </div>
+      <div className="decision-section">
+        <span className="muted">REALITY CHECK — cheapest test: {d.reality_check?.cheapest_test}</span>
+        <ul className="tight">
+          <li><strong>Do now:</strong> {d.reality_check?.do_now}</li>
+          <li><strong>Kill criterion:</strong> {d.reality_check?.kill_criterion}</li>
+          <li><strong>Missing:</strong> {(d.reality_check?.what_we_are_missing ?? []).join('; ')}</li>
+          <li><strong>Can break this:</strong> {(d.reality_check?.what_can_break_this ?? []).slice(0, 3).join('; ')}</li>
+        </ul>
+      </div>
+      <div className="decision-section">
+        <span className="muted">ACTION PLAN</span>
+        <ul className="tight">
+          {(d.action_plan ?? []).map((s: any) => (
+            <li key={s.order}>
+              <strong>{s.order}.</strong> {s.action}
+              <span className="muted"> — owner {s.owner}, ₹{Number(s.budget_inr ?? 0).toFixed(0)},
+                {' '}{s.duration_minutes} min, metric: {s.success_metric}</span>
+              {s.spends_money && !s.approval_ref && <span className="badge pending">approval required</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+      {d.forecast && (
+        <div className="decision-section">
+          <span className="muted">FORECAST — {d.forecast.label}</span>
+          <div>
+            {d.forecast.metric}: {String(d.forecast.expected)} {d.forecast.unit} over {d.forecast.horizon_days} days
+            {' '}({d.forecast.comparator}). Kill: {d.forecast.kill_criterion}
+          </div>
+        </div>
+      )}
+      {d.opportunity_cost && (
+        <div className="decision-section muted">
+          OPPORTUNITY COST — ₹{Number(d.opportunity_cost.rupees ?? 0).toFixed(0)},
+          {' '}{d.opportunity_cost.minutes} min: {d.opportunity_cost.displaced}
+        </div>
+      )}
+      <div className="decision-section">
+        <span className="muted">EXPECTED IMPACT</span>
+        <ul className="tight">
+          <li><strong>Customer:</strong> {d.expected_impact?.customer}</li>
+          <li><strong>Financial:</strong> revenue ₹{Number(d.expected_impact?.financial?.revenue_inr ?? 0).toFixed(2)},
+            {' '}modelled contribution ₹{Number(d.expected_impact?.financial?.modelled_contribution_inr ?? 0).toFixed(0)}
+            {' '}({d.expected_impact?.financial?.label})</li>
+          <li><strong>Strategic:</strong> {d.expected_impact?.strategic}</li>
+        </ul>
+      </div>
+      <div className="decision-section">
+        <span className="muted">8-MIND ANALYSIS — {(d.eight_minds?.minds ?? []).length} minds, none averaged away</span>
+        <div className="minds">
+          {(d.eight_minds?.minds ?? []).map((m: any) => (
+            <div key={m.mind} className="mind" title={m.domain}>
+              <span className="mind-name">{m.mind.replace('_ADVISOR', '').replace('_', ' ')}</span>
+              <span className={`badge ${m.confidence === 'MEDIUM' ? 'info' : 'pending'}`}>{m.confidence}</span>
+              <span className="muted">{m.findings?.[0]?.slice(0, 150)}</span>
+              {!!m.inputs_missing?.length && (
+                <span className="muted">missing: {m.inputs_missing.join(', ')}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="muted">standard: {d.standard} · decision id {d.id}</div>
+    </div>
+  );
+}
+
+function DecisionEngineCard() {
+  const [meta, setMeta] = useState<any>(null);
+  useEffect(() => { api.decisionEngine().then(setMeta).catch(() => setMeta(null)); }, []);
+  if (!meta) return null;
+  const cal = meta.calibration ?? {};
+  return (
+    <div className="note">
+      <strong>Decision engine:</strong> {meta.minds?.length ?? 0} minds · evidence hierarchy{' '}
+      {meta.evidence_hierarchy?.length ?? 0} tiers · classes {(meta.classes ?? []).join(' | ')}
+      <div className="muted">
+        Forecast calibration: {cal.scored_decisions ?? 0} scored,
+        {' '}{cal.hit_rate === null || cal.hit_rate === undefined ? 'no claims of accuracy' :
+          `${(cal.hit_rate * 100).toFixed(0)}% held`}. {cal.note}
+      </div>
+    </div>
+  );
+}
+
 function CommandPanel() {
   const commands = useEmpire((s) => s.dashboard);
   const [list, setList] = useState<any>(null);
@@ -115,10 +236,11 @@ function CommandPanel() {
         {result && (
           <div className="result">
             <div>
-              <strong>{result.intent}</strong> — {result.summary}
+              <strong>{result.intent}</strong> — {result.summary ?? result.said}
             </div>
             {result.requires_approval && <div className="badge pending">queued for owner approval</div>}
-            <pre>{JSON.stringify(result.data ?? result, null, 2).slice(0, 1600)}</pre>
+            <DecisionStandard d={result} />
+            {!result.verdict && <pre>{JSON.stringify(result.data ?? result, null, 2).slice(0, 1600)}</pre>}
           </div>
         )}
       </div>
@@ -138,6 +260,7 @@ function CommandPanel() {
         ) : (
           <div className="empty">Command list unavailable.</div>
         )}
+        <DecisionEngineCard />
         {commands?.honesty && (
           <div className="note">
             <strong>Owner dashboard note:</strong> {commands.honesty.note ?? 'see payload'}

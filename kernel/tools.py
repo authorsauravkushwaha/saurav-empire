@@ -393,6 +393,74 @@ def research_plan(payload: dict, agent: dict) -> dict:
 # ---------------------------------------------------------------------------
 # Dispatch
 # ---------------------------------------------------------------------------
+@tool("decide", description="Run the §28 DECISION OUTPUT STANDARD over a question and labelled "
+      "evidence. Reasoning only — it cannot spend, send or publish.", risk="LOW",
+      tool_key="memory.write")
+def decide(payload: dict, agent: dict) -> dict:
+    """Structured decision with evidence tiers, disagreement, a plan and a kill criterion.
+
+    The tool may not edit the answer: it hands over the same record the owner would receive, and
+    labels every input by what it actually is. An agent that asks "is this worth doing?" gets a
+    verdict it must obey, not a paragraph to reinterpret.
+    """
+    from .decision import decision_engine
+    question = str(payload.get("question") or "Is this worth doing?")
+    if not question.strip():
+        return {"status": "error", "reason": "A decision needs a question.",
+                "evidence": [{"kind": "FACT", "value": "No question was supplied."}]}
+    record = decision_engine.decide(
+        question=question,
+        domain=str(payload.get("domain") or "agent"),
+        facts=[str(f) for f in (payload.get("facts") or [])],
+        inferences=[str(x) for x in (payload.get("inferences") or [])],
+        hypotheses=[str(x) for x in (payload.get("hypotheses") or [])],
+        assumptions=[str(x) for x in (payload.get("assumptions") or [])],
+        opinions=[str(x) for x in (payload.get("opinions") or [])],
+        unknowns=[str(x) for x in (payload.get("unknowns") or [])],
+        numbers=payload.get("numbers") or {},
+        minutes=int(payload.get("minutes") or 0),
+        use_model=bool(payload.get("use_model", True)),
+        department_id=agent.get("department_id"),
+        displaced=str(payload.get("displaced") or ""),
+    )
+    data = record.to_dict()
+    return {
+        "status": "ok",
+        "decision_id": data["id"],
+        "classification": data["classification"],
+        "confidence": data["confidence"],
+        "verdict": data["verdict"]["decision"],
+        "cheapest_test": data["reality_check"]["cheapest_test"],
+        "kill_criterion": data["reality_check"]["kill_criterion"],
+        "plan": [step["action"] for step in data["action_plan"]],
+        "disagreement": data["disagreement"],
+        "evidence": [
+            {"kind": c["kind"], "value": c["text"], "source": c["source"]} for c in data["evidence"]["claims"]
+        ] or [{"kind": "UNKNOWN", "value": "No evidence was supplied to the decision engine."}],
+        "verified": data["evidence"]["proof_count"] > 0,
+        "standard": data["standard"],
+    }
+
+
+@tool("offer_review", description="Run an offer through the Writer Nation gate and the ethical screen "
+      "before anything is built.", risk="LOW", tool_key="memory.write")
+def offer_review(payload: dict, agent: dict) -> dict:
+    from .customers import OfferDesign
+    try:
+        offer = OfferDesign.from_dict(payload.get("offer") or {})
+    except (TypeError, ValueError) as exc:
+        return {"status": "error", "reason": f"Offer could not be read: {exc}",
+                "evidence": [{"kind": "FACT", "value": "Malformed offer payload."}]}
+    check = offer.may_go_live()
+    return {
+        "status": "ok", "launchable": check["allowed"], "gaps": check["gaps"],
+        "ethics": check["ethics"], "reason": check["reason"],
+        "evidence": [{"kind": "OPINION", "value": "An offer is launchable only with verified proof; "
+                                                  "this review is deterministic policy, not a judgement call."}],
+        "verified": False,
+    }
+
+
 TASK_TO_TOOL = {
     "catalog_audit": "catalog_audit",
     "financial_model": "unit_economics",
@@ -405,6 +473,8 @@ TASK_TO_TOOL = {
     "outreach_draft": "draft_outreach",
     "code_task": "engineering_brief",
     "experiment_design": "experiment_design",
+    "decision": "decide",                  # the §28 standard, callable from inside the civilization
+    "offer_review": "offer_review",
 }
 
 

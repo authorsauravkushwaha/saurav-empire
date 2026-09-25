@@ -85,7 +85,13 @@ services:
     layer: civilization
     dir: services/world-service
     description: "World layout, agent positions, occupancy, visual analytics"
+  customer-service:
+    port: 8014
+    layer: economy
+    dir: services/customer-service
+    description: "Offers, consent-aware customers, rational qualification, §28 decision standard"
 
 startup_order: [event-service, security-service, agent-service, model-service, memory-service,
                 workflow-service, economy-service, university-service, research-service,
-                integration-service, finance-service, analytics-service, world-service, gateway]
+                integration-service, finance-service, customer-service, analytics-service,
+                world-service, gateway]

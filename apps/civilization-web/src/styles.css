@@ -235,3 +235,16 @@ textarea { resize: vertical; }
 .b-name { font-size: 11px; }
 .a-status { display: block; font-size: 10px; }
 .canvas-note { border-color: var(--accent); }
+
+/* §28 DECISION OUTPUT STANDARD — the owner sees the reasoning, not just the verdict */
+.decision { margin-top: 12px; border: 1px solid #1d2740; border-radius: 6px; padding: 12px; background: #0a0e18; }
+.decision-head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.decision-section { margin-top: 10px; line-height: 1.6; }
+.decision ul.tight { margin: 4px 0 0; padding-left: 18px; }
+.decision ul.tight li { margin: 2px 0; }
+.decision .disagree { color: var(--amber); }
+.decision .claim-kind { color: var(--cyan); font-size: 0.85em; margin-right: 4px; }
+.decision .minds { display: grid; gap: 6px; margin-top: 6px; }
+.decision .mind { display: grid; grid-template-columns: 150px 70px 1fr; gap: 8px; align-items: start;
+  padding: 6px 8px; border-left: 2px solid #1d2740; background: #0c1120; }
+.decision .mind-name { color: var(--accent); font-weight: 600; }
