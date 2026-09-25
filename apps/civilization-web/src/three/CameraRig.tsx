@@ -2,16 +2,20 @@
  * Camera control: overview / command-centre / city-ring presets, orbit, and agent follow.
  * The camera only ever looks at positions that came from the backend.
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { OrbitControls } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useEmpire } from '../store';
 
-const PRESETS: Record<string, { pos: [number, number, number]; target: [number, number, number] }> = {
-  overview: { pos: [0, 300, 330], target: [0, 0, 0] },
-  command: { pos: [0, 130, 120], target: [0, 0, 0] },
-  ring: { pos: [330, 220, 330], target: [0, 0, 0] },
+/**
+ * Fallback framing only. The authoritative presets come from the backend with the layout, because
+ * they must fit a world whose size is configured — a hard-coded distance silently crops it.
+ */
+const FALLBACK: Record<string, { pos: [number, number, number]; target: [number, number, number] }> = {
+  overview: { pos: [0, 670, 524], target: [0, 0, 0] },
+  command: { pos: [0, 334, 305], target: [0, 0, 0] },
+  ring: { pos: [469, 547, 469], target: [0, 0, 0] },
 };
 
 export function CameraRig() {
@@ -22,17 +26,31 @@ export function CameraRig() {
   const layout = useEmpire((s) => s.layout);
   const agents = useEmpire((s) => s.agents);
 
+  const presets = useMemo(() => {
+    const fromBackend = layout?.camera?.presets;
+    const merged: Record<string, { pos: [number, number, number]; target: [number, number, number] }> = { ...FALLBACK };
+    if (fromBackend) {
+      for (const [key, value] of Object.entries(fromBackend)) {
+        if (value?.pos && value?.target) merged[key] = { pos: value.pos, target: value.target };
+      }
+    }
+    return merged;
+  }, [layout]);
+
   const controls = useRef<any>(null);
-  const desiredPos = useRef(new THREE.Vector3(...PRESETS.overview.pos));
+  const desiredPos = useRef(new THREE.Vector3(...(presets.overview?.pos ?? FALLBACK.overview.pos)));
   const desiredTarget = useRef(new THREE.Vector3(0, 0, 0));
   const camera = useThree((s) => s.camera);
   const intro = useRef(true);
 
   // Preset changes and building selections move the camera; the owner can always take over.
   useEffect(() => {
-    if (preset) desiredPos.current.set(...PRESETS[preset].pos);
-    desiredTarget.current.set(...PRESETS[preset].target);
-  }, [preset]);
+    const chosen = presets[preset] ?? presets.overview;
+    if (chosen) {
+      desiredPos.current.set(...chosen.pos);
+      desiredTarget.current.set(...chosen.target);
+    }
+  }, [preset, presets]);
 
   useEffect(() => {
     if (!selectedBuilding || !layout) return;

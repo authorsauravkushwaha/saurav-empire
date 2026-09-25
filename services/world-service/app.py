@@ -10,6 +10,7 @@ import time
 from fastapi import Depends, HTTPException, Query
 
 from kernel import store, world_layout
+from kernel.world_layout import STATUS_COLORS
 from kernel.agent_runtime import runtime, runtime_snapshot
 from kernel.config import building_index, city_index, config
 from kernel.registry import agents as agent_registry
@@ -30,12 +31,6 @@ CARD = ServiceCard(
 )
 application = service_app(CARD)
 
-STATUS_COLORS = {
-    "IDLE": "#8b93a7", "TRAVELING": "#60a5fa", "WORKING": "#22d3ee", "ANALYZING": "#a78bfa",
-    "RESEARCHING": "#34d399", "CODING": "#fbbf24", "LEARNING": "#38bdf8", "WAITING": "#94a3b8",
-    "NEGOTIATING": "#f472b6", "PUBLISHING": "#fb923c", "SELLING": "#4ade80", "ERROR": "#ef4444",
-    "BLOCKED": "#f97316", "ESCALATED": "#dc2626", "COMPLETED": "#10b981",
-}
 
 
 @application.get("/world/layout")

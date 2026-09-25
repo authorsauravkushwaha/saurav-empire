@@ -65,7 +65,20 @@ finance `8010` · security `8011` · event `8012` · world `8013`.
 `REAL BACKEND STATE → REAL-TIME 3D VISUALIZATION`. The client polls `/api/world/state` and consumes
 the event WebSocket; agent positions, travel, building activity and event pulses all originate from
 rows the runtime wrote. If the backend is silent the world is still, and the HUD says so instead of
-inventing a scene.
+inventing a scene. Camera framing is computed by the backend from the configured world size, so the
+default view always contains every city instead of cropping it.
+
+Because the world is data, it can be checked without a browser:
+
+```
+python3 scripts/empire.py worldcheck     # geometry, seating, camera framing + a map you can look at
+```
+
+It fails loudly when a building pokes outside its city, two cities touch, agents pile onto one
+point (which would render a crowd as a single capsule), a department points at a building nobody
+can reach, or a camera preset crops the civilization. It writes
+`data/state/artifacts/world-map.svg` and `.png` — a top-down projection of the exact coordinates
+the client renders.
 
 ## Tests
 
@@ -92,7 +105,7 @@ never queued, an agent that keeps failing ends up in front of the owner instead 
 ## Controlling it
 
 ```
-python3 scripts/empire.py up|down|status|seed|demo|doctor|repair|backup|token|rotate-token
+python3 scripts/empire.py up|down|status|seed|demo|doctor|repair|worldcheck|backup|token|rotate-token
 ```
 
 In the console: click agents and buildings to inspect, use the command bar

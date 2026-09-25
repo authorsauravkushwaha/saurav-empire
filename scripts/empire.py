@@ -10,6 +10,7 @@
     python scripts/empire.py token         show the owner token location (never prints it in full)
     python scripts/empire.py rotate-token  generate a new owner token
     python scripts/empire.py repair        fix known data-hygiene problems (reports every change)
+    python scripts/empire.py worldcheck    validate the 3D world's geometry and write a map
     python scripts/empire.py backup        copy data/state into backups/<timestamp>/
 
 Design: standard library only for process management (no supervisor dependency).
@@ -139,6 +140,7 @@ def cmd_up(args: argparse.Namespace) -> int:
             _warn("frontend dependencies missing — run: cd apps/civilization-web && npm install")
 
     print(f"\n  {BOLD}Waiting for services to answer /health…{RST}")
+    failed: list[str] = []
     for name in started:
         spec = SERVICES[name]
         deadline = time.time() + 25
@@ -148,7 +150,22 @@ def cmd_up(args: argparse.Namespace) -> int:
                 healthy = True
                 break
             time.sleep(0.5)
-        (_ok if healthy else _bad)(f"{name} {'healthy' if healthy else 'did not answer /health (see data/logs)'}")
+        if healthy:
+            _ok(f"{name} healthy")
+        else:
+            failed.append(name)
+            _bad(f"{name} did not answer /health — last lines of data/logs/{name}.log:")
+            log_path = LOG_DIR / f"{name}.log"
+            if log_path.exists():
+                tail = [ln for ln in log_path.read_text(encoding="utf-8", errors="replace").splitlines() if ln.strip()][-4:]
+                for line in tail:
+                    _dim(f"      {line[:150]}")
+            else:
+                _dim("      (no log file)")
+
+    if failed:
+        _bad(f"{len(failed)} service(s) failed to start: {', '.join(failed)}")
+        _dim("  the civilization runs without them, but feature parity is not guaranteed — fix and re-run `up`")
 
     token = ensure_token()
     print(f"""
@@ -372,6 +389,19 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     except Exception as exc:  # a broken guarantee is a bad doctor result, not a crash
         _bad(f"guarantee check failed: {type(exc).__name__}: {exc}")
 
+    # --- world geometry: what the 3D client draws must be sound ---
+    print()
+    print(f"  {BOLD}WORLD GEOMETRY{RST}")
+    wc = subprocess.run([sys.executable, str(ROOT / "scripts" / "worldcheck.py")],
+                        cwd=str(ROOT), capture_output=True, text=True)
+    if wc.returncode == 0:
+        _ok("layout and live agent positions are sound (map: data/state/artifacts/world-map.svg)")
+    else:
+        for line in (wc.stdout or "").splitlines():
+            if "✗" in line:
+                _bad(line.split("✗", 1)[1].strip())
+        _bad("run: python3 scripts/empire.py worldcheck")
+
     # --- the test suite is the proof, so run it ---
     print()
     print(f"  {BOLD}TEST SUITE{RST}")
@@ -455,6 +485,17 @@ def cmd_backup(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_worldcheck(args: argparse.Namespace) -> int:
+    """Run the world geometry check (its own script, so it can be run standalone)."""
+    script = ROOT / "scripts" / "worldcheck.py"
+    cmd = [sys.executable, str(script)]
+    if getattr(args, "no_processes", False):
+        cmd.append("--no-processes")
+    if getattr(args, "out", None):
+        cmd += ["--out", args.out]
+    return subprocess.call(cmd, cwd=str(ROOT))
+
+
 def cmd_repair(args: argparse.Namespace) -> int:
     """Data hygiene for problems the runtime cannot fix by itself. Reports every change."""
     from kernel import store
@@ -514,6 +555,34 @@ def cmd_repair(args: argparse.Namespace) -> int:
     _ok(f"trainees enrolled into a track: {enrolled}")
     changed += enrolled
 
+    # 4. Re-seat agents who share a position. A building whose occupants all render at one point
+    #    looks like a single agent — the 3D world must show the workforce that exists.
+    from kernel import world_layout as _wl
+    piled = store.query(
+        "SELECT building, COUNT(*) n, COUNT(DISTINCT ROUND(pos_x,1) || ',' || ROUND(pos_y,1)) distinct_pos "
+        "FROM agents WHERE lifecycle != 'TERMINATED' AND building IS NOT NULL "
+        "GROUP BY building HAVING n > distinct_pos")
+    reseated = 0
+    for row in piled:
+        building = row["building"]
+        occupants = store.query(
+            "SELECT id FROM agents WHERE building=? AND lifecycle != 'TERMINATED' ORDER BY name ASC",
+            (building,))
+        for index, agent_row in enumerate(occupants):
+            seat = index % max(1, _wl.room_for(building))
+            pos = _wl.seat_position(building, seat)
+            store.update("agents", agent_row["id"],
+                         {"pos_x": float(pos[0]), "pos_y": float(pos[2])})
+            reseated += 1
+        bus.publish("agent.reseated", source="repair", subject=building, severity="notice",
+                    payload={"building": building, "occupants": len(occupants),
+                             "reason": "occupants were sharing a position"})
+    if reseated:
+        _ok(f"agents re-seated out of shared positions: {reseated}")
+        changed += reseated
+    else:
+        _ok("seating is already well distributed")
+
     audit("OWNER", "repair.run", tool="repair", risk="LOW",
           reason=f"{changed} rows changed", actor_rank="OWNER")
     if changed:
@@ -543,6 +612,10 @@ def main() -> int:
     sub.add_parser("token", help="show owner token location").set_defaults(func=cmd_token)
     sub.add_parser("rotate-token", help="generate a new owner token").set_defaults(func=cmd_rotate_token)
     sub.add_parser("backup", help="snapshot state + policy").set_defaults(func=cmd_backup)
+    p_world = sub.add_parser("worldcheck", help="validate the 3D world geometry + write a map")
+    p_world.add_argument("--no-processes", action="store_true", help="skip live agent positions")
+    p_world.add_argument("--out", help="where to write the SVG map")
+    p_world.set_defaults(func=cmd_worldcheck)
     p_repair = sub.add_parser("repair", help="fix data-hygiene problems (reports every change)")
     p_repair.add_argument("--track", help="track for un-enrolled trainees")
     p_repair.set_defaults(func=cmd_repair)

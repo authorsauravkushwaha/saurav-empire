@@ -30,11 +30,20 @@ export interface LayoutCity {
   buildings: LayoutBuilding[];
 }
 
+export interface CameraPreset {
+  pos: [number, number, number];
+  target: [number, number, number];
+  scope?: 'all' | 'centres' | 'command';
+  note?: string;
+}
+
 export interface WorldLayout {
   ground_size: number;
   style: string;
   cities: LayoutCity[];
   status_colors: Record<string, string>;
+  /** Framing computed by the backend from the real world size — the client does not guess. */
+  camera?: { fov: number; extent: number; distance_needed: number; presets: Record<string, CameraPreset> };
   generated_at: number;
 }
 

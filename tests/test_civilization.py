@@ -609,3 +609,144 @@ class TestCustomerFacingScreen(Base):
             "evidence": [{"kind": "FACT", "value": "none"}]})
         self.assertEqual(done["status"], "FAILED")
         self.assertIn("cure_claim", " ".join(done["verification"]["vetoes"]))
+
+
+class TestSeating(Base):
+    """A crowd must render as a crowd: agents around their building, never piled on its centre."""
+
+    def test_seats_are_distinct_and_inside_the_city(self):
+        import math as _math
+        from kernel import world_layout as wl
+        seats = [wl.seat_position("ai-university", i) for i in range(40)]
+        points = {(round(s[0], 1), round(s[2], 1)) for s in seats}
+        self.assertEqual(len(points), len(seats), "every seat must be its own point")
+        centre = wl.city_center("knowledge")
+        radius = 60.0
+        for s in seats:
+            self.assertLess(_math.dist((s[0], s[2]), centre), radius,
+                            "a seat must stay inside its city disc")
+
+    def test_seats_sit_clear_of_the_building_walls(self):
+        import math as _math
+        from kernel import world_layout as wl
+        b = wl.building_world_pos("ai-university")
+        half_w, half_d = b["size"][0] / 2, b["size"][2] / 2
+        for i in range(40):
+            x, _, z = wl.seat_position("ai-university", i)
+            dx, dz = abs(x - b["pos"][0]), abs(z - b["pos"][2])
+            self.assertFalse(dx < half_w and dz < half_d, f"seat {i} is inside the building")
+
+    def test_hiring_seats_each_agent_separately(self):
+        dept = "data-analytics"
+        hired = [Agents().hire(role="Seat Probe", rank="AGENT", department_id=dept) for _ in range(6)]
+        positions = {(round(a["position"][0], 1), round(a["position"][1], 1)) for a in hired}
+        self.assertEqual(len(positions), len(hired),
+                         "new hires must not all stand on the building's centre point")
+
+    def test_arriving_agent_takes_a_seat(self):
+        from kernel import store
+        from kernel import world_layout as wl
+        a = Agents().hire(role="Arrival Probe", rank="AGENT", department_id="content-creative")
+        Agents().move_to(a["id"], "content-lab", reason="test")
+        Agents().arrive(a["id"], "content-lab")
+        arrived = Agents().get(a["id"])
+        centre = wl.building_world_pos("content-lab")["pos"]
+        self.assertNotEqual((round(arrived["position"][0], 1), round(arrived["position"][1], 1)),
+                            (round(centre[0], 1), round(centre[2], 1)))
+        self.assertIsNone(arrived["target_building"])
+
+
+class TestServicesLoad(Base):
+    """Every service module must import. A service that cannot import is a dead feature."""
+
+    def test_every_service_app_imports_and_exposes_application(self):
+        import importlib.util
+        import sys as _sys
+
+        service_dirs = sorted(p for p in (ROOT / "services").iterdir() if p.is_dir() and (p / "app.py").exists())
+        self.assertGreaterEqual(len(service_dirs), 14, "expected the full service set")
+        for directory in service_dirs:
+            with self.subTest(service=directory.name):
+                _sys.path.insert(0, str(directory))
+                try:
+                    spec = importlib.util.spec_from_file_location(f"svc_{directory.name.replace('-', '_')}",
+                                                                  directory / "app.py")
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)          # type: ignore[union-attr]
+                finally:
+                    _sys.path.remove(str(directory))
+                app = getattr(module, "application", None)
+                self.assertIsNotNone(app, f"{directory.name} has no `application`")
+                self.assertTrue(callable(getattr(app, "openapi", None)),
+                                f"{directory.name}'s application is not a FastAPI app")
+                card = getattr(module, "CARD", None)
+                self.assertIsNotNone(card, f"{directory.name} has no service card")
+                self.assertEqual(card.port, int(getattr(module, "PORT", -1)))
+
+    def test_service_ports_are_unique_and_match_the_topology(self):
+        import yaml
+        topology = yaml.safe_load((ROOT / "config" / "services.yaml").read_text(encoding="utf-8"))
+        ports = [spec["port"] for name, spec in (topology.get("services") or {}).items()]
+        self.assertEqual(len(ports), len(set(ports)), "two services share a port")
+        self.assertNotIn(3000, ports, "the API must not collide with the client dev server")
+
+
+class TestWorldFraming(Base):
+    """The world must be legible: cities separated, and the camera able to contain them."""
+
+    def test_cities_do_not_touch(self):
+        from kernel import world_layout as wl
+        cities = wl.layout()["cities"]
+        for i, a in enumerate(cities):
+            for b in cities[i + 1:]:
+                import math as _math
+                gap = _math.dist((a["pos"][0], a["pos"][2]), (b["pos"][0], b["pos"][2]))
+                self.assertGreater(gap, a["radius"] + b["radius"],
+                                   f"{a['id']} and {b['id']} overlap")
+
+    def test_every_city_fits_inside_the_ground(self):
+        from kernel import world_layout as wl
+        ground_half = wl.layout()["ground_size"] / 2
+        for city in wl.layout()["cities"]:
+            self.assertLessEqual(abs(city["pos"][0]) + city["radius"], ground_half, city["id"])
+            self.assertLessEqual(abs(city["pos"][2]) + city["radius"], ground_half, city["id"])
+
+    def test_camera_presets_are_derived_from_the_real_world_size(self):
+        from kernel import world_layout as wl
+        camera = wl.layout()["camera"]
+        self.assertGreater(camera["distance_needed"], camera["extent"],
+                           "a camera closer than the world radius cannot show it")
+        for name, preset in camera["presets"].items():
+            self.assertEqual(len(preset["pos"]), 3, name)
+            self.assertEqual(preset["scope"] in ("all", "centres", "command"), True, name)
+
+    def test_the_overview_camera_contains_every_city(self):
+        import math as _math
+        from kernel import world_layout as wl
+        camera = wl.layout()["camera"]
+        preset = camera["presets"]["overview"]
+        eye = preset["pos"]
+        fov = _math.radians(camera["fov"] / 2)
+        aspect = 16 / 9
+        forward = [0.0 - eye[0], 0.0 - eye[1], 0.0 - eye[2]]
+        norm = _math.sqrt(sum(c * c for c in forward)) or 1.0
+        forward = [c / norm for c in forward]
+        up_world = [0.0, 1.0, 0.0]
+        right = [forward[1] * up_world[2] - forward[2] * up_world[1],
+                 forward[2] * up_world[0] - forward[0] * up_world[2],
+                 forward[0] * up_world[1] - forward[1] * up_world[0]]
+        right_norm = _math.sqrt(sum(c * c for c in right)) or 1.0
+        right = [c / right_norm for c in right]
+        up = [right[1] * forward[2] - right[2] * forward[1],
+              right[2] * forward[0] - right[0] * forward[2],
+              right[0] * forward[1] - right[1] * forward[0]]
+        for city in wl.layout()["cities"]:
+            edge = [city["pos"][0], 0.0, city["pos"][2] + city["radius"]]
+            rel = [edge[i] - eye[i] for i in range(3)]
+            depth = sum(rel[i] * forward[i] for i in range(3))
+            self.assertGreater(depth, 0, city["id"])
+            vertical = abs(sum(rel[i] * up[i] for i in range(3)))
+            horizontal = abs(sum(rel[i] * right[i] for i in range(3)))
+            self.assertLessEqual(vertical, _math.tan(fov) * depth, f"{city['id']} is cropped vertically")
+            self.assertLessEqual(horizontal, _math.tan(fov) * depth * aspect,
+                                 f"{city['id']} is cropped horizontally")

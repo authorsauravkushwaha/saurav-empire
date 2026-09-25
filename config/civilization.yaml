@@ -6,7 +6,7 @@ world:
   name: "Saurav AI Civilization"
   seed: 20260925
   ground_size: 900          # world units
-  city_ring_radius: 170     # non-command cities orbit the command city
+  city_ring_radius: 230     # non-command cities orbit the command city (spaced so discs never touch)
   ambient: dusk             # dusk | day | night
   grid_units: 5
 
@@ -36,7 +36,7 @@ cities:
     name: Knowledge City
     tagline: "Where agents are made. Recruit → Test → Educate → Certify → Employ."
     theme: "#38bdf8"
-    pos: [170, 0]
+    pos: [230, 0]
     buildings:
       - { id: ai-university,         name: AI University,          shape: dome,  pos: [0, 0],     size: [20, 20, 20], slots: 60, purpose: "Foundational curriculum, exams, graduation" }
       - { id: programming-academy,   name: Programming Academy,    shape: block, pos: [-28, -18], size: [14, 12, 14], slots: 24, purpose: "Python, TypeScript, SQL, systems literacy" }
@@ -50,7 +50,7 @@ cities:
     name: Engineering City
     tagline: "Build, secure, automate. Ship small. Verify everything."
     theme: "#22d3ee"
-    pos: [120, -120]
+    pos: [163, -163]
     buildings:
       - { id: software-hq,           name: Software Engineering HQ,shape: tower, pos: [0, 0],     size: [14, 28, 14], slots: 30, purpose: "Product engineering for internal and external software" }
       - { id: ai-engineering,        name: AI Engineering,         shape: block, pos: [-26, -18], size: [14, 14, 14], slots: 20, purpose: "Agent runtime, model router, prompt/eval systems" }
@@ -64,7 +64,7 @@ cities:
     name: Revenue City
     tagline: "Every opportunity must survive market, cost, legal, demand and revenue tests."
     theme: "#34d399"
-    pos: [0, 170]
+    pos: [0, 230]
     buildings:
       - { id: market-research,       name: Market Research,        shape: block, pos: [-28, -20], size: [14, 14, 14], slots: 20, purpose: "Demand discovery, competitor mapping, willingness to pay" }
       - { id: product-discovery,     name: Product Discovery,      shape: block, pos: [0, -20],   size: [14, 14, 14], slots: 18, purpose: "Turn validated demand into a shippable promise" }
@@ -72,28 +72,28 @@ cities:
       - { id: sales-floor,           name: Sales Floor,            shape: block, pos: [-28, 16],  size: [16, 14, 16], slots: 26, purpose: "Qualification, outreach drafts, follow-up discipline" }
       - { id: customer-success,      name: Customer Success,       shape: block, pos: [0, 16],    size: [14, 14, 14], slots: 20, purpose: "Delivery, retention, referral, outcome tracking" }
       - { id: partnerships,          name: Partnerships,           shape: dome,  pos: [28, 16],   size: [14, 14, 14], slots: 12, purpose: "Leverage, BATNA, deal structure, terms review" }
-      - { id: publishing-house,      name: Publishing House,       shape: block, pos: [-14, 46],  size: [18, 16, 14], slots: 24, purpose: "Books, Writer Nation services, catalog economics" }
-      - { id: digital-products,      name: Digital Products Lab,   shape: dome,  pos: [16, 46],   size: [16, 16, 16], slots: 20, purpose: "Templates, tools, subscriptions, memberships, SaaS" }
+      - { id: publishing-house,      name: Publishing House,       shape: block, pos: [-14, 41],  size: [18, 16, 14], slots: 24, purpose: "Books, Writer Nation services, catalog economics" }
+      - { id: digital-products,      name: Digital Products Lab,   shape: dome,  pos: [16, 41],   size: [16, 16, 16], slots: 20, purpose: "Templates, tools, subscriptions, memberships, SaaS" }
 
   - id: media
     name: Media City
     tagline: "Attention → relevance → trust → action. Never vanity metrics."
     theme: "#f472b6"
-    pos: [-120, 120]
+    pos: [-163, 163]
     buildings:
       - { id: content-lab,           name: Content Laboratory,     shape: block, pos: [0, -20],   size: [16, 14, 16], slots: 22, purpose: "Content with a job: awareness → conversion → retention" }
       - { id: youtube-studio,        name: YouTube Studio,         shape: block, pos: [-28, 14],  size: [16, 14, 16], slots: 20, purpose: "Titles, hooks, retention, Shorts, honest curiosity" }
       - { id: instagram-studio,      name: Instagram Studio,       shape: block, pos: [0, 14],    size: [16, 14, 16], slots: 20, purpose: "Reels, carousels, community, official-API only" }
       - { id: facebook-studio,       name: Facebook Studio,        shape: block, pos: [28, 14],   size: [14, 12, 14], slots: 12, purpose: "Page distribution, groups, page analytics" }
-      - { id: whatsapp-ops,          name: WhatsApp Operations,    shape: block, pos: [-28, 44],  size: [14, 12, 14], slots: 12, purpose: "Consent-based messaging, Cloud API, strict templates" }
+      - { id: whatsapp-ops,          name: WhatsApp Operations,    shape: block, pos: [-24, 39],  size: [14, 12, 14], slots: 12, purpose: "Consent-based messaging, Cloud API, strict templates" }
       - { id: copywriting,           name: Copywriting,            shape: block, pos: [0, 44],    size: [14, 12, 14], slots: 18, purpose: "Message clarity, proof, objection handling" }
-      - { id: social-analytics,      name: Social Analytics,       shape: lab,   pos: [28, 44],   size: [14, 10, 14], slots: 12, purpose: "Reach → qualified demand attribution" }
+      - { id: social-analytics,      name: Social Analytics,       shape: lab,   pos: [24, 39],   size: [14, 10, 14], slots: 12, purpose: "Reach → qualified demand attribution" }
 
   - id: creative
     name: Creative City
     tagline: "IP compounds. Make things worth keeping."
     theme: "#fbbf24"
-    pos: [-170, 0]
+    pos: [-230, 0]
     buildings:
       - { id: writing-house,         name: Writing House,          shape: block, pos: [-24, -18], size: [16, 14, 16], slots: 26, purpose: "Books, long-form IP, series, backlist" }
       - { id: design-studio,         name: Design Studio,          shape: block, pos: [24, -18],  size: [14, 12, 14], slots: 18, purpose: "Covers, brand systems, visual identity" }
@@ -106,7 +106,7 @@ cities:
     name: Finance City
     tagline: "Revenue ≠ profit. Growth ≠ strength. Cash is oxygen."
     theme: "#a3e635"
-    pos: [-120, -120]
+    pos: [-163, -163]
     buildings:
       - { id: revenue-accounting,    name: Revenue Accounting,     shape: block, pos: [-24, -18], size: [14, 12, 14], slots: 12, purpose: "Verified revenue only; every rupee traceable" }
       - { id: expense-tracking,      name: Expense Tracking,       shape: block, pos: [24, -18],  size: [14, 12, 14], slots: 10, purpose: "Zero-spend enforcement, spend approvals" }
@@ -120,7 +120,7 @@ cities:
     name: Research City
     tagline: "Cheapest test that reduces the most uncertainty."
     theme: "#c084fc"
-    pos: [120, 120]
+    pos: [163, 163]
     buildings:
       - { id: web-research,          name: Web Research,           shape: block, pos: [-24, -18], size: [14, 12, 14], slots: 20, purpose: "Source capture, date, incentives, contradictions" }
       - { id: market-intelligence,   name: Market Intelligence,    shape: block, pos: [24, -18],  size: [14, 12, 14], slots: 18, purpose: "Demand signals, pricing, channel reality" }
@@ -133,7 +133,7 @@ cities:
     name: Data City
     tagline: "If it isn't measured, it didn't happen."
     theme: "#60a5fa"
-    pos: [0, -170]
+    pos: [0, -230]
     buildings:
       - { id: data-warehouse,        name: Data Warehouse,         shape: block, pos: [-24, -18], size: [16, 14, 16], slots: 14, purpose: "Structured business truth (SQLite → PostgreSQL)" }
       - { id: event-stream,          name: Event Stream,           shape: block, pos: [24, -18],  size: [14, 14, 14], slots: 14, purpose: "Append-only bus: every state change is an event" }

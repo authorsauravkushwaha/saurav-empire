@@ -22,7 +22,7 @@ function Ground({ size }: { size: number }) {
         <planeGeometry args={[size, size]} />
         <meshStandardMaterial color="#080b13" roughness={1} metalness={0.1} />
       </mesh>
-      <gridHelper args={[grid, 90, '#111a2e', '#0d1424']} position={[0, -1.15, 0]} />
+      <gridHelper args={[grid, 90, '#141d33', '#0d1424']} position={[0, -1.15, 0]} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.1, 0]}>
         <ringGeometry args={[300, 302, 128]} />
         <meshBasicMaterial color="#1b2540" transparent opacity={0.6} />
@@ -53,12 +53,12 @@ export function WorldCanvas() {
     <Canvas
       shadows
       dpr={[1, 1.8]}
-      camera={{ position: [0, 300, 330], fov: 45, near: 1, far: 4000 }}
+      camera={{ position: [0, 670, 524], fov: 45, near: 1, far: 6000 }}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       onPointerMissed={() => useEmpire.getState().select(null)}
     >
       <color attach="background" args={['#05060a']} />
-      <fog attach="fog" args={['#05060a', 420, 1500]} />
+      <fog attach="fog" args={['#05060a', 700, 2600]} />
       <ambientLight intensity={0.55} />
       <hemisphereLight args={['#5b7cff', '#0a0d16', 0.6]} />
       <directionalLight
@@ -69,7 +69,7 @@ export function WorldCanvas() {
       />
       <pointLight position={[0, 120, 0]} intensity={0.9} color="#7c5cff" distance={520} />
       <pointLight position={[-260, 90, -220]} intensity={0.5} color="#38bdf8" distance={460} />
-      <Stars radius={900} depth={120} count={2600} factor={5} saturation={0} fade speed={0.4} />
+      <Stars radius={1400} depth={180} count={2600} factor={6} saturation={0} fade speed={0.4} />
       <Suspense fallback={null}>
         {unlockState && layout ? (
           <SceneContent />

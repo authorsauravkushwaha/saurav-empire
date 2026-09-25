@@ -233,7 +233,11 @@ class Agents:
             agent_name = registry.next_agent_name(department_id)
         dept = departments.get(department_id) if department_id else None
         building = building or (dept["building"] if dept else "owner-command-center")
-        pos = world_layout.building_world_pos(building)["pos"]
+        # The newcomer gets a real seat; the centre of the building is not a desk.
+        seat = int(store.query_one(
+            "SELECT COUNT(*) n FROM agents WHERE building=? AND lifecycle != 'TERMINATED'",
+            (building,))["n"] or 0) % max(1, world_layout.room_for(building))
+        pos = world_layout.seat_position(building, seat)
         row = {
             "id": store.new_id("agt"), "name": agent_name, "role": role, "rank": rank,
             "department_id": department_id, "manager_id": manager_id,
@@ -295,6 +299,34 @@ class Agents:
                     payload={"name": agent["name"], "from": agent["status"], "to": status, "reason": reason})
         return self.get(agent_id)  # type: ignore[return-value]
 
+    def take_seat(self, agent_id: str, building_id: str) -> list[float]:
+        """Give the agent a free seat around the building.
+
+        Free means: no other agent already stands on that exact point. This keeps arrivals from
+        stacking (the 3D world would otherwise understate the workforce), and it is deterministic —
+        the same state always produces the same seating.
+        """
+        occupied = {
+            (round(float(r["pos_x"] or 0), 1), round(float(r["pos_y"] or 0), 1))
+            for r in store.query(
+                "SELECT pos_x, pos_y FROM agents WHERE building=? AND id != ? "
+                "AND lifecycle != 'TERMINATED'", (building_id, agent_id))
+        }
+        seat = 0
+        while seat < 240:
+            pos = world_layout.seat_position(building_id, seat)
+            if (round(pos[0], 1), round(pos[2], 1)) not in occupied:
+                break
+            seat += 1
+        else:  # every seat taken — the building is genuinely over capacity
+            pos = world_layout.seat_position(building_id, 0)
+        agent = self.get(agent_id) or {}
+        meta = dict(agent.get("meta") or {})
+        meta["seat"] = seat
+        store.update("agents", agent_id, {"pos_x": float(pos[0]), "pos_y": float(pos[2]),
+                                          "meta_json": json.dumps(meta, default=str)})
+        return pos
+
     def move_to(self, agent_id: str, building_id: str, *, reason: str = "task") -> dict:
         agent = self.get(agent_id)
         if not agent:
@@ -307,8 +339,10 @@ class Agents:
         return agent
 
     def arrive(self, agent_id: str, building_id: str) -> None:
+        """The agent takes a seat at the building it has reached (never a pile-up on the centre)."""
         store.update("agents", agent_id, {"building": building_id, "target_building": None,
                                           "updated_at": store.now()})
+        self.take_seat(agent_id, building_id)
 
     def update_position(self, agent_id: str, x: float, z: float) -> None:
         store.update("agents", agent_id, {"pos_x": float(x), "pos_y": float(z)})
