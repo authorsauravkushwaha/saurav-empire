@@ -1,0 +1,215 @@
+# SAURAV AI CIVILIZATION — Department seed roster
+# There is NO hard-coded maximum department count. This file only defines the
+# starting organization; `Department Factory` can create more at runtime
+# (subdepartments, projects, teams, squads) with boss auto-naming + de-duplication.
+version: "1.0"
+
+# Ancient-Egyptian / historically-themed boss names.
+# Thematic identities only — these are not historical claims about any AI.
+name_pool:
+  - Horus
+  - Sekhmet
+  - Ramesses
+  - Set
+  - Anubis
+  - Thutmose
+  - Ahmose
+  - Mentuhotep
+  - Sobek
+  - Nefertiti
+  - Khufu
+  - Djoser
+  - Hatshepsut
+  - Narmer
+  - Senusret
+  - Ptahhotep
+  - Imhotep
+  - Taharqa
+  - Piankhi
+  - Shabaka
+  - Hammurabi
+  - Ashurbanipal
+  - Sargon
+  - Cyrus
+  - Darius
+  - Xerxes
+  - Necho
+  - Psamtik
+  - Amasis
+  - Nectanebo
+  - Khaemwaset
+  - Merneith
+  - Arsinoe
+  - Berenice
+  - Cleopatra
+  - Amanirenas
+  - Kandake
+  - Zenobia
+  - Boudica
+  - Vercingetorix
+  - Arminius
+  - Spartacus
+  - Hannibal
+  - Scipio
+  - Leonidas
+  - Themistocles
+  - Miltiades
+  - Epaminondas
+  - Pyrrhus
+  - Chandragupta
+  - Ashoka
+  - Samudragupta
+  - Prithviraj
+  - Shivaji
+  - Akbar
+  - Rani
+  - Lakshmibai
+  - Bhagat
+  - Subhas
+  - Vallabhbhai
+  - Chanakya
+  - Aryabhata
+  - Brahmagupta
+  - Bhaskara
+  - Sushruta
+  - Charaka
+  - Panini
+  - Kalidasa
+  - Tansen
+  - Birbal
+
+# Name style for non-boss agents: pool prefix + deterministic suffix.
+agent_name_style:
+  prefix_pool: [Kemet, Nubia, Thebes, Giza, Memphis, Abydos, Saqqara, Dendera, Edfu, Luxor, Karnak, Philae, Elephantine, Napata, Meroe, Tanis, Bubastis, Heliopolis, Sais, Crocodilopolis]
+  suffix_pool: [Prime, Minor, Nova, Delta, Sigma, Alpha, Vesper, Cinder, Lumen, Quanta]
+  max_suffix: 99
+
+# Department capabilities gate — a department cannot be created unless it can
+# state which of these it improves. Prevents decorative org-building.
+required_declaration:
+  - objective                 # one sentence, measurable
+  - kpis                      # at least one measurable KPI
+  - consumer_of               # which service/department data it consumes
+  - producer_for              # which service/department consumes its output
+  - kill_criteria             # what would make this department be removed
+
+departments:
+  - id: executive-council
+    name: Executive Council
+    city: command
+    building: ai-council
+    objective: "Resolve cross-department conflicts and issue chairman verdicts on major decisions."
+    kpis: [decision_quality_score, contested_decisions_resolved, cycle_time_hours]
+    parent: null
+
+  - id: security-governance
+    name: Security & Governance
+    city: command
+    building: security-center
+    objective: "Enforce least privilege, approval gates, audit completeness, and injection defence."
+    kpis: [ungated_high_risk_actions, audit_coverage_pct, permission_violations]
+    parent: null
+
+  - id: market-intelligence
+    name: Market Intelligence
+    city: research
+    building: market-intelligence
+    objective: "Find and falsify zero-capital demand signals with dated, sourced evidence."
+    kpis: [signals_validated, signals_falsified, cost_per_signal_inr]
+    parent: executive-council
+
+  - id: engineering
+    name: Engineering
+    city: engineering
+    building: software-hq
+    objective: "Ship small, verifiable software that removes human toil or creates a sellable asset."
+    kpis: [tasks_shipped, defect_rate, automation_hours_saved]
+    parent: executive-council
+
+  - id: product-development
+    name: Product Development
+    city: revenue
+    building: product-discovery
+    objective: "Turn validated demand into the smallest shippable promise."
+    kpis: [mvp_cycle_days, mvps_shipped, customer_reported_value]
+    parent: executive-council
+
+  - id: growth-distribution
+    name: Growth & Distribution
+    city: media
+    building: content-lab
+    objective: "Earn relevant attention and convert it into qualified demand — ethically."
+    kpis: [qualified_leads, cost_per_lead_inr, content_to_demand_ratio]
+    parent: executive-council
+
+  - id: sales-partnerships
+    name: Sales & Partnerships
+    city: revenue
+    building: sales-floor
+    objective: "Qualify, draft, follow up, and close — with leverage and BATNA documented."
+    kpis: [qualified_opportunities, reply_rate, closed_revenue_inr]
+    parent: executive-council
+
+  - id: finance-treasury
+    name: Finance & Treasury
+    city: finance
+    building: treasury
+    objective: "Keep verified books, enforce zero-spend, and model base/upside/downside cases."
+    kpis: [book_accuracy_pct, unapproved_spend_inr, runway_days]
+    parent: executive-council
+
+  - id: data-analytics
+    name: Data & Analytics
+    city: data
+    building: analytics-engine
+    objective: "Make every agent action measurable and every claim traceable to an event."
+    kpis: [events_ingested, metrics_instrumented, dashboard_freshness_min]
+    parent: executive-council
+
+  - id: content-creative
+    name: Content & Creative
+    city: creative
+    building: writing-house
+    objective: "Produce IP and content with a declared job and a declared audience."
+    kpis: [assets_shipped, assets_with_declared_goal_pct, reuse_rate]
+    parent: growth-distribution
+
+  - id: publishing-operations
+    name: Publishing Operations
+    city: revenue
+    building: publishing-house
+    objective: "Grow catalog economics: which books deserve resources, and why."
+    kpis: [books_improved, verified_units_sold, catalog_read_through]
+    parent: executive-council
+
+  - id: customer-success
+    name: Customer Success
+    city: revenue
+    building: customer-success
+    objective: "Deliver the promised outcome, then earn retention and referrals."
+    kpis: [outcomes_delivered, refund_rate, referral_rate]
+    parent: executive-council
+
+  - id: integration-automation
+    name: Integration & Automation
+    city: engineering
+    building: automation-engineering
+    objective: "Connect authorized accounts through official APIs and turn proven workflows into automation."
+    kpis: [connectors_healthy, manual_steps_removed, automation_failures]
+    parent: engineering
+
+  - id: research-lab
+    name: Research Laboratory
+    city: knowledge
+    building: research-lab
+    objective: "Design the cheapest test that reduces the most uncertainty, and falsify hypotheses."
+    kpis: [experiments_run, cost_per_experiment_inr, hypotheses_falsified]
+    parent: executive-council
+
+  - id: university
+    name: AI University
+    city: knowledge
+    building: ai-university
+    objective: "Recruit, educate, examine, certify, and job-match agents against real vacancies."
+    kpis: [graduates_certified, pass_rate, graduate_task_quality]
+    parent: executive-council

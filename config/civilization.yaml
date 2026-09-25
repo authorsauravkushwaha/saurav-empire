@@ -1,0 +1,143 @@
+# SAURAV AI CIVILIZATION — World definition
+# Real backend state drives this world. Nothing here is decorative-only:
+# every building maps to departments/agents, every agent maps to real tasks.
+version: "1.0"
+world:
+  name: "Saurav AI Civilization"
+  seed: 20260925
+  ground_size: 900          # world units
+  city_ring_radius: 170     # non-command cities orbit the command city
+  ambient: dusk             # dusk | day | night
+  grid_units: 5
+
+# ---------------------------------------------------------------------------
+# CITIES (9). Command City sits at the centre; the other eight ring around it.
+# `pos` is the city origin in world space [x, z].
+# ---------------------------------------------------------------------------
+cities:
+  - id: command
+    name: Command City
+    tagline: "Central control. The owner's authority is the only authority."
+    theme: "#7c5cff"
+    pos: [0, 0]
+    radius: 62
+    buildings:
+      - { id: owner-command-center,  name: Owner Command Center,   shape: tower, pos: [0, 0],      size: [14, 34, 14], slots: 24, purpose: "Owner console, natural-language command, global overrides, kill switch" }
+      - { id: ai-council,            name: AI Council,             shape: dome,  pos: [-26, -14],  size: [16, 16, 16], slots: 12, purpose: "8-MIND decision engine, chairman verdicts, conflict resolution" }
+      - { id: agent-registry,        name: Agent Registry,         shape: block, pos: [26, -14],   size: [12, 12, 12], slots: 10, purpose: "Agent identity, lifecycle, rank, certification records" }
+      - { id: security-center,       name: Security Center,        shape: tower, pos: [-30, 18],   size: [12, 22, 12], slots: 12, purpose: "Kill switch, permission audits, prompt-injection defence" }
+      - { id: analytics-tower,       name: Analytics Tower,        shape: tower, pos: [0, -40],    size: [12, 30, 12], slots: 14, purpose: "KPI, department efficiency, agent productivity" }
+      - { id: mission-control,       name: Mission Control,        shape: block, pos: [30, 18],    size: [14, 14, 14], slots: 16, purpose: "Task queues, scheduling, workflow orchestration" }
+      - { id: memory-archive,        name: Memory Archive,         shape: block, pos: [-14, 40],   size: [14, 16, 14], slots: 8,  purpose: "Six memory layers, provenance, owner-inspectable records" }
+      - { id: economic-command,      name: Economic Control Center,shape: dome,  pos: [14, 40],    size: [16, 18, 16], slots: 14, purpose: "Runway, revenue, cash-flow, SCALE/KILL rulings" }
+      - { id: automation-control,    name: Automation Control Room,shape: block, pos: [44, 0],     size: [12, 12, 12], slots: 10, purpose: "Workflow automation registry, scheduled loops" }
+
+  - id: knowledge
+    name: Knowledge City
+    tagline: "Where agents are made. Recruit → Test → Educate → Certify → Employ."
+    theme: "#38bdf8"
+    pos: [170, 0]
+    buildings:
+      - { id: ai-university,         name: AI University,          shape: dome,  pos: [0, 0],     size: [20, 20, 20], slots: 60, purpose: "Foundational curriculum, exams, graduation" }
+      - { id: programming-academy,   name: Programming Academy,    shape: block, pos: [-28, -18], size: [14, 12, 14], slots: 24, purpose: "Python, TypeScript, SQL, systems literacy" }
+      - { id: business-academy,      name: Business Academy,       shape: block, pos: [28, -18],  size: [14, 12, 14], slots: 24, purpose: "Strategy, markets, unit economics, positioning" }
+      - { id: marketing-academy,     name: Marketing Academy,      shape: block, pos: [-28, 20],  size: [14, 12, 14], slots: 20, purpose: "Positioning, distribution, ethical persuasion" }
+      - { id: finance-academy,       name: Finance Academy,        shape: block, pos: [28, 20],   size: [14, 12, 14], slots: 20, purpose: "Margins, CAC/LTV, scenarios, cash discipline" }
+      - { id: research-lab,          name: Research Laboratory,    shape: lab,   pos: [0, -46],   size: [16, 10, 16], slots: 18, purpose: "Methodology, evidence hierarchy, source quality" }
+      - { id: simulation-lab,        name: Simulation Laboratory,  shape: lab,   pos: [0, 46],    size: [16, 10, 16], slots: 18, purpose: "Sandboxed experiments before external action" }
+
+  - id: engineering
+    name: Engineering City
+    tagline: "Build, secure, automate. Ship small. Verify everything."
+    theme: "#22d3ee"
+    pos: [120, -120]
+    buildings:
+      - { id: software-hq,           name: Software Engineering HQ,shape: tower, pos: [0, 0],     size: [14, 28, 14], slots: 30, purpose: "Product engineering for internal and external software" }
+      - { id: ai-engineering,        name: AI Engineering,         shape: block, pos: [-26, -18], size: [14, 14, 14], slots: 20, purpose: "Agent runtime, model router, prompt/eval systems" }
+      - { id: data-engineering,      name: Data Engineering,       shape: block, pos: [26, -18],  size: [14, 14, 14], slots: 18, purpose: "Pipelines, schemas, warehouse, event streams" }
+      - { id: devops,                name: DevOps,                 shape: block, pos: [-26, 20],  size: [12, 16, 12], slots: 14, purpose: "Local deployment, supervision, backups, health" }
+      - { id: cybersecurity,         name: Cybersecurity,          shape: tower, pos: [26, 20],   size: [12, 24, 12], slots: 14, purpose: "Least privilege, secrets, sandboxing, audit" }
+      - { id: automation-engineering,name: Automation Engineering,  shape: block, pos: [0, -46],   size: [14, 12, 14], slots: 16, purpose: "Turn proven manual workflows into automation" }
+      - { id: qa-lab,                name: QA Laboratory,          shape: lab,   pos: [0, 46],    size: [16, 10, 16], slots: 16, purpose: "Verification of every artifact before it ships" }
+
+  - id: revenue
+    name: Revenue City
+    tagline: "Every opportunity must survive market, cost, legal, demand and revenue tests."
+    theme: "#34d399"
+    pos: [0, 170]
+    buildings:
+      - { id: market-research,       name: Market Research,        shape: block, pos: [-28, -20], size: [14, 14, 14], slots: 20, purpose: "Demand discovery, competitor mapping, willingness to pay" }
+      - { id: product-discovery,     name: Product Discovery,      shape: block, pos: [0, -20],   size: [14, 14, 14], slots: 18, purpose: "Turn validated demand into a shippable promise" }
+      - { id: pricing-lab,           name: Pricing Laboratory,     shape: lab,   pos: [28, -20],  size: [14, 12, 14], slots: 12, purpose: "Price, margin, and payback experiments" }
+      - { id: sales-floor,           name: Sales Floor,            shape: block, pos: [-28, 16],  size: [16, 14, 16], slots: 26, purpose: "Qualification, outreach drafts, follow-up discipline" }
+      - { id: customer-success,      name: Customer Success,       shape: block, pos: [0, 16],    size: [14, 14, 14], slots: 20, purpose: "Delivery, retention, referral, outcome tracking" }
+      - { id: partnerships,          name: Partnerships,           shape: dome,  pos: [28, 16],   size: [14, 14, 14], slots: 12, purpose: "Leverage, BATNA, deal structure, terms review" }
+      - { id: publishing-house,      name: Publishing House,       shape: block, pos: [-14, 46],  size: [18, 16, 14], slots: 24, purpose: "Books, Writer Nation services, catalog economics" }
+      - { id: digital-products,      name: Digital Products Lab,   shape: dome,  pos: [16, 46],   size: [16, 16, 16], slots: 20, purpose: "Templates, tools, subscriptions, memberships, SaaS" }
+
+  - id: media
+    name: Media City
+    tagline: "Attention → relevance → trust → action. Never vanity metrics."
+    theme: "#f472b6"
+    pos: [-120, 120]
+    buildings:
+      - { id: content-lab,           name: Content Laboratory,     shape: block, pos: [0, -20],   size: [16, 14, 16], slots: 22, purpose: "Content with a job: awareness → conversion → retention" }
+      - { id: youtube-studio,        name: YouTube Studio,         shape: block, pos: [-28, 14],  size: [16, 14, 16], slots: 20, purpose: "Titles, hooks, retention, Shorts, honest curiosity" }
+      - { id: instagram-studio,      name: Instagram Studio,       shape: block, pos: [0, 14],    size: [16, 14, 16], slots: 20, purpose: "Reels, carousels, community, official-API only" }
+      - { id: facebook-studio,       name: Facebook Studio,        shape: block, pos: [28, 14],   size: [14, 12, 14], slots: 12, purpose: "Page distribution, groups, page analytics" }
+      - { id: whatsapp-ops,          name: WhatsApp Operations,    shape: block, pos: [-28, 44],  size: [14, 12, 14], slots: 12, purpose: "Consent-based messaging, Cloud API, strict templates" }
+      - { id: copywriting,           name: Copywriting,            shape: block, pos: [0, 44],    size: [14, 12, 14], slots: 18, purpose: "Message clarity, proof, objection handling" }
+      - { id: social-analytics,      name: Social Analytics,       shape: lab,   pos: [28, 44],   size: [14, 10, 14], slots: 12, purpose: "Reach → qualified demand attribution" }
+
+  - id: creative
+    name: Creative City
+    tagline: "IP compounds. Make things worth keeping."
+    theme: "#fbbf24"
+    pos: [-170, 0]
+    buildings:
+      - { id: writing-house,         name: Writing House,          shape: block, pos: [-24, -18], size: [16, 14, 16], slots: 26, purpose: "Books, long-form IP, series, backlist" }
+      - { id: design-studio,         name: Design Studio,          shape: block, pos: [24, -18],  size: [14, 12, 14], slots: 18, purpose: "Covers, brand systems, visual identity" }
+      - { id: storytelling,          name: Storytelling,           shape: dome,  pos: [-24, 20],   size: [16, 16, 16], slots: 16, purpose: "Narrative, genre positioning, reader promise" }
+      - { id: brand-development,     name: Brand Development,      shape: block, pos: [24, 20],   size: [14, 12, 14], slots: 14, purpose: "Author brand consistency across genres" }
+      - { id: advertising-creative,  name: Advertising Creative,   shape: block, pos: [0, -46],   size: [14, 12, 14], slots: 14, purpose: "Hooks, concepts, offer framing (zero-spend only)" }
+      - { id: product-design,        name: Product Design,         shape: lab,   pos: [0, 46],    size: [16, 12, 16], slots: 14, purpose: "UX for shipped products and internal tools" }
+
+  - id: finance
+    name: Finance City
+    tagline: "Revenue ≠ profit. Growth ≠ strength. Cash is oxygen."
+    theme: "#a3e635"
+    pos: [-120, -120]
+    buildings:
+      - { id: revenue-accounting,    name: Revenue Accounting,     shape: block, pos: [-24, -18], size: [14, 12, 14], slots: 12, purpose: "Verified revenue only; every rupee traceable" }
+      - { id: expense-tracking,      name: Expense Tracking,       shape: block, pos: [24, -18],  size: [14, 12, 14], slots: 10, purpose: "Zero-spend enforcement, spend approvals" }
+      - { id: cash-flow,             name: Cash Flow,              shape: block, pos: [-24, 20],  size: [14, 12, 14], slots: 10, purpose: "Runway, obligations, working capital" }
+      - { id: unit-economics,        name: Unit Economics,         shape: lab,   pos: [24, 20],   size: [14, 12, 14], slots: 12, purpose: "CAC, LTV, contribution margin, payback" }
+      - { id: forecasting,           name: Forecasting,            shape: block, pos: [0, -46],   size: [14, 12, 14], slots: 12, purpose: "Base / upside / downside / worst-reasonable cases" }
+      - { id: treasury,              name: Treasury,               shape: dome,  pos: [0, 0],     size: [18, 18, 18], slots: 8,  purpose: "Reinvestment rules; no unsupervised money movement" }
+      - { id: compliance-watch,      name: Tax/Compliance Watch,   shape: block, pos: [0, 46],    size: [14, 12, 14], slots: 8,  purpose: "Monitoring + referral to professional counsel" }
+
+  - id: research
+    name: Research City
+    tagline: "Cheapest test that reduces the most uncertainty."
+    theme: "#c084fc"
+    pos: [120, 120]
+    buildings:
+      - { id: web-research,          name: Web Research,           shape: block, pos: [-24, -18], size: [14, 12, 14], slots: 20, purpose: "Source capture, date, incentives, contradictions" }
+      - { id: market-intelligence,   name: Market Intelligence,    shape: block, pos: [24, -18],  size: [14, 12, 14], slots: 18, purpose: "Demand signals, pricing, channel reality" }
+      - { id: competitor-intel,      name: Competitor Intelligence,shape: block, pos: [-24, 20],  size: [14, 12, 14], slots: 16, purpose: "Positioning gaps, defensibility, copying risk" }
+      - { id: trend-detection,       name: Trend Detection,        shape: lab,   pos: [24, 20],   size: [14, 12, 14], slots: 14, purpose: "Early signals vs noise; durability test" }
+      - { id: opportunity-discovery, name: Opportunity Discovery,  shape: dome,  pos: [0, -46],   size: [16, 16, 16], slots: 20, purpose: "Zero-capital opportunity candidates" }
+      - { id: experimental-lab,      name: Experimental Lab,       shape: lab,   pos: [0, 46],    size: [16, 12, 16], slots: 18, purpose: "Controlled experiments, pre-registered metrics" }
+
+  - id: data
+    name: Data City
+    tagline: "If it isn't measured, it didn't happen."
+    theme: "#60a5fa"
+    pos: [0, -170]
+    buildings:
+      - { id: data-warehouse,        name: Data Warehouse,         shape: block, pos: [-24, -18], size: [16, 14, 16], slots: 14, purpose: "Structured business truth (SQLite → PostgreSQL)" }
+      - { id: event-stream,          name: Event Stream,           shape: block, pos: [24, -18],  size: [14, 14, 14], slots: 14, purpose: "Append-only bus: every state change is an event" }
+      - { id: analytics-engine,      name: Analytics Engine,       shape: tower, pos: [0, 0],     size: [14, 26, 14], slots: 18, purpose: "Aggregations, department scorecards, agent metrics" }
+      - { id: memory-vault,          name: Memory Vault,           shape: block, pos: [-24, 20],  size: [14, 14, 14], slots: 10, purpose: "Vector memory, embeddings, provenance" }
+      - { id: experimentation,       name: Experimentation Platform,shape: lab,  pos: [24, 20],   size: [14, 12, 14], slots: 12, purpose: "Experiment registry, decision logs, learning store" }
+      - { id: observability,         name: Observability,          shape: lab,   pos: [0, 46],    size: [16, 12, 16], slots: 12, purpose: "Trace any agent action from intent to result" }

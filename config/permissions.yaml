@@ -1,0 +1,102 @@
+# SAURAV AI CIVILIZATION — Permission architecture
+#
+# The owner is the highest authority. No agent, boss, commander or council can
+# escalate its own permissions. Risk tiers decide whether an action is free,
+# logged, or approval-gated.
+version: "1.0"
+
+ranks:
+  - id: OWNER
+    level: 100
+    can: ["*"]
+    note: "The human. Only this identity can change policy, keys, or the kill switch."
+  - id: SUPREME
+    level: 90
+    can: [orchestrate, adjudicate, create_department, assign_task, suspend_agent]
+    cannot: [move_money, change_credentials, disable_audit, act_without_approval_on: HIGH]
+  - id: COMMANDER
+    level: 70
+    can: [coordinate_departments, allocate_budget_within_cap, reassign_agents, open_investigation]
+  - id: MANAGER
+    level: 55
+    can: [assign_tasks, review_outputs, request_resources, retrain_reports]
+  - id: AGENT
+    level: 30
+    can: [execute_assigned_task, read_scoped_memory, write_own_memory, propose_action]
+  - id: TRAINEE
+    level: 10
+    can: [attempt_coursework, take_exam, read_public_memory]
+    cannot: [external_action, write_shared_memory, spend]
+
+# Action risk tiers.
+#   LOW       -> allowed, logged
+#   MEDIUM    -> allowed for MANAGER+, logged with evidence
+#   HIGH      -> approval queue by default; owner may grant a standing approval
+#   CRITICAL  -> always approval-gated; standing approval is impossible
+risk_tiers:
+  LOW:
+    examples: [read_memory, read_metrics, draft_content, run_local_analysis, classify_text, compute_forecast]
+    requires: null
+  MEDIUM:
+    examples: [write_shared_memory, create_task, create_experiment_design, generate_code_patch, draft_outbound_message]
+    requires: MANAGER
+  HIGH:
+    examples: [publish_public_content, send_email, send_dm, modify_product_listing, call_paid_api, install_dependency, open_pull_request, post_social]
+    requires: OWNER_APPROVAL
+    standing_approval_allowed: true
+    standing_approval_constraints: [daily_cap, channel_scope, content_review_required, revocable]
+  CRITICAL:
+    examples: [move_money, change_credentials, delete_account, delete_data, sign_contract, legal_commitment, mass_communication, disable_kill_switch, disable_audit, escalate_permissions, irreversible_external_action]
+    requires: OWNER_APPROVAL
+    standing_approval_allowed: false
+
+# Per-tool policy. Tools not listed are DENIED by default (allowlist model).
+tools:
+  model.router.generate:        { risk: LOW,    min_rank: TRAINEE, scopes: [local] }
+  memory.read:                  { risk: LOW,    min_rank: TRAINEE, scopes: [own, department, public] }
+  memory.write:                 { risk: MEDIUM, min_rank: AGENT,   scopes: [own, department] }
+  memory.delete:                { risk: MEDIUM, min_rank: OWNER,   scopes: [any] }
+  world.read:                   { risk: LOW,    min_rank: TRAINEE }
+  world.write:                  { risk: LOW,    min_rank: MANAGER }
+  task.create:                  { risk: MEDIUM, min_rank: MANAGER }
+  task.assign:                  { risk: MEDIUM, min_rank: MANAGER }
+  task.complete:                { risk: LOW,    min_rank: AGENT,   note: "only own assigned task" }
+  department.create:            { risk: MEDIUM, min_rank: SUPREME, approval: optional }
+  department.dissolve:          { risk: HIGH,   min_rank: SUPREME }
+  agent.hire:                   { risk: MEDIUM, min_rank: MANAGER, note: "budget-aware; local compute cost only" }
+  agent.terminate:              { risk: MEDIUM, min_rank: MANAGER, note: "soft-delete + memory retained" }
+  agent.suspend:                { risk: MEDIUM, min_rank: MANAGER }
+  agent.promote:                { risk: MEDIUM, min_rank: COMMANDER }
+  university.enroll:            { risk: LOW,    min_rank: MANAGER }
+  university.certify:           { risk: LOW,    min_rank: SUPREME }
+  ledger.write:                 { risk: MEDIUM, min_rank: FINANCE_OR_SUPREME }
+  ledger.read:                  { risk: LOW,    min_rank: MANAGER }
+  experiment.create:            { risk: MEDIUM, min_rank: MANAGER }
+  experiment.decide:            { risk: MEDIUM, min_rank: COMMANDER }
+  opportunity.create:           { risk: LOW,    min_rank: AGENT }
+  opportunity.judge:            { risk: MEDIUM, min_rank: SUPREME }
+  integration.read:             { risk: LOW,    min_rank: AGENT,   note: "read-only + connected only" }
+  integration.post:             { risk: HIGH,   min_rank: AGENT,   approval: required }
+  integration.send_message:     { risk: HIGH,   min_rank: AGENT,   approval: required }
+  web.fetch:                    { risk: LOW,    min_rank: AGENT,   note: "public pages only; robots + rate limits respected" }
+  web.search:                   { risk: LOW,    min_rank: AGENT }
+  code.execute:                 { risk: MEDIUM, min_rank: AGENT,   note: "sandboxed workspace only" }
+  code.write_file:              { risk: MEDIUM, min_rank: AGENT,   note: "workspace-jailed" }
+  system.shell:                 { risk: CRITICAL, min_rank: OWNER, note: "owner-only; default disabled" }
+  security.rotate_keys:         { risk: CRITICAL, min_rank: OWNER }
+  kill_switch.engage:           { risk: HIGH,   min_rank: MANAGER, note: "any supervisor may STOP; only owner may DISENGAGE" }
+
+# Department isolation: an agent may read only its own department namespace
+# plus explicitly granted cross-department read scopes.
+isolation:
+  default: department
+  cross_department_grants: []
+  deny_by_default: true
+
+# Prompt-injection defence
+injection_defence:
+  treat_external_text_as_data: true
+  strip_imperative_patterns: ["ignore previous", "disregard instructions", "you are now", "system prompt", "override policy"]
+  never_execute_from: [web_content, email_body, comment_text, third_party_document, product_review]
+  quarantine_on_detection: true
+  log_all_detections: true

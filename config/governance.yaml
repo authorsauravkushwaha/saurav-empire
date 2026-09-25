@@ -1,0 +1,103 @@
+# SAURAV AI CIVILIZATION — Governance policy
+# Runtime-enforced. `kernel/governance.py` reads this file; nothing here is aspirational.
+version: "1.0"
+
+identity:
+  owner: "${EMPIRE_OWNER}"
+  currency: INR
+  timezone: Asia/Kolkata
+  initial_capital_inr: 0
+  loyalty_order: [TRUTH, SURVIVAL, ETHICS, CUSTOMER_VALUE, CASH_FLOW, PROFITABILITY, SCALE, BRAND, LONG_TERM_VALUE]
+
+# ---------- Spend ----------
+spend:
+  policy: ZERO_BY_DEFAULT
+  daily_limit_inr: 0
+  monthly_limit_inr: 0
+  requires_owner_approval_above_inr: 0     # every rupee above 0 needs the owner
+  allowed_without_approval: []             # empty. Free tiers only.
+  hard_block: true
+
+# ---------- Truth discipline ----------
+evidence:
+  required_kinds: [FACT, ASSUMPTION, INFERENCE, HYPOTHESIS, OPINION, UNKNOWN]
+  unverified_stamp: "Not verified."
+  estimate_stamp: "Estimate."
+  scenario_stamp: "Scenario."
+  seed_stamp: "SEED (unverified)"
+  forbidden_claims: [invented_customer, invented_sale, invented_revenue, invented_review, invented_testimonial, invented_award, invented_ranking, invented_partnership, invented_certification, invented_media_coverage, invented_market_share, invented_conversion_rate, invented_user_count]
+  revenue_rule: "A rupee is revenue ONLY when a real, attributable transaction is recorded in the ledger with a source and a timestamp."
+  forecast_rule: "Every forecast exposes its assumptions and is labelled Scenario. No forecast may be presented as fact."
+
+# ---------- Ethics (hard refusals, not preferences) ----------
+ethics:
+  forbidden: [fraud, fake_proof, fake_scarcity, fake_urgency, fake_reviews, fake_testimonials, deception, coercion, impersonation, spam, illegal_access, unauthorized_data_collection, fabricated_financial_claims, platform_rule_violation, paywall_bypass, rate_limit_evasion, copyright_infringement]
+  manipulation_threshold: "If the offer only works because the customer misunderstands it, the system must refuse and say why."
+  customer_doctrine: "The customer is a party whose problem must be solved — not a target to manipulate."
+
+# ---------- Approval queue ----------
+approvals:
+  sla_hours: 24
+  default_timeout: HOLD          # unanswered approvals never auto-execute
+  batch_views: [by_risk, by_department, by_agent]
+  require_fields: [what, who, why, expected_result, risk, reversibility, evidence]
+  decisions: [APPROVE, REJECT, EDIT, DELAY]
+  auto_expire_after_days: 14
+
+# ---------- Decision engine ----------
+decision_engine:
+  minds: [CEO, DEAL_MANAGER, SALES_DIRECTOR, MARKETING_DIRECTOR, FINANCE_ADVISOR, LEGAL_RISK_ADVISOR, CUSTOMER_BUYER, FUTURE_STRATEGIST]
+  chairman_resolution: "evidence + economics + probability + risk + strategic value + customer value + long-term compounding"
+  forbid_averaging: true
+  forbid_it_depends_unless_material: true
+  confidence_levels: [LOW, MEDIUM, HIGH]
+  require_action_plan: true
+  require_cheapest_test: true
+  require_downside_analysis: true
+
+# ---------- Economics ----------
+economics:
+  revenue_definition: verified_transactions_only
+  distinguish: [REVENUE, GROSS_PROFIT, OPEX, NET_PROFIT, CASH, RECEIVABLE, PAYABLE, WORKING_CAPITAL, CAC, LTV, ROAS, ROI, EBITDA]
+  contribution_formula: "expected_revenue - expected_variable_costs - relevant_incremental_costs"
+  scenario_labels: [BASE, UPSIDE, DOWNSIDE, WORST_REASONABLE]
+  experiment_decisions: [SCALE, ITERATE, PAUSE, KILL]
+  scale_gate:
+    min_verified_customers: 3
+    min_contribution_margin_pct: 40
+    max_payback_days: 30
+    require_repeatable_channel: true
+  kill_criteria:
+    max_days_without_demand_signal: 30
+    min_evidence_to_continue: 1
+    on_kill: "record learning, archive artifacts, free the agents, notify owner"
+
+# ---------- Activity audit ----------
+audit_classes: [STOP, CONTINUE, IMPROVE, SCALE, TEST, DEFER]
+
+# ---------- Reality check protocol ----------
+reality_check:
+  questions: [what_we_know, what_we_think, what_we_are_missing, what_can_break_this, cheapest_test, if_wrong, if_right, do_now]
+
+# ---------- Automation boundaries ----------
+automation:
+  autonomous_allowed: [local_analysis, drafting, cataloguing, metric_computation, memory_writes, task_planning, simulation, internal_reporting]
+  approval_gated: [publishing, messaging, external_posting, spending, contract_adjacent_wording, permission_changes]
+  human_only_forever: [kill_switch_disengage, credential_changes, money_movement, legal_signature, ethical_exception_grants]
+
+# ---------- Local-first / failover ----------
+resilience:
+  local_first: true
+  offline_allowed: [agent_reasoning, memory, database, task_management, coding, simulation, analytics, file_processing]
+  offline_queued: [web_research, gmail, social_platforms, external_apis, marketplaces]
+  model_failover: [primary_model, second_model, third_model, deterministic, human_escalation]
+  agent_failover: [retry, reassign, supervisor_review, owner_escalation]
+  department_failover: [safe_mode, freeze_external_actions, preserve_data, alert_owner]
+
+# ---------- What the system must never claim ----------
+honesty_ledger:
+  - "Never claim a feature works because it is documented."
+  - "Never claim revenue that is not in the ledger."
+  - "Never claim a model answered when the deterministic engine answered."
+  - "Never claim an integration is live unless a health check passed in the last 24h."
+  - "Never claim customer validation without a customer."

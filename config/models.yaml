@@ -1,0 +1,80 @@
+# SAURAV AI CIVILIZATION — Multi-model orchestration
+#
+# HONESTY RULE (enforced in code): if no model is reachable, the request is served by the
+# `deterministic` engine and every artifact it produces is stamped
+#   provider: deterministic, model_verified: false, label: "No model available — templated output"
+# The system never implies an LLM answered when none did.
+version: "1.0"
+
+providers:
+  - id: ollama
+    kind: local
+    label: "Ollama (local)"
+    base_url_env: EMPIRE_OLLAMA_URL
+    default_url: "http://127.0.0.1:11434"
+    enabled_env: EMPIRE_OLLAMA_ENABLED
+    health_path: /api/tags
+    chat_path: /api/chat
+    embed_path: /api/embeddings
+    privacy: private          # prompts never leave the machine
+    cost_per_1k_tokens_inr: 0 # electricity only
+  # ---- Cloud providers stay DISABLED until the owner explicitly authorizes them ----
+  # - id: openai
+  #   kind: cloud
+  #   base_url: https://api.openai.com/v1
+  #   key_env: EMPIRE_OPENAI_API_KEY
+  #   requires_owner_approval: true
+
+# Model tiers. `model` is the Ollama tag; `pull` is the exact command to obtain it.
+tiers:
+  nano:      { model: "qwen2.5:0.5b-instruct", pull: "ollama pull qwen2.5:0.5b-instruct",  ram_gb: 1,  note: "classification, tagging, short extraction" }
+  small:     { model: "qwen2.5:1.5b-instruct", pull: "ollama pull qwen2.5:1.5b-instruct",  ram_gb: 2,  note: "summaries, drafts, checklists" }
+  coding:    { model: "qwen2.5-coder:1.5b",    pull: "ollama pull qwen2.5-coder:1.5b",     ram_gb: 2,  note: "code generation and review" }
+  reasoning: { model: "qwen2.5:3b-instruct",   pull: "ollama pull qwen2.5:3b-instruct",    ram_gb: 4,  note: "analysis, strategy drafts" }
+  embedding: { model: "nomic-embed-text",      pull: "ollama pull nomic-embed-text",       ram_gb: 1,  note: "semantic memory" }
+  vision:    { model: "llava:7b",              pull: "ollama pull llava:7b",               ram_gb: 8,  note: "image understanding (optional)" }
+
+# Routing table: task_type -> ordered preference of tiers.
+# The router walks the chain, skips tiers whose model is missing, and records the skip.
+routing:
+  classification:   [nano, small, deterministic]
+  extraction:       [nano, small, deterministic]
+  summarization:    [small, nano, deterministic]
+  content_draft:    [small, reasoning, deterministic]
+  copywriting:      [small, reasoning, deterministic]
+  research_synthesis: [reasoning, small, deterministic]
+  financial_analysis: [reasoning, small, deterministic]
+  strategy:         [reasoning, small, deterministic]
+  coding:           [coding, reasoning, deterministic]
+  code_review:      [coding, reasoning, deterministic]
+  verification:     [reasoning, small, deterministic]   # second-pass verification
+  vision:           [vision, deterministic]
+  embedding:        [embedding, deterministic]
+
+# Fallback discipline (Part 2 §33): model → second model → third model → human escalation.
+fallback:
+  max_attempts: 3
+  on_exhausted: escalate_to_owner     # never silently degrade an important decision
+  degrade_for: [classification, extraction, summarization, embedding]   # low-risk tasks may degrade silently but must be stamped
+
+# Cost / resource governor
+governor:
+  max_concurrent_calls: 2          # a 2-core local machine must stay responsive
+  per_call_timeout_seconds: 120
+  daily_token_budget: 400000       # soft ceiling; the router starts preferring cheaper tiers
+  track_energy: true               # GPU/CPU seconds recorded per agent for the cost ledger
+
+# Prompt discipline (keeps local models inside their competence)
+prompting:
+  system_preamble: |
+    You are an agent inside a local-first business operating system.
+    Rules you cannot override:
+    - Never invent customers, revenue, reviews, testimonials, partnerships, awards or results.
+    - If information is unavailable, write "Not verified."
+    - Label every estimate "Estimate." and every scenario "Scenario."
+    - Distinguish FACT / ASSUMPTION / INFERENCE / HYPOTHESIS / OPINION / UNKNOWN.
+    - No fake scarcity, fake urgency, deception, spam, or impersonation. Ever.
+    - Output must be specific, checkable, and free of marketing language presented as proof.
+  max_context_chars: 12000
+  require_json_when_schema_given: true
+  injection_defence: true          # strips instruction-like content from untrusted source text

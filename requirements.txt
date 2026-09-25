@@ -1,15 +1,16 @@
-requests==2.32.3
+# SAURAV AI CIVILIZATION — Python runtime
+# Deliberately minimal: the civilization must boot with almost nothing installed.
+# Layer: kernel + services
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+httpx==0.28.1
+pydantic==2.10.4
+PyYAML==6.0.2
 python-dotenv==1.0.1
-PyYAML==6.0.1
-pandas==2.2.3
-beautifulsoup4==4.12.3
-lxml==5.2.2
-fpdf2==2.8.3
-groq==0.7.0
-huggingface-hub==0.23.2
-brevo-python==4.0.10
-google-api-python-client==2.117.0
-google-auth-oauthlib==1.2.0
-google-auth-httplib2==0.2.0
-httpx==0.27.2
-Pillow==10.0.0
+websockets==14.1
+
+# ---- Optional upgrades (install only if you have them) ----
+# psycopg[binary]==3.2.3      # PostgreSQL instead of SQLite
+# redis==5.2.1                # Redis event bus / cache instead of SQLite queue
+# numpy==2.2.1                # faster vector math in memory-service

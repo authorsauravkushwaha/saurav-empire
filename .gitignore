@@ -1,17 +1,50 @@
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-.DS_Store
+# ---- Secrets (NEVER commit) ----
 .env
-.venv
-venv/
-*.log
-*.pot
-*.pyc
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+data/secrets/
+
+# ---- Local runtime state (per-machine) ----
+data/state/
+data/logs/
+data/runtime/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+
+# ---- Python ----
 __pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
-*.cover
-*.py,cover
-.cache
-pytest_cache/
+htmlcov/
+
+# ---- Node / frontend ----
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+apps/**/dist/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# ---- Model artifacts (large, fetched locally) ----
+models/
+*.gguf
+*.safetensors
+*.onnx

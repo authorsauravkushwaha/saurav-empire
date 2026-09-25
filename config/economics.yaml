@@ -1,0 +1,69 @@
+# SAURAV AI CIVILIZATION — Economic engine
+# Starts at ₹0. Finds free legal capability first. Never bypasses a paywall,
+# rate limit, authentication, licence or terms of service.
+version: "1.0"
+
+engine:
+  initial_capital_inr: 0
+  loop: [DISCOVER, RESEARCH, VALIDATE, BUILD, MARKET, SELL, MEASURE, IMPROVE, AUTOMATE, REINVEST, SCALE]
+  ladder: [PRODUCTS, SERVICES, SOFTWARE, MEDIA, DATA, AUTOMATION, INTELLECTUAL_PROPERTY, NETWORK_EFFECTS, CAPITAL_EFFICIENCY]
+  max_open_experiments: 12
+  max_concurrent_opportunities: 20
+  monthly_learning_budget_hours: 40
+
+opportunity:
+  statuses: [DISCOVERED, VALIDATING, REJECTED, MVP, TESTING, FIRST_REVENUE, GROWING, SCALING, AUTOMATED, PAUSED, KILLED]
+  required_fields: [id, problem, customer, market, competition, required_skills, required_capital_inr, expected_revenue_inr, expected_margin_pct, time_to_mvp_days, time_to_first_customer_days, risk, legal_risk, technical_risk, demand_confidence, model_confidence, status, evidence]
+  score_formula: "(impact * probability * strategic_value * customer_value * reversibility) / max(cost + complexity + time + risk + opportunity_cost, 0.1)"
+  hard_reject_if:
+    - requires_capital_above_inr: 0          # zero-capital phase
+    - requires_unauthorized_access: true
+    - requires_fake_proof: true
+    - legal_risk: HIGH
+    - violates_platform_rules: true
+  first_revenue_definition: "one real, attributable transaction recorded in the ledger"
+
+experiment:
+  required_fields: [hypothesis, cost_inr, expected_result, mvp_definition, test_method, success_metric, kill_metric, decision_rule]
+  decisions: [SCALE, ITERATE, PAUSE, KILL]
+  rules:
+    SCALE: "success_metric met AND unit economics positive AND channel repeatable"
+    ITERATE: "signal present but metric unmet — one change, one retest"
+    PAUSE: "no signal and no cheap next test available right now"
+    KILL: "kill_metric hit, or cost of next test exceeds expected contribution"
+  learning_store: "every KILL/ITERATE writes a reusable lesson to memory + data/state/lessons.jsonl"
+
+# ---------- Free legal resource engine ----------
+free_resources:
+  principle: "Aggressive optimization, never unauthorized access."
+  categories:
+    compute:        [local_cpu_gpu, ollama_local_models, python_stdlib, open_source_libraries]
+    storage:        [local_disk, local_sqlite, git_repository, free_object_tier_when_needed]
+    distribution:   [own_website, existing_social_accounts, email_list, github_pages, open_communities]
+    marketplaces:   [amazon_kdp_existing_catalog, gumroad_free_tier, existing_storefronts]
+    research:       [public_documentation, public_datasets, official_apis_within_quota, public_communities, academic_preprints]
+    tooling:        [free_dev_tools, open_source_editors, free_ci_minutes_within_quota]
+    programs:       [legitimate_grants, competitions, student_programs_when_eligible]
+  forbidden_tactics: [paywall_bypass, scraping_against_tos, rate_limit_evasion, credential_sharing, trial_abuse, copyright_infringement, unauthorized_access]
+
+  candidate_scans:
+    - id: scan-existing-catalog
+      description: "Audit the existing book catalog for metadata/positioning wins with zero spend."
+      cost_inr: 0
+    - id: scan-existing-audience
+      description: "Audit existing followers/email for which offers they actually ask for."
+      cost_inr: 0
+    - id: scan-existing-skills
+      description: "Audit owner skills + agent skills against service demand with no capital requirement."
+      cost_inr: 0
+    - id: scan-free-tier-apis
+      description: "Enumerate official APIs that are free within quota and useful for a real deliverable."
+      cost_inr: 0
+
+# ---------- Seed assets (UNVERIFIED — inherited from the previous system) ----------
+seed_assets:
+  - id: book-catalog
+    kind: publishing_catalog
+    path: data/seed/books.json
+    status: "SEED (unverified)"
+    note: "Inherited catalog of 50 titles. ASINs were placeholders and most fields were unverified. Treated as hypotheses to audit, never as proven revenue."

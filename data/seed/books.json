@@ -1,0 +1,818 @@
+{
+  "schema": "empire.seed.catalog.v1",
+  "status": "SEED (unverified)",
+  "inherited_from": "previous system commit 59e4bbf (GitHub-Actions era)",
+  "warning": "Inherited catalog. ASINs were placeholders (B0XXXXXXXX) and no field was verified against Amazon or any storefront. Treat every row as a HYPOTHESIS to be audited, never as proven demand or revenue. No revenue may be attributed to these titles until a verified transaction exists in the ledger.",
+  "requires_audit": [
+    "asin",
+    "price_inr",
+    "status",
+    "cover",
+    "description",
+    "category",
+    "reviews"
+  ],
+  "count": 50,
+  "books": [
+    {
+      "id": "millionaire-financial-literacy",
+      "title": "Millionaire Financial Literacy",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "The money habits schools never taught you",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "the-rational-male",
+      "title": "The Rational Male",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Understand female nature, master your life",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "focus-on-what-you-want",
+      "title": "Focus On What You Want",
+      "category": "Personal Development",
+      "series": "Focus",
+      "hook": "Eliminate distraction, achieve impossible goals",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "write-&-publish-in-30-days",
+      "title": "Write & Publish in 30 Days",
+      "category": "Education",
+      "series": "Writing",
+      "hook": "From blank page to published author in one month",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "stoic-wealth",
+      "title": "Stoic Wealth",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Ancient philosophy for modern money",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "dark-psychology-defense",
+      "title": "Dark Psychology Defense",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Spot manipulation before it destroys you",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "atomic-habits-for-writers",
+      "title": "Atomic Habits for Writers",
+      "category": "Writing",
+      "series": "Writing",
+      "hook": "Tiny daily actions = finished books",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "the-5-am-entrepreneur",
+      "title": "The 5 AM Entrepreneur",
+      "category": "Business",
+      "series": "Business",
+      "hook": "Win before the world wakes up",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "love-without-losing-yourself",
+      "title": "Love Without Losing Yourself",
+      "category": "Romance",
+      "series": "Relationships",
+      "hook": "Boundaries that make love stronger",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "society-decoded",
+      "title": "Society Decoded",
+      "category": "Society",
+      "series": "Society",
+      "hook": "See the invisible forces shaping your life",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "poetry-for-the-broken",
+      "title": "Poetry for the Broken",
+      "category": "Poetry",
+      "series": "Poetry",
+      "hook": "Words that heal what doctors can't",
+      "price_inr": 99,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "financial-freedom-blueprint",
+      "title": "Financial Freedom Blueprint",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Step-by-step map to never worry about money",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "mindset-mastery",
+      "title": "Mindset Mastery",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Rewire your brain for success",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "the-writer's-business",
+      "title": "The Writer's Business",
+      "category": "Business",
+      "series": "Writing",
+      "hook": "Turn your craft into a career",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "discipline-equals-freedom",
+      "title": "Discipline Equals Freedom",
+      "category": "Personal Development",
+      "series": "Focus",
+      "hook": "The hard path that makes life easy",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "investing-for-beginners",
+      "title": "Investing for Beginners",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Start with ₹500, build generational wealth",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "emotional-intelligence",
+      "title": "Emotional Intelligence",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "The skill that outperforms IQ",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "self-publishing-empire",
+      "title": "Self-Publishing Empire",
+      "category": "Writing",
+      "series": "Writing",
+      "hook": "Own your rights, keep your royalties",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "networking-for-introverts",
+      "title": "Networking for Introverts",
+      "category": "Business",
+      "series": "Business",
+      "hook": "Build powerful connections without draining yourself",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "the-art-of-letting-go",
+      "title": "The Art of Letting Go",
+      "category": "Personal Development",
+      "series": "Focus",
+      "hook": "Release what weighs you down",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "crypto-for-skeptics",
+      "title": "Crypto for Skeptics",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Separate signal from noise in digital assets",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "shadow-work-journal",
+      "title": "Shadow Work Journal",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Face your dark side, reclaim your power",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "write-your-first-novel",
+      "title": "Write Your First Novel",
+      "category": "Writing",
+      "series": "Writing",
+      "hook": "A 90-day roadmap from idea to 'The End'",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "scale-your-service-business",
+      "title": "Scale Your Service Business",
+      "category": "Business",
+      "series": "Business",
+      "hook": "Escape the time-for-money trap",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "minimalist-living",
+      "title": "Minimalist Living",
+      "category": "Personal Development",
+      "series": "Focus",
+      "hook": "Own less, live more",
+      "price_inr": 99,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "tax-secrets-for-creators",
+      "title": "Tax Secrets for Creators",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Keep what you earn — legally",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "attachment-styles-in-love",
+      "title": "Attachment Styles in Love",
+      "category": "Relationships",
+      "series": "Relationships",
+      "hook": "Why you push away what you want most",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "modern-society-&-you",
+      "title": "Modern Society & You",
+      "category": "Society",
+      "series": "Society",
+      "hook": "Navigate the chaos with clarity",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "healing-verses",
+      "title": "Healing Verses",
+      "category": "Poetry",
+      "series": "Poetry",
+      "hook": "Poems for the nights you can't sleep",
+      "price_inr": 99,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "passive-income-playbook",
+      "title": "Passive Income Playbook",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Build income that works while you sleep",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "overthinking-cure",
+      "title": "Overthinking Cure",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Stop spiraling, start deciding",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "content-machine",
+      "title": "Content Machine",
+      "category": "Writing",
+      "series": "Writing",
+      "hook": "Produce 100 pieces/week without burnout",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "sales-without-sleaze",
+      "title": "Sales Without Sleaze",
+      "category": "Business",
+      "series": "Business",
+      "hook": "Close deals you're proud of",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "deep-work-for-creators",
+      "title": "Deep Work for Creators",
+      "category": "Personal Development",
+      "series": "Focus",
+      "hook": "4 hours of focus > 12 hours of distraction",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "real-estate-for-beginners",
+      "title": "Real Estate for Beginners",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Buy your first property in 12 months",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "narcissist-survival-guide",
+      "title": "Narcissist Survival Guide",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Protect your peace from toxic people",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "non-fiction-book-blueprint",
+      "title": "Non-Fiction Book Blueprint",
+      "category": "Writing",
+      "series": "Writing",
+      "hook": "Structure knowledge into a bestseller",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "personal-brand-authority",
+      "title": "Personal Brand Authority",
+      "category": "Business",
+      "series": "Business",
+      "hook": "Become the go-to expert in your niche",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "decision-making-mastery",
+      "title": "Decision Making Mastery",
+      "category": "Personal Development",
+      "series": "Focus",
+      "hook": "Never regret a choice again",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "dividend-investing",
+      "title": "Dividend Investing",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Get paid quarterly for life",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "boundaries-that-heal",
+      "title": "Boundaries That Heal",
+      "category": "Relationships",
+      "series": "Relationships",
+      "hook": "Say no without guilt",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "future-of-work",
+      "title": "Future of Work",
+      "category": "Society",
+      "series": "Society",
+      "hook": "Thrive in the AI economy",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "midnight-thoughts",
+      "title": "Midnight Thoughts",
+      "category": "Poetry",
+      "series": "Poetry",
+      "hook": "What your soul whispers at 3 AM",
+      "price_inr": 99,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "side-hustle-to-main-hustle",
+      "title": "Side Hustle to Main Hustle",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "Quit your job on your terms",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "anxiety-rewired",
+      "title": "Anxiety Rewired",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Neuroscience-backed calm",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "email-list-empire",
+      "title": "Email List Empire",
+      "category": "Writing",
+      "series": "Writing",
+      "hook": "Your list = your independence",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "negotiation-mastery",
+      "title": "Negotiation Mastery",
+      "category": "Business",
+      "series": "Business",
+      "hook": "Win-win is a myth — win better",
+      "price_inr": 299,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "essentialism-for-authors",
+      "title": "Essentialism for Authors",
+      "category": "Personal Development",
+      "series": "Focus",
+      "hook": "Do less, publish more",
+      "price_inr": 149,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "index-fund-millionaire",
+      "title": "Index Fund Millionaire",
+      "category": "Finance",
+      "series": "Wealth",
+      "hook": "The boring path to extraordinary wealth",
+      "price_inr": 199,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    },
+    {
+      "id": "trauma-to-triumph",
+      "title": "Trauma to Triumph",
+      "category": "Psychology",
+      "series": "Mindset",
+      "hook": "Your wound becomes your weapon",
+      "price_inr": 249,
+      "asin": null,
+      "asin_was": "B0XXXXXXXX",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "kind": "ASSUMPTION",
+        "source": "inherited_seed",
+        "verified": false
+      }
+    }
+  ]
+}

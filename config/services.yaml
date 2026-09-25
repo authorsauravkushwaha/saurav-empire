@@ -1,0 +1,91 @@
+# SAURAV AI CIVILIZATION — service topology
+# One process per service. Independent backends, independent failure domains.
+# No service owns another service's tables.
+version: "1.0"
+
+host: 0.0.0.0                 # bind all interfaces: the preview/tunnel needs this
+service_host: 127.0.0.1       # service-to-service calls stay on loopback
+
+frontend:
+  port: 3000
+  dir: apps/civilization-web
+  dev_command: "npm run dev -- --host 0.0.0.0 --port 3000"
+  install_command: "npm install"
+
+services:
+  gateway:
+    port: 8000
+    layer: boundary
+    dir: services/gateway
+    description: "Single entry point: routing, aggregation, owner auth, command center, WebSocket fan-through"
+    critical: true
+  agent-service:
+    port: 8001
+    layer: organization
+    dir: services/agent-service
+    description: "Agent registry + dynamic Department Factory + runtime control"
+  model-service:
+    port: 8002
+    layer: intelligence
+    dir: services/model-service
+    description: "Multi-model routing, capability discovery, embeddings"
+  memory-service:
+    port: 8003
+    layer: organization
+    dir: services/memory-service
+    description: "Six-layer hierarchical memory with provenance"
+  analytics-service:
+    port: 8004
+    layer: measurement
+    dir: services/analytics-service
+    description: "KPI aggregation, department scorecards, system health"
+  workflow-service:
+    port: 8005
+    layer: core
+    dir: services/workflow-service
+    description: "Task queues, verification rubrics, automations"
+  economy-service:
+    port: 8006
+    layer: economy
+    dir: services/economy-service
+    description: "Verified ledger, opportunities, experiments, learning store"
+  university-service:
+    port: 8007
+    layer: organization
+    dir: services/university-service
+    description: "Training pipeline: enrol → examine → certify → job match"
+  research-service:
+    port: 8008
+    layer: economy
+    dir: services/research-service
+    description: "Evidence capture, cheapest-test design, opportunity discovery"
+  integration-service:
+    port: 8009
+    layer: boundary
+    dir: services/integration-service
+    description: "Official-API connectors (Gmail, YouTube, Instagram, Facebook, WhatsApp, Gumroad, web)"
+  finance-service:
+    port: 8010
+    layer: economy
+    dir: services/finance-service
+    description: "Finance views, unit economics, scenarios, spend guard"
+  security-service:
+    port: 8011
+    layer: governance
+    dir: services/security-service
+    description: "Permissions, approvals, audit, injection defence, kill switch"
+  event-service:
+    port: 8012
+    layer: core
+    dir: services/event-service
+    description: "Append-only event log + WebSocket feed for the 3D world"
+    critical: true
+  world-service:
+    port: 8013
+    layer: civilization
+    dir: services/world-service
+    description: "World layout, agent positions, occupancy, visual analytics"
+
+startup_order: [event-service, security-service, agent-service, model-service, memory-service,
+                workflow-service, economy-service, university-service, research-service,
+                integration-service, finance-service, analytics-service, world-service, gateway]
